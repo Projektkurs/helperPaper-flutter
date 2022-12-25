@@ -22,11 +22,11 @@ class ExampleComponent extends Component
   ExampleComponentState createState() => ExampleComponentState();
 }
 
-class ExampleComponentState extends State<ExampleComponent> with ComponentBuild<ExampleComponent>
+class ExampleComponentState extends ComponentState<ExampleComponent>
 {
+  popup(){}
   @override
   void initState() {
-    defaultfirstbuild();
     super.initState();
   }
   @override

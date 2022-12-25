@@ -150,7 +150,7 @@ class _MainScreenState extends State<MainScreen>
           // menu laying on top of the main Scaffholding
           Flex(direction: Axis.horizontal,
             children: [mainscaffolding ?? Container()]),
-          widget.appState.menu
+          //widget.appState.menu
         ])
       ),
       //start: Buttons in the bottom right to add/remove Containers 

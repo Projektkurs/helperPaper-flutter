@@ -3,8 +3,7 @@ import "package:http/http.dart" as http;
 //import "package:helperpaper/main_header.dart";
 import "dart:convert";
 import "package:xml/xml.dart";
-import "main_header.dart";
-
+import '../../main_header.dart';
 const MAXHOURSPERDAY=7;
 class Plan{
   final List<List<Lesson?>> lessons;
@@ -107,7 +106,6 @@ Future<List<Lesson?>> roomallocation(XmlDay plan, String room)async {
     for(int i=0;i<MAXHOURSPERDAY;i++){
       lessons.add(null);
     }
-    //print("test")
     for(var node in filteredrooms){
       lessons[int.parse(node.getElement("St")!.text.toString())-1]=Lesson.fromxmlnode(node);
     }
@@ -134,17 +132,11 @@ List<DateTime> freedays(List<String> days){
 DateTime? nextday(DateTime currentday,List<DateTime> freedates){
     for(int i=0;i<60;i++){
       currentday = currentday.add(const Duration(days:1));
-      if(currentday.weekday==DateTime.sunday || currentday.weekday==DateTime.saturday)
-      {
-        //print("wochenende");
-        continue;
-
-      }
-      if(freedates.contains(currentday)){
-        //print("freier Tag");
-        continue;
-      }
-      //print(currentday);
+      if(
+        currentday.weekday==DateTime.sunday ||
+        currentday.weekday==DateTime.saturday ||
+        freedates.contains(currentday))
+      { continue; }
       return currentday;
     }
 }

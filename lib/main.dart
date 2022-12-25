@@ -52,14 +52,14 @@ class App extends StatefulWidget
 class AppState extends State<App> with message
 {
   //main menu laying on top the top of Widget stack
-  late Popup menu=Popup();
+  //late Popup menu=Popup();
   //own method to parse up a config to be configured by menu
-  configMenuMainParse(List<Key> key,GeneralConfig config,double width,double height,void Function(VoidCallback fn) configsetState){
+  /*configMenuMainParse(List<Key> key,GeneralConfig config,double width,double height,void Function(VoidCallback fn) configsetState){
     //menu.componenttype=type;
     menu.componentconfig=config;
     menu.openMenu(1);
     menu.configsetState=configsetState;
-  }
+  }*/
   //textcontroller
   //number of Widgets by the first scaffholding
   int maincontainers = 1;
@@ -75,7 +75,7 @@ class AppState extends State<App> with message
   @override
   void initState() {
     super.initState();
-    configmenu=configMenuMainParse;
+    //configmenu=configMenuMainParse;
     if(isepaper){
       epaperUpdateInterrupt();
     }

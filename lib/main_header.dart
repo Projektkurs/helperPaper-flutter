@@ -17,25 +17,26 @@ export 'package:flutter_colorpicker/flutter_colorpicker.dart';
 export 'main.dart';
 export 'config.dart';
 // popups
-  export 'popups/popup.dart';
-  export 'popups/menuoptions.dart';
+  export 'component/popup.dart';
+  export 'component/menuoptions.dart';
   // popups::configmenus
-    export 'popups/configmenus/empty_menu.dart';
-    export 'popups/configmenus/clock_menu.dart';
+    export 'component/empty/popup.dart';
+    export 'component/clock/popup.dart';
+    export 'component/menu.dart';
 
 // component
   export 'component/component.dart';
-  export 'component/misc.dart';
+  export 'component/typedec.dart';
   export 'component/generalconfig.dart';
   // component::components
-    export 'component/components/clock.dart';
-    export 'component/components/example.dart';
-    export 'component/components/empty.dart';
-    export 'component/components/vertretungsplan.dart';
+    export 'component/clock/component.dart';
+    export 'component/example/example.dart';
+    export 'component/empty/component.dart';
+    export 'component/vertretungsplan/component.dart';
   // component::configs
-    export 'component/configs/clock_config.dart';
-    export 'component/configs/empty_config.dart';
-    export 'component/configs/vertretungsplan_config.dart';
+    export 'component/clock/config.dart';
+    export 'component/empty/config.dart';
+    export 'component/vertretungsplan/config.dart';
   // component::scaffolding
     export 'component/scaffholding/scaffolding.dart';
 

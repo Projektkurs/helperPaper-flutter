@@ -40,21 +40,21 @@ class Clock extends Component
     );
 
   @override
-  State<Clock> createState() => _AnalogClockState(); 
+  State<Clock> createState() => ClockState(); 
 }
 
-class _AnalogClockState extends State<Clock> with ComponentBuild<Clock>
+class ClockState extends ComponentState<Clock>
 {
+  popup(){}
   late DateTime initialDatetime; // to keep track of time changes
   late DateTime datetime;
   Duration updateDuration = isepaper ? const Duration(minutes: 1): const Duration(seconds: 1); // repaint frequency
-  _AnalogClockState();
+  ClockState();
   @override
   initState()
   {
     datetime = widget.datetime ?? DateTime.now();
     initialDatetime = widget.datetime ?? DateTime.now();
-    defaultfirstbuild();
     super.initState();
     if (widget.isLive) {
       // update clock every second or minute based on the secondhand's visibility.

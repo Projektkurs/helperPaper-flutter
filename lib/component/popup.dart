@@ -4,9 +4,9 @@
  */
 
 import 'package:helperpaper/main_header.dart';
-import 'package:helperpaper/popups/component_menu.dart';
-import 'package:helperpaper/popups/configmenus/vertretungsplan_menu.dart';
-
+import 'package:helperpaper/component/menu.dart';
+import 'package:helperpaper/component/vertretungsplan/popup.dart';
+/*
 class Popup extends StatefulWidget {
   Popup({
     Key? key,
@@ -137,3 +137,4 @@ class PopupState extends State<Popup>
         ignoring: !isOpen, child: Stack(children: returnStack));
   }
 }
+*/

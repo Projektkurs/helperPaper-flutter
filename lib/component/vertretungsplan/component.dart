@@ -1,5 +1,5 @@
 import 'package:helperpaper/main_header.dart';
-import 'package:helperpaper/vpmobil.dart' as vp;
+import 'package:helperpaper/component/vertretungsplan/vpmobil.dart' as vp;
 
 class Vertretungsplan extends Component {
   @override
@@ -8,6 +8,7 @@ class Vertretungsplan extends Component {
     required GeneralConfig gconfig,
   }) : super(key: key, gconfig: gconfig);
 
+  void popup() async{}
   @override
   Map<String, dynamic> toJson() {
     Map<String, dynamic> tmpconf = super.toJson();
@@ -22,12 +23,11 @@ class Vertretungsplan extends Component {
   State<Vertretungsplan> createState() => VertretungsplanState();
 }
 
-class VertretungsplanState extends State<Vertretungsplan>
-    with ComponentBuild<Vertretungsplan> {
+class VertretungsplanState extends ComponentState<Vertretungsplan>{
+  popup(){}
   vp.Plan? vplan;
   @override
   void initState() {
-    defaultfirstbuild();
     super.initState();
     
     //does this create a call stack overflow?
@@ -129,8 +129,3 @@ class VertretungsplanState extends State<Vertretungsplan>
     ]));
   }
 }
-
-
-/*Widget build(BuildContext context) {
-  return
-}*/

@@ -4,10 +4,8 @@
  */
 
 import 'package:helperpaper/main_header.dart';
-export 'package:helperpaper/popups/selectableradio.dart';
-mixin Componentmenu{
-  BuildContext get context;
-    Future<Color> _ColorDialog(BuildContext context,Color color) async{
+export 'package:helperpaper/component/selectableradio.dart';
+    Future<Color> _ColorDialog(BuildContext context,Color color,Function setState) async{
     await showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -35,14 +33,14 @@ mixin Componentmenu{
     );
     return color;
   }
-  void setState(VoidCallback fn);
+ // void setState(VoidCallback fn);
 
-  Color testcolor=Colors.blue;
+//  Color testcolor=Colors.blue;
   //static final List<String> _cornermap=["round","test"];
-  static final List<String> _cornerlist=Bordertype.values.map((dynamic e) => e.toString().split('.').last).toList();
+  final List<String> _cornerlist=Bordertype.values.map((dynamic e) => e.toString().split('.').last).toList();
   final List<DropdownMenuItem<String>> _cornerstyle=_cornerlist.map((String e) => DropdownMenuItem<String>(value:e,child: Text(e),)).toList();
   String _corner_style_val=_cornerlist[0];
-  Widget componentTile(GeneralConfig generalconfig){
+  Widget componentTile(GeneralConfig generalconfig, BuildContext context, Function setState){
     return ExpansionTile(
     title: const Text("General"),
     children:[
@@ -102,7 +100,7 @@ mixin Componentmenu{
           //replace at some point with relative size
           title: Icon(Icons.color_lens,color: generalconfig.borderColor ?? const Color.fromARGB(255, 73, 73, 73),size: 45),
           onTap: () {
-            _ColorDialog(context,generalconfig.borderColor ?? const Color.fromARGB(255, 73, 73, 73)).then((value) => setState((){generalconfig.borderColor=value;}));
+            _ColorDialog(context,generalconfig.borderColor ?? const Color.fromARGB(255, 73, 73, 73),setState).then((value) => setState((){generalconfig.borderColor=value;}));
           },
         ),
       ]),
@@ -119,4 +117,3 @@ mixin Componentmenu{
       ]
     );
   }
-}

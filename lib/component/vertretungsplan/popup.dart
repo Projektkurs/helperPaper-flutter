@@ -4,47 +4,52 @@
  */
 
 import 'package:helperpaper/main_header.dart';
-import 'package:helperpaper/popups/component_menu.dart';
+import 'package:helperpaper/component/menu.dart';
 
-mixin Vertretungsplanmenu on Componentmenu {
+/*extension PopupVplan on State<Vertretungsplan> 
+{
   //start declaration
-  Popup get widget;
+  /*Popup get widget;
   bool get emptyVal;
   bool testVal = false;
   Componentenum components = Componentenum.defaultcase;
   dynamic handleOnPressed(int enable);
   void setState(VoidCallback fn);
   //end declaration
-  late TextEditingController _roomtextcontroller;
-  Widget vertretungsplanmenu() {
-    _roomtextcontroller= TextEditingController(text: widget.componentconfig!.cconfig.raum);
-    return Row(children:[ Vertretungsplan( 
+  late TextEditingController _roomtextcontroller;*/
+  popup() async {
+    TextEditingController roomtextcontroller= TextEditingController(text: widget.gconfig.cconfig.raum);
+    await popupdialog(
+    Row(children:[ Vertretungsplan( 
         key:GlobalKey(),
         //key:const Key("0"),
-        gconfig: widget.componentconfig!),
-        Expanded(flex: widget.componentconfig!.flex,child:
+        gconfig: widget.gconfig),
+        Expanded(flex: widget.gconfig.flex,child:
           ListView(
           children:[Container(
             margin: const EdgeInsets.all(8),
             child: TextField(
             keyboardType: TextInputType.number,
-            controller: _roomtextcontroller,
+            controller: roomtextcontroller,
             onSubmitted: (String value){
-                widget.componentconfig!.cconfig.raum= value;
+                widget.gconfig.cconfig.raum= value;
             },  
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
               
               labelText: 'Raum',),)
-        )]))]);
-  }
+        )]))]));
 
-  vertretungsplanmenuapplycallback() {
-    _roomtextcontroller= TextEditingController(text: widget.componentconfig!.cconfig.raum);
+    (widget.gconfig.cconfig as VertretungsplanConfig).neuerplan=true;
+    setState((){});
+  }
+}*/
+  /*vertretungsplanmenuapplycallback() {
+    _roomtextcontroller= TextEditingController(text: widget.gconfig.cconfig.raum);
     if (widget.configsetState != null) {
-      (widget.componentconfig!.cconfig as VertretungsplanConfig).neuerplan=true;
+      (widget.gconfig.cconfig as VertretungsplanConfig).neuerplan=true;
       widget.configsetState!(() {});
     }
     handleOnPressed(-1);
-  }
-}
+  }/
+}*/
