@@ -9,14 +9,13 @@
 import 'package:helperpaper/main_header.dart';
 
 class SelectableRadio<T> extends StatefulWidget {
-  const SelectableRadio({
-    super.key,
-    required this.value,
-    required this.groupvalue,
-    required this.onPressed,
-    required this.text,
-    this.leading
-  });
+  const SelectableRadio(
+      {super.key,
+      required this.value,
+      required this.groupvalue,
+      required this.onPressed,
+      required this.text,
+      this.leading});
 
   final T value;
   final T groupvalue;
@@ -31,18 +30,20 @@ class _SelectableRadioState extends State<SelectableRadio> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      alignment: Alignment.center,  
-      child:ListTile(
+      decoration:
+          BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5))),
+      padding: const EdgeInsets.all(2),
+      alignment: Alignment.center,
+      child: ListTile(
         leading: widget.leading,
         title: Text(widget.text,
-          style:TextStyle(
-            color:widget.value==widget.groupvalue ? 
-              Colors.white :
-              Colors.blue,
-        ) ),
-        tileColor: widget.value==widget.groupvalue ?
-         Colors.blue : 
-         Colors.white,
+            style: TextStyle(
+              color: widget.value == widget.groupvalue
+                  ? Colors.white
+                  : Colors.blue,
+            )),
+        tileColor:
+            widget.value == widget.groupvalue ? Colors.blue : Colors.white,
         onTap: () => widget.onPressed(),
       ),
     );

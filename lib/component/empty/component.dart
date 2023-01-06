@@ -2,16 +2,20 @@
  *
  * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
-import 'package:helperpaper/component/componentconfig.dart';
+import 'package:helperpaper/component/scaffholding/config.dart';
 import 'package:helperpaper/main_header.dart';
 
 class Empty extends Component {
   Empty({
     required Key key,
     required GeneralConfig gconfig,
+    required EmptyComponentConfig cconfig,
     required this.resizeWidget,
     required this.replaceChildren,
-  }) : super(key: key, gconfig: gconfig);
+  }) : super(key: key, gconfig: gconfig, cconfig: cconfig);
+
+  @override
+  String? name = "Empty";
   final Function resizeWidget;
   final Function replaceChildren;
 
@@ -19,83 +23,86 @@ class Empty extends Component {
       Map<String, dynamic> json, this.resizeWidget, this.replaceChildren)
       : super(
             key: GlobalKey(),
-            gconfig: GeneralConfig.fromjson(json['gconfig'],
-                EmptyComponentConfig.fromJson(json["gconfig"]["cconfig"]))) {
-    debugPrint("Emptyfromjson:$gconfig");
-  }
+            gconfig: GeneralConfig.fromJson(json['gconfig']),
+            cconfig: EmptyComponentConfig.fromJson(json['cconfig']));
 
   @override
   EmptyState createState() => EmptyState();
 }
 
 class EmptyState extends ComponentState<Empty> {
+  Type a = EmptyState;
   @override
   popup() async {
-    print("openmenu");
-
     EmptyPopupRef popupref = EmptyPopupRef();
     await popupdialog(EmptyPopup(gconfig: widget.gconfig, popupref: popupref));
-    print("await");
+
+    //replace current widget if one was selected;
     switch (popupref.components) {
       case Componentenum.horizontal:
-        widget.gconfig.cconfig.replacement = Scaffolding(
-            key: widget.gconfig.cconfig.key,
+        widget.cconfig.replacement = Scaffolding(
+            key: widget.cconfig.key,
             direction: true,
             showlines: false,
             subcontainers: 2,
-            gconfig: GeneralConfig(widget.gconfig.flex, ScaffoldingConfig()));
-        widget.gconfig.cconfig.apply = true;
-        widget.gconfig.cconfig.replace!();
+            gconfig: GeneralConfig(widget.gconfig.flex),
+            cconfig: ScaffoldingConfig());
+        widget.cconfig.apply = true;
+        widget.cconfig.replace!();
         break;
       case Componentenum.vertical:
-        widget.gconfig.cconfig.replacement = Scaffolding(
-            key: widget.gconfig.cconfig.key,
+        widget.cconfig.replacement = Scaffolding(
+            key: widget.cconfig.key,
             direction: false,
             showlines: false,
             subcontainers: popupref.scaffoldingchilds,
-            gconfig: GeneralConfig(widget.gconfig.flex, ScaffoldingConfig()));
-        widget.gconfig.cconfig.apply = true;
-        widget.gconfig.cconfig.replace!();
+            gconfig: GeneralConfig(widget.gconfig.flex),
+            cconfig: ScaffoldingConfig());
+        widget.cconfig.apply = true;
+        widget.cconfig.replace!();
         break;
       case Componentenum.clock:
-        widget.gconfig.cconfig.replacement = Clock(
-            key: (widget.gconfig.cconfig as EmptyComponentConfig).key,
-            gconfig: GeneralConfig(widget.gconfig.flex, const ClockConfig()));
-        (widget.gconfig.cconfig as EmptyComponentConfig).apply = true;
-        (widget.gconfig.cconfig as EmptyComponentConfig).replace!();
+        widget.cconfig.replacement = Clock(
+          key: (widget.cconfig as EmptyComponentConfig).key,
+          gconfig: GeneralConfig(widget.gconfig.flex),
+          cconfig: ClockConfig(),
+        );
+        (widget.cconfig as EmptyComponentConfig).apply = true;
+        (widget.cconfig as EmptyComponentConfig).replace!();
         break;
       case Componentenum.vertretungsplan:
-        widget.gconfig.cconfig.replacement = Vertretungsplan(
-            key: (widget.gconfig.cconfig as EmptyComponentConfig).key,
-            gconfig: GeneralConfig(
-                widget.gconfig.flex, VertretungsplanConfig("007")));
-        (widget.gconfig.cconfig as EmptyComponentConfig).apply = true;
-        (widget.gconfig.cconfig as EmptyComponentConfig).replace!();
+        widget.cconfig.replacement = Vertretungsplan(
+            key: (widget.cconfig as EmptyComponentConfig).key,
+            gconfig: GeneralConfig(widget.gconfig.flex),
+            cconfig: VertretungsplanConfig("007"));
+        (widget.cconfig as EmptyComponentConfig).apply = true;
+        (widget.cconfig as EmptyComponentConfig).replace!();
         break;
       default:
         break;
     }
-    if (widget.gconfig.cconfig.replacement != null) {
-      replace();
-    }
-    //components = Componentenum.defaultcase;
+    if (widget.cconfig.replacement != null) {}
+    debugPrint("widget got replaced");
     setState(() {});
   }
 
-  replace() {
-    widget.replaceChildren(widget.key, widget.gconfig.cconfig.replacement);
+  _replace() {
+    widget.replaceChildren(
+      widget.key,
+      widget.cconfig.replacement,
+    );
   }
 
   @override
   void initState() {
-    widget.gconfig.cconfig.replace = replace;
-    widget.gconfig.cconfig.key = widget.key!;
+    widget.cconfig.replace = _replace;
+    widget.cconfig.key = widget.key!;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.gconfig.cconfig.apply) {
+    if (widget.cconfig.apply) {
       debugPrint("apply");
     }
     return componentbuild(const SizedBox.expand());

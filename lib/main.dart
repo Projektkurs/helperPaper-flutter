@@ -12,23 +12,23 @@ import 'screens/main_screen.dart';
 
 late String supportdir;
 late JsonConfig jsonconfig;
-void main() 
-{
+void main() {
   //tz.initializeTimeZones();
   runApp(const Entry());
 }
-GeneralConfig globalgconf=GeneralConfig.createGeneral();
+
+GeneralConfig globalgconf = GeneralConfig.createGeneral();
+
 //Entry class, used to set default theme
-class Entry extends StatelessWidget 
-{
-  const Entry({Key? key,} ) : super(key: key);
+class Entry extends StatelessWidget {
+  const Entry({
+    Key? key,
+  }) : super(key: key);
   static const title = 'SmartClock';
   //will be used later to switch between end-user mode and embeddded
 
-
   @override
-  Widget build(BuildContext context) 
-  {
+  Widget build(BuildContext context) {
     return MaterialApp(
       title: title,
       theme: ThemeData(
@@ -39,8 +39,7 @@ class Entry extends StatelessWidget
   }
 }
 
-class App extends StatefulWidget 
-{
+class App extends StatefulWidget {
   const App({Key? key, required this.title}) : super(key: key);
   final String title;
 
@@ -48,9 +47,7 @@ class App extends StatefulWidget
   AppState createState() => AppState();
 }
 
-
-class AppState extends State<App> with message
-{
+class AppState extends State<App> with message {
   //main menu laying on top the top of Widget stack
   //late Popup menu=Popup();
   //own method to parse up a config to be configured by menu
@@ -63,115 +60,139 @@ class AppState extends State<App> with message
   //textcontroller
   //number of Widgets by the first scaffholding
   int maincontainers = 1;
-  addContainer() {setState(() {
-    maincontainers<6 ? maincontainers++: null;});}
-  removeContainer() {setState(() {
-    maincontainers>1 ? maincontainers--: null ;});}
+  addContainer() {
+    debugPrint("increasing main containers");
+    setState(() {
+      maincontainers < 6 ? maincontainers++ : null;
+    });
+  }
+
+  removeContainer() {
+    debugPrint("decreasing main containers");
+    setState(() {
+      maincontainers > 1 ? maincontainers-- : null;
+    });
+  }
 
   //changes variable "enabled" of every resizeline  -> see resizeline.dart
-  bool _showlines=false;
+  bool _showlines = false;
 
   late Future<bool> configisload;
   @override
   void initState() {
     super.initState();
     //configmenu=configMenuMainParse;
-    if(isepaper){
+    if (isepaper) {
       epaperUpdateInterrupt();
     }
-    Future<bool> loadconfig() async{
-      supportdir = isepaper ? "./" :(await getApplicationSupportDirectory()).path;
-      await Directory(p.join(supportdir,"configs")).create();
+    Future<bool> loadconfig() async {
+      supportdir =
+          isepaper ? "./" : (await getApplicationSupportDirectory()).path;
+      await Directory(p.join(supportdir, "configs")).create();
       //var directory = await Directory('./data/configs').create(recursive: true);
-      if( await File(p.join(supportdir,'config')).exists()){
-        debugPrint("Config found at ${p.join(supportdir,'config')}");
-      }else{
-        debugPrint("No Config found, writing new on to ${p.join(supportdir,'config')}");
-        await File(p.join(supportdir,'config')).writeAsString(jsonEncode(JsonConfig()));
+      if (await File(p.join(supportdir, 'config')).exists()) {
+        debugPrint("Config found at ${p.join(supportdir, 'config')}");
+      } else {
+        debugPrint(
+            "No Config found, writing new on to ${p.join(supportdir, 'config')}");
+        await File(p.join(supportdir, 'config'))
+            .writeAsString(jsonEncode(JsonConfig()));
       }
-      String tmpjsonstr=await File(p.join(supportdir,'config')).readAsString();
-      try{
-        jsonconfig=JsonConfig.fromJson(jsonDecode(tmpjsonstr));
-      }on FormatException{
+      String tmpjsonstr =
+          await File(p.join(supportdir, 'config')).readAsString();
+      try {
+        jsonconfig = JsonConfig.fromJson(jsonDecode(tmpjsonstr));
+      } on FormatException {
         debugPrint("ERROR: jsonconfig is corrupted, generating new one");
-        jsonconfig=JsonConfig();
-        File(p.join(supportdir,'config')).writeAsString(jsonEncode(jsonconfig));
+        jsonconfig = JsonConfig();
+        File(p.join(supportdir, 'config'))
+            .writeAsString(jsonEncode(jsonconfig));
       }
-      if(jsonconfig.defaultconfig==""){
-        debugPrint("no Widget tree config found, will use the default init as config");
-        SchedulerBinding.instance.scheduleFrameCallback((Duration duration){
+      if (jsonconfig.defaultconfig == "") {
+        debugPrint(
+            "no Widget tree config found, will use the default init as config");
+        SchedulerBinding.instance.scheduleFrameCallback((Duration duration) {
           //jsonsave=jsonEncode(mainscaffolding);
-          jsonsave=emptyjsonconfig;
+          jsonsave = emptyjsonconfig;
           jsonconfig.addconfig("defaultconfig", jsonsave);
-          jsonconfig.defaultconfig="defaultconfig";
-          File(p.join(supportdir,'config')).writeAsString(jsonEncode(jsonconfig));
+          jsonconfig.defaultconfig = "defaultconfig";
+          File(p.join(supportdir, 'config'))
+              .writeAsString(jsonEncode(jsonconfig));
           debugPrint("new jsonsave:$jsonsave");
         });
-      }else{
-        if(await File(p.join(supportdir,'configs',jsonconfig.defaultconfig)).exists()){
-          debugPrint("applyingconfig: ${p.join(supportdir,'configs',jsonconfig.defaultconfig)}");
-          jsonsave=await File(p.join(supportdir,'configs',jsonconfig.defaultconfig)).readAsString();
-          debugPrint("jsonsave:$jsonsave");          
-        }else{
+      } else {
+        if (await File(p.join(supportdir, 'configs', jsonconfig.defaultconfig))
+            .exists()) {
+          debugPrint(
+              "applyingconfig: ${p.join(supportdir, 'configs', jsonconfig.defaultconfig)}");
+          jsonsave = await File(
+                  p.join(supportdir, 'configs', jsonconfig.defaultconfig))
+              .readAsString();
+          debugPrint("jsonsave:$jsonsave");
+        } else {
           jsonconfig.configs.remove(jsonconfig.defaultconfig);
-          jsonconfig.defaultconfig="";
+          jsonconfig.defaultconfig = "";
         }
-        if(jsonDecode(jsonsave)==null){
-          debugPrint("Error: the json file is corrupted or the versions are not compatible");
-          await File(p.join(supportdir,'configs',jsonconfig.defaultconfig)).delete();
-          await File(p.join(supportdir,'config')).delete();
+        if (jsonDecode(jsonsave) == null) {
+          debugPrint(
+              "Error: the json file is corrupted or the versions are not compatible");
+          await File(p.join(supportdir, 'configs', jsonconfig.defaultconfig))
+              .delete();
+          await File(p.join(supportdir, 'config')).delete();
         }
-        maincontainers= jsonDecode(jsonsave)['subcontainers'];
-        scafffromjson=true;
+        maincontainers = jsonDecode(jsonsave)['subcontainers'];
+        scafffromjson = true;
       }
       //needs to be initialized at the point where settings is opened
-      return true; }
-    configisload= loadconfig();
-    if(isepaper){
-          updatescreen()async{
-          Future.delayed(const Duration(minutes: 5)).then((value)async {
-            setState(() {
+      return true;
+    }
+
+    configisload = loadconfig();
+    if (isepaper) {
+      updatescreen() async {
+        Future.delayed(const Duration(minutes: 5)).then((value) async {
+          setState(() {
             print("apply Config");
-              jsonsave=File('./configs/defaultconfig').readAsStringSync();
-              maincontainers=jsonDecode(jsonsave)['subcontainers'];
-              scafffromjson=true;
+            jsonsave = File('./configs/defaultconfig').readAsStringSync();
+            maincontainers = jsonDecode(jsonsave)['subcontainers'];
+            scafffromjson = true;
             File('config').writeAsString(jsonEncode(jsonconfig));
             updatescreen();
+          });
         });
-      });
       }
-      SchedulerBinding.instance.scheduleFrameCallback((Duration duration){updatescreen();});
+
+      SchedulerBinding.instance.scheduleFrameCallback((Duration duration) {
+        updatescreen();
+      });
     }
   }
 
-  String jsonsave="";
+  @override
+  String jsonsave = "";
   //Key is used for callbacks(scaffholding/callbacks.dart)
   //it mustn't change, as they are saved at various places in the Widget tree
-  //exception to this is if the whole widget tree is droped 
-  GlobalKey<ScaffoldingState> scaffholdingkey=GlobalKey();
-  GlobalKey<ScaffoldState> scaffoldkey=GlobalKey(); 
-  GlobalKey mainscreenkey=GlobalKey();
-  GlobalKey settingsscreenkey=GlobalKey();
+  //exception to this is if the whole widget tree is droped
+  GlobalKey<ScaffoldingState> scaffholdingkey = GlobalKey();
+  GlobalKey<ScaffoldState> scaffoldkey = GlobalKey();
+  GlobalKey mainscreenkey = GlobalKey();
+  GlobalKey settingsscreenkey = GlobalKey();
   Scaffolding? mainscaffolding;
-  bool scafffromjson=false;
-  bool firstbuild=true;
   @override
-  Widget build(BuildContext context) 
-  {
+  //controlls wether the next setState of MainScreen will be built from the Json config or a new Screen is used
+  bool scafffromjson = false;
+  bool firstbuild = true;
+  @override
+  Widget build(BuildContext context) {
     debugPrint("firstbuild:$firstbuild");
 
-  return MaterialApp(
-    home: MainScreen(
-    key:mainscreenkey,
-    appState: this),
-    routes: <String, WidgetBuilder> {
-      '/mainScreen': (BuildContext context) => MainScreen(
-        key:mainscreenkey,
-        appState: this),
-      '/settingsScreen': (BuildContext context) => SettingsScreen(
-    key:settingsscreenkey,
-    appState: this),
-    }
-  );
+    return MaterialApp(
+        home: MainScreen(key: mainscreenkey, appState: this),
+        routes: <String, WidgetBuilder>{
+          '/mainScreen': (BuildContext context) =>
+              MainScreen(key: mainscreenkey, appState: this),
+          '/settingsScreen': (BuildContext context) =>
+              SettingsScreen(key: settingsscreenkey, appState: this),
+        });
   }
 }

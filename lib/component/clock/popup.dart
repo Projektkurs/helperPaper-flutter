@@ -3,62 +3,353 @@
  * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
 import 'package:helperpaper/main_header.dart';
-import 'package:helperpaper/component/menu.dart';
 
-extension ClockPopup on ClockState
-{
-  //start declaration
-  //Popup get widget;
-  //bool get emptyVal;
-  //bool testVal=false;
-  //Componentenum components=Componentenum.defaultcase;
-  //dynamic handleOnPressed(int enable);
-  //void setState(VoidCallback fn);
-  //end declaration
-  popup()async {
-    bool darkmode=false;
-    bool digital=false;
-    await popupdialog(
-  Row(children:[ Clock( 
-        key:GlobalKey(),
-        //key:const Key("0"),
-        gconfig: widget.gconfig),
-        Expanded(flex: widget.gconfig.flex,child:
-        
-          ListView(
-          children:[
+class ClockPopup extends StatefulWidget {
+  final GeneralConfig gconfig;
+  final ClockConfig cconfig;
+  const ClockPopup({super.key, required this.gconfig, required this.cconfig});
+
+  @override
+  State<ClockPopup> createState() => _ClockPopupState();
+}
+
+class _ClockPopupState extends State<ClockPopup> {
+  /// current translationtable
+  var ctr = tr['pop_clk']!;
+  late final List<DropdownMenuItem<String>> _numberface =
+      [ctr['clockface1']!, ctr['clockface2']!, ctr['clockface3']!]
+          .map((dynamic e) => e.toString().split('.').last)
+          .toList()
+          .map((String e) => DropdownMenuItem<String>(
+                value: e,
+                child: Text(e),
+              ))
+          .toList();
+
+  /// lambda function cannot be used as they are compiled before getters are
+  late List<Widget Function(BuildContext context)> tabs;
+  bool blocknext = false;
+
+  Widget firstpage(BuildContext context) {
+    late List<Widget> configmenu;
+    if (widget.cconfig.isdigital == true) {
+      configmenu = [
+        Tooltip(
+            waitDuration: msgdur,
+            message: tr['generic']!['d_fontwidth']!,
+            child: ListTile(
+                leading: SizedBox(
+                    width: (Theme.of(context).textTheme.titleSmall!.fontSize ??
+                            16) *
+                        6,
+                    child: Text(tr['generic']!['fontwidth']!,
+                        style: Theme.of(context).textTheme.titleSmall)),
+                trailing: SizedBox(
+                    width: (Theme.of(context).textTheme.titleSmall!.fontSize ??
+                            16) *
+                        2.5,
+                    child: Text((widget.cconfig.fontweight.index.toString()))),
+                title: Slider(
+                    value: (widget.cconfig.fontweight.index).toDouble(),
+                    onChanged: (double value) {
+                      setState(() {
+                        widget.cconfig.fontweight =
+                            fontweights[value.round().toInt()];
+                      });
+                    },
+                    min: 0.0,
+                    max: 8.0))),
+      ];
+    } else {
+      List<Widget> clockhands = [
+        Tooltip(
+            waitDuration: msgdur,
+            message: ctr['d_hour_hand']!,
+            child: ListTile(
+              enabled: true,
+              leading: Text(ctr['hour_hand']!,
+                  style: Theme.of(context).textTheme.titleSmall),
+              //replace at some point with relative size
+              title: Icon(Icons.color_lens,
+                  color: widget.cconfig.hourColor, size: 45),
+              onTap: () {
+                colorDialog(context, widget.cconfig.hourColor, setState)
+                    .then((value) => setState(() {
+                          widget.cconfig.hourColor = value;
+                        }));
+              },
+            )),
+        Tooltip(
+            waitDuration: msgdur,
+            message: ctr['d_minute_hand']!,
+            child: ListTile(
+              enabled: true,
+              leading: Text(ctr['minute_hand']!,
+                  style: Theme.of(context).textTheme.titleSmall),
+              //replace at some point with relative size
+              title: Icon(Icons.color_lens,
+                  color: widget.cconfig.minuteColor, size: 45),
+              onTap: () {
+                colorDialog(context, widget.cconfig.minuteColor, setState)
+                    .then((value) => setState(() {
+                          widget.cconfig.minuteColor = value;
+                        }));
+              },
+            )),
+        Tooltip(
+            waitDuration: msgdur,
+            message: ctr['d_second_hand']!,
+            child: ListTile(
+              enabled: true,
+              leading: Text(ctr['second_hand']!,
+                  style: Theme.of(context).textTheme.titleSmall),
+              //replace at some point with relative size
+              title: Icon(Icons.color_lens,
+                  color: widget.cconfig.secondColor, size: 45),
+              onTap: () {
+                colorDialog(context, widget.cconfig.secondColor, setState)
+                    .then((value) => setState(() {
+                          widget.cconfig.secondColor = value;
+                        }));
+              },
+            )),
+      ];
+      configmenu = [
+        ExpansionTile(
+          title: Text(ctr['clockhands']!),
+          children: clockhands,
+          initiallyExpanded: true,
+        ),
+        ExpansionTile(
+          title: Text(ctr['buildin_digitalclock']!),
+          initiallyExpanded: true,
+          children: [
             ListTile(
-            leading: Text("digital",style: Theme.of(context).textTheme.titleMedium),
-            title:Switch(
-            onChanged: (bool value) {
-              setState(()  {digital = value;
-              if(digital && widget.gconfig.cconfig.runtimeType==ClockConfig){
-                widget.gconfig.cconfig=const ClockConfig.digital();
-              }else{
-                widget.gconfig.cconfig=const ClockConfig();
-              }
-              });
-            },
-            value: digital,
-          )
-            ),
-            ListTile(
-            leading: Text("darkmode",style: Theme.of(context).textTheme.titleMedium),
-            title:Switch(
-            onChanged: (bool value) {
-              setState(()  {darkmode = value;
-              if(darkmode && widget.gconfig.cconfig.runtimeType==ClockConfig){
-                widget.gconfig.cconfig=const ClockConfig.dark();
-              }else{
-                widget.gconfig.cconfig=const ClockConfig();
-              }
-              });
-            },
-            value: darkmode,
-          )
-            ),
-            componentTile(widget.gconfig,context,setState)]))])
+                leading: SizedBox(
+                    width: (Theme.of(context).textTheme.titleSmall!.fontSize ??
+                            16) *
+                        6,
+                    child: Text(tr['generic']!['fontsize']!,
+                        style: Theme.of(context).textTheme.titleSmall)),
+                trailing: SizedBox(
+                    width: (Theme.of(context).textTheme.titleSmall!.fontSize ??
+                            16) *
+                        2.5,
+                    child: Text(
+                        (widget.cconfig.textScaleFactor.toStringAsFixed(2)))),
+                title: Slider(
+                    value: (widget.cconfig.textScaleFactor).toDouble(),
+                    onChanged: (double value) {
+                      setState(() {
+                        widget.cconfig.textScaleFactor = value;
+                      });
+                    },
+                    min: 0.4,
+                    max: 3.0)),
+            Row(
+              children: [
+                Expanded(
+                    flex: 1,
+                    child: ListTile(
+                        leading: Text(tr['generic']!['active']!),
+                        title: Switch(
+                            value: widget.cconfig.showDigitalClock,
+                            onChanged: (val) => setState(() {
+                                  widget.cconfig.showDigitalClock = val;
+                                })))),
+                Expanded(
+                    flex: 1,
+                    child: ListTile(
+                        leading: Text(tr['generic']!['color']!),
+                        title: GestureDetector(
+                            child: Icon(Icons.color_lens,
+                                color: widget.cconfig.digitalClockColor,
+                                size: 45),
+                            onTap: () {
+                              colorDialog(
+                                      context,
+                                      widget.cconfig.digitalClockColor,
+                                      setState)
+                                  .then((value) => setState(() {
+                                        widget.cconfig.digitalClockColor =
+                                            value;
+                                      }));
+                            }))),
+              ],
+            )
+          ],
+        ),
+        ExpansionTile(
+            title: Text(ctr['clockface']!),
+            initiallyExpanded: true,
+            children: [
+              ListTile(
+                  leading: Text(ctr["hands_numbers"]!,
+                      style: Theme.of(context).textTheme.titleSmall),
+                  title: DropdownButton<String>(
+                      value: _numberface[!widget.cconfig.showNumbers
+                              ? 0
+                              : widget.cconfig.showAllNumbers
+                                  ? 2
+                                  : 1]
+                          .value,
+                      items: _numberface,
+                      onChanged: (e) {
+                        setState(() {
+                          if (e == _numberface[0].value) {
+                            widget.cconfig.showNumbers = false;
+                          } else {
+                            widget.cconfig.showNumbers = true;
+                            if (e == _numberface[1].value) {
+                              widget.cconfig.showAllNumbers = false;
+                            } else {
+                              widget.cconfig.showAllNumbers = true;
+                            }
+                          }
+                        });
+                      })),
+              ListTile(
+                  leading: Text(tr['generic']!['color']!),
+                  title: GestureDetector(
+                      child: Icon(Icons.color_lens,
+                          color: widget.cconfig.numberColor, size: 45),
+                      onTap: () {
+                        colorDialog(
+                                context, widget.cconfig.numberColor, setState)
+                            .then((value) => setState(() {
+                                  widget.cconfig.numberColor = value;
+                                }));
+                      }))
+            ])
+      ];
+    }
+    return Row(
+      children: [
+        Clock(
+          key: UniqueKey(),
+          gconfig: widget.gconfig,
+          cconfig: widget.cconfig,
+        ),
+        Expanded(
+            flex: widget.gconfig.flex,
+            child: Container(
+                margin: EdgeInsets.all(8),
+                child: ListView(children: [
+                  Row(
+                    children: [
+                      Expanded(
+                          flex: 1,
+                          child: SelectableRadio<bool>(
+                              value: false,
+                              groupvalue: widget.cconfig.isdigital,
+                              onPressed: () => setState(() {
+                                    widget.cconfig.isdigital = false;
+                                  }),
+                              text: 'analog')),
+                      Expanded(
+                          flex: 1,
+                          child: SelectableRadio<bool>(
+                              value: true,
+                              groupvalue: widget.cconfig.isdigital,
+                              onPressed: () => setState(() {
+                                    widget.cconfig.isdigital = true;
+                                  }),
+                              text: 'digital')),
+                    ],
+                  ),
+                  ...configmenu
+                ])))
+      ],
     );
-    setState(() {});
+  }
+
+  int step = 0;
+  Widget secondpage(BuildContext context) {
+    switch (step) {
+      case 1:
+        return Container();
+      default:
+        return const SizedBox.expand();
+    }
+    ;
+  }
+
+  late GeneralConfig oldgconfig;
+  late ClockConfig oldcconfig;
+  @override
+  void initState() {
+    oldgconfig = GeneralConfig(1);
+    oldgconfig.copyFrom(widget.gconfig);
+    oldcconfig = ClockConfig();
+    oldcconfig.copyFrom(widget.cconfig);
+    tabs = [firstpage, secondpage];
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    //pregenerate widget as blocknext is dependent on it being generated
+    Widget tab = tabs[step](context);
+    List<Widget> indicatorbar = [];
+    for (int i = 0; i <= tabs.length - 1; i++) {
+      indicatorbar.add(Expanded(
+          flex: 1,
+          child: Container(
+            margin: EdgeInsets.only(
+                left: i == 0 ? 30 : 3,
+                right: i == tabs.length - 1 ? 30 : 3,
+                bottom: 2),
+            decoration: BoxDecoration(
+                color: i <= step ? Colors.blue : Colors.grey,
+                borderRadius: const BorderRadius.all(Radius.circular(5))),
+            height: 20,
+          )));
+    }
+    return Defaultdialog(
+        applybutton: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            alignment: Alignment.center,
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width * .006),
+            backgroundColor: blocknext == true
+                ? Colors.grey
+                : const Color.fromARGB(255, 101, 184, 90),
+          ),
+          onPressed: () => step == tabs.length - 1
+              ? Navigator.pop(context)
+              : setState(() {
+                  step++;
+                }),
+          child: Text(step == tabs.length - 1 ? 'Apply' : 'Next',
+              style: TextStyle(
+                  fontSize:
+                      Theme.of(context).textTheme.headlineMedium!.fontSize!)),
+        ),
+        child: Scaffold(
+          floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+          floatingActionButton: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              alignment: Alignment.center,
+              padding: EdgeInsets.all(MediaQuery.of(context).size.width * .006),
+              backgroundColor: step == 0
+                  ? const Color.fromARGB(255, 184, 90, 90)
+                  : const Color.fromARGB(255, 184, 183, 90),
+            ),
+            onPressed: () => step == 0
+                ? () {
+                    widget.gconfig.copyFrom(oldgconfig);
+                    widget.cconfig.copyFrom(oldcconfig);
+                    Navigator.pop(context);
+                  }()
+                : setState(() {
+                    step--;
+                  }),
+            child: Text(step == 0 ? 'Cancle' : 'Previous',
+                style: TextStyle(
+                    fontSize:
+                        Theme.of(context).textTheme.headlineMedium!.fontSize!)),
+          ),
+          body: Column(
+              children: [Expanded(child: tab), Row(children: indicatorbar)]),
+        ));
   }
 }

@@ -5,22 +5,21 @@
 
 import 'package:helperpaper/main_header.dart';
 
-class EmptyComponentConfig
-{
-  int width=0;
-  int height=0;
-  late Component replacement;
-  bool apply=false;
+class EmptyComponentConfig {
+  int width = 0;
+  int height = 0;
+  Component? replacement;
+  bool apply = false;
   Function? replace;
   late Key key;
   EmptyComponentConfig();
 
-  Map<String,dynamic> toJson() => {
-    'width':width,
-    'height':height,
-  };
+  Map<String, dynamic> toJson() => {
+        'width': width,
+        'height': height,
+      };
 
-  EmptyComponentConfig.fromJson(Map<String,dynamic> json)
-  : width=json['width'],
-    height=json['height'];
+  EmptyComponentConfig.fromJson(Map<String, dynamic> json)
+      : width = json['width'],
+        height = json['height'];
 }

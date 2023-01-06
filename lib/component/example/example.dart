@@ -5,17 +5,18 @@
 
 import 'package:helperpaper/main_header.dart';
 
-class ExampleComponent extends Component 
+/*class ExampleComponent extends Component 
 {
   
   @override
   ExampleComponent(
     {required Key key,
     required GeneralConfig gconfig,
+    required 
     required this.resizeWidget,
     required configMenu,
     })
-    : super(key: key,gconfig:gconfig);
+    : super(key: key,gconfig:gconfig, cconfig:cconfig);
 
   final Function resizeWidget;
   @override
@@ -37,3 +38,4 @@ class ExampleComponentState extends ComponentState<ExampleComponent>
     );
   }
 }
+*/

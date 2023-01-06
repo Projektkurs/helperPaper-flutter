@@ -3,9 +3,10 @@
  * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
 
-import 'package:helperpaper/component/componentconfig.dart';
+import 'package:helperpaper/component/scaffholding/config.dart';
 import 'package:helperpaper/main_header.dart';
 import 'package:helperpaper/component/menu.dart';
+import 'package:progress_stepper/progress_stepper.dart';
 
 class EmptyPopup extends StatefulWidget {
   final GeneralConfig gconfig;
@@ -18,13 +19,28 @@ class EmptyPopup extends StatefulWidget {
 
 class EmptyPopupRef {
   Componentenum components = Componentenum.defaultcase;
+  Widget? replacement;
   int scaffoldingchilds = 2;
   EmptyPopupRef();
 }
 
 class _EmptyPopupState extends State<EmptyPopup> {
-  @override
-  Widget build(BuildContext context) {
+  //lambda function cannot be used as they are compiled before getters are
+  late List<Widget Function(BuildContext context)> tabs;
+  bool blocknext = false;
+
+  Widget firstpage(BuildContext context) {
+    blocknext = widget.popupref.components == Componentenum.defaultcase;
+    void setenum(Componentenum val) {
+      setState(() {
+        if (val == widget.popupref.components) {
+          widget.popupref.components = Componentenum.defaultcase;
+        } else {
+          widget.popupref.components = val;
+        }
+      });
+    }
+
     return Row(children: [
       const Spacer(flex: 1),
       Expanded(
@@ -58,9 +74,7 @@ class _EmptyPopupState extends State<EmptyPopup> {
                 value: Componentenum.horizontal,
                 groupvalue: widget.popupref.components,
                 onPressed: () {
-                  setState(() {
-                    widget.popupref.components = Componentenum.horizontal;
-                  });
+                  setenum(Componentenum.horizontal);
                 },
                 text: 'Column',
                 leading: const Icon(Icons.view_column_rounded)),
@@ -68,9 +82,7 @@ class _EmptyPopupState extends State<EmptyPopup> {
                 value: Componentenum.vertical,
                 groupvalue: widget.popupref.components,
                 onPressed: () {
-                  setState(() {
-                    widget.popupref.components = Componentenum.vertical;
-                  });
+                  setenum(Componentenum.vertical);
                 },
                 text: 'Row',
                 leading: const Icon(Icons.table_rows)),
@@ -78,9 +90,7 @@ class _EmptyPopupState extends State<EmptyPopup> {
               value: Componentenum.clock,
               groupvalue: widget.popupref.components,
               onPressed: () {
-                setState(() {
-                  widget.popupref.components = Componentenum.clock;
-                });
+                setenum(Componentenum.clock);
               },
               text: 'Clock',
               leading: const Icon(Icons.query_builder),
@@ -89,153 +99,101 @@ class _EmptyPopupState extends State<EmptyPopup> {
               value: Componentenum.vertretungsplan,
               groupvalue: widget.popupref.components,
               onPressed: () {
-                setState(() {
-                  widget.popupref.components = Componentenum.vertretungsplan;
-                });
+                setenum(Componentenum.vertretungsplan);
               },
               text: 'Vertretungsplan',
               leading: const Icon(Icons.query_builder),
             ),
-            componentTile(widget.gconfig, context, setState)
+            //componentTile(widget.gconfig, context, setState)
           ]) //end Component Radio
           ),
       const Spacer(flex: 1)
     ]);
   }
-}
-/*extension Popup on EmptyState
-{
-  //start declaration
-  //Popup get widget;
-  //bool get emptyVal;
-  //bool testVal = false;
-  //Componentenum components = Componentenum.defaultcase;
-  //dynamic handleOnPressed(int enable);
-  //void setState(VoidCallback fn);
-  //end declaration
-  //int scaffoldingchilds=2;
-  @override
-  popup()async {
-    print("openmenu");
-    Componentenum components = Componentenum.defaultcase;
-    int scaffoldingchilds=2;
-    await popupdialog(context, setState,
-    Row(children: [
-      const Spacer(flex: 1),
-      Expanded(
-          //start Component Radio
-          flex: 10,
-          child: ListView(children: [
-                    ListTile(
-          leading:SizedBox(
-            width: (Theme.of(context).textTheme.titleMedium!.fontSize ?? 16 )*4,
-            child:Text("Width",style: Theme.of(context).textTheme.titleMedium)
-          ),
-          trailing: SizedBox(
-            width: (Theme.of(context).textTheme.titleMedium!.fontSize ?? 16 )*2.5,
-            child: Text((scaffoldingchilds).toStringAsFixed(0))),
-            title: Slider(value: scaffoldingchilds.toDouble() , onChanged: (double value){setState((){scaffoldingchilds=value.round().toInt();});},
-            min:2,
-            max:8)
-            ),
-            SelectableRadio<Componentenum>(
-                value: Componentenum.horizontal,
-                groupvalue: components,
-                onPressed: () {
-                  setState(() {
-                    components = Componentenum.horizontal;
-                  });
-                },
-                text: 'Column',
-                leading: const Icon(Icons.view_column_rounded)),
-            SelectableRadio<Componentenum>(
-                value: Componentenum.vertical,
-                groupvalue: components,
-                onPressed: () {
-                  setState(() {
-                    components = Componentenum.vertical;
-                  });
-                },
-                text: 'Row',
-                leading: const Icon(Icons.table_rows)),
-            SelectableRadio<Componentenum>(
-              value: Componentenum.clock,
-              groupvalue: components,
-              onPressed: () {
-                setState(() {
-                  components = Componentenum.clock;
-                });
-              },
-              text: 'Clock',
-              leading: const Icon(Icons.query_builder),
-            ),
-            SelectableRadio<Componentenum>(
-              value: Componentenum.vertretungsplan,
-              groupvalue: components,
-              onPressed: () {
-                setState(() {
-                  components = Componentenum.vertretungsplan;
-                });
-              },
-              text: 'Vertretungsplan',
-              leading: const Icon(Icons.query_builder),
-            ),
-            componentTile(widget.gconfig,context,setState)
-          ]) //end Component Radio
-          ),
-      const Spacer(flex: 1)
-    ]));
-    callback() {
-    switch (components) {
-      case Componentenum.horizontal:
-        widget.gconfig.cconfig.replacement =
-            Scaffolding(
-                key: widget.gconfig.cconfig.key,
-                direction: true,
-                showlines: false,
-                subcontainers: 2,
-                gconfig: GeneralConfig(
-                    widget.gconfig.flex, ScaffoldingConfig()));
-        widget.gconfig.cconfig.apply = true;
-        widget.gconfig.cconfig.replace!();
-        break;
-      case Componentenum.vertical:
-        widget.gconfig.cconfig.replacement =
-            Scaffolding(
-                key: widget.gconfig.cconfig.key,
-                direction: false,
-                showlines: false,
-                subcontainers: scaffoldingchilds,
-                gconfig: GeneralConfig(
-                    widget.gconfig.flex, ScaffoldingConfig()));
-        widget.gconfig.cconfig.apply = true;
-        widget.gconfig.cconfig.replace!();
-        break;
-      case Componentenum.clock:
-        widget.gconfig.cconfig.replacement = Clock(
-            key: (widget.gconfig.cconfig as EmptyComponentConfig).key,
-            gconfig: GeneralConfig(
-                widget.gconfig.flex, const ClockConfig()));
-        (widget.gconfig.cconfig as EmptyComponentConfig).apply = true;
-        (widget.gconfig.cconfig as EmptyComponentConfig).replace!();
-        break;
-      case Componentenum.vertretungsplan:
-        widget.gconfig.cconfig.replacement =
-            Vertretungsplan(
-                key: (widget.gconfig.cconfig as EmptyComponentConfig)
-                    .key,
-                gconfig: GeneralConfig(
-                    widget.gconfig.flex, VertretungsplanConfig("007")));
-        (widget.gconfig.cconfig as EmptyComponentConfig).apply = true;
-        (widget.gconfig.cconfig as EmptyComponentConfig).replace!();
-        break;
-      default:
-        break;
-    }
-    components=Componentenum.defaultcase;
-    setState(() {});
-  }
-}
 
+  int step = 0;
+  Widget secondpage(BuildContext context) {
+    switch (step) {
+      case 1:
+        return Container();
+      default:
+        return const SizedBox.expand();
+    }
+    ;
   }
-*/
+
+  @override
+  void initState() {
+    tabs = [firstpage, secondpage, secondpage];
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    //pregenerate widget as blocknext is dependent on it being generated
+    Widget tab = tabs[step](context);
+    List<Widget> indicatorbar = [];
+    for (int i = 0; i <= tabs.length - 1; i++) {
+      indicatorbar.add(Expanded(
+          flex: 1,
+          child: Container(
+            margin: EdgeInsets.only(
+                left: i == 0 ? 30 : 3,
+                right: i == tabs.length - 1 ? 30 : 3,
+                bottom: 2),
+            decoration: BoxDecoration(
+                color: i <= step ? Colors.blue : Colors.grey,
+                borderRadius: const BorderRadius.all(Radius.circular(5))),
+            height: 20,
+          )));
+    }
+
+    return Defaultdialog(
+        applybutton: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            alignment: Alignment.center,
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width * .006),
+            backgroundColor: blocknext == true
+                ? Colors.grey
+                : const Color.fromARGB(255, 101, 184, 90),
+          ),
+          onPressed: () => blocknext == true
+              ? null
+              : step == tabs.length - 1
+                  ? Navigator.pop(context)
+                  : setState(() {
+                      step++;
+                    }),
+          child: Text(step == tabs.length - 1 ? 'Apply' : 'Next',
+              style: TextStyle(
+                  fontSize:
+                      Theme.of(context).textTheme.headlineLarge!.fontSize!)),
+        ),
+        child: Scaffold(
+          floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+          floatingActionButton: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              alignment: Alignment.center,
+              padding: EdgeInsets.all(MediaQuery.of(context).size.width * .006),
+              backgroundColor: step == 0
+                  ? const Color.fromARGB(255, 184, 90, 90)
+                  : const Color.fromARGB(255, 184, 183, 90),
+            ),
+            onPressed: () => step == 0
+                ? () {
+                    widget.popupref.replacement = null;
+                    Navigator.pop(context);
+                  }()
+                : setState(() {
+                    step--;
+                  }),
+            child: Text(step == 0 ? 'Cancle' : 'Previous',
+                style: TextStyle(
+                    fontSize:
+                        Theme.of(context).textTheme.headlineLarge!.fontSize!)),
+          ),
+          body: Column(
+              children: [Expanded(child: tab), Row(children: indicatorbar)]),
+        ));
+  }
+}
