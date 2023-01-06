@@ -1,9 +1,7 @@
-//import "package:helperpaper/main_header.dart";
 import "package:http/http.dart" as http;
-//import "package:helperpaper/main_header.dart";
-import "dart:convert";
+import "package:helperpaper/main_header.dart";
+import "package:path/path.dart";
 import "package:xml/xml.dart";
-import '../../main_header.dart';
 
 const MAXHOURSPERDAY = 7;
 
@@ -14,16 +12,20 @@ class Plan {
   Plan(this.lessons, this.days, this.freedates);
 
   static Future<Plan> newplan(String room) async {
-    List<XmlDay> days = [(await XmlDay.async(null))!];
-    List<List<Lesson?>> lessons = [];
+    //the startday is eventually not be a schoolday
+    XmlDay startday = (await XmlDay.async(null))!;
     //get all free days
     List<String> freedaysStrings = [];
-    days[0].xml.findAllElements("ft").forEach((node) {
+    startday.xml.findAllElements("ft").forEach((node) {
       freedaysStrings.add(node.text);
     });
     var freedates = freedays(freedaysStrings);
-    DateTime currentday = days[0].date;
-    for (int i = 0; i < 4; i++) {
+
+    List<XmlDay> days = [];
+    List<List<Lesson?>> lessons = [];
+
+    DateTime currentday = startday.date.subtract(const Duration(days: 1));
+    for (int i = 0; i <= 4; i++) {
       currentday =
           nextday(currentday, freedates)!; //the next times needs to exist
       XmlDay? tmpday = await XmlDay.async(currentday);
@@ -73,16 +75,19 @@ class XmlDay {
   XmlDay(this.xml, this.date);
 
   static Future<XmlDay?> async(DateTime? date) async {
-    date ??= trim(DateTime.now());
+    //date ??= trim(DateTime.now());
     //vpmobil needs day and month to have two digits; eg. January, 4th -> 01.04
     String pad(int date) => date < 10 ? "0$date" : date.toString();
 
-    String xmlname = "PlanKl${date.year}${pad(date.month)}${pad(date.day)}.xml";
+    String xmlname = date == null
+        ? "Klassen.xml"
+        : "PlanKl${date.year}${pad(date.month)}${pad(date.day)}.xml";
+    debugPrint("Xmlname:$xmlname");
     http.Response? plan;
     try {
       plan = await http.get(
-          Uri.https(
-              "www.stundenplan24.de", "/52002736/mobil/mobdaten/$xmlname"),
+          Uri.https("z2.stundenplan24.de",
+              "/schulen/52002736/mobil/mobdaten/$xmlname"),
           headers: {
             'authorization':
                 "Basic ${base64Encode(utf8.encode('${jsonconfig.vpuser}:${jsonconfig.vppasswd}'))}"
@@ -90,8 +95,12 @@ class XmlDay {
     } catch (_) {
       return null;
     }
-    //debugPrint(plan.body);
-    return XmlDay(XmlDocument.parse(plan.body), date);
+    try {
+      return XmlDay(XmlDocument.parse(plan.body), date ?? trim(DateTime.now()));
+    } catch (_) {
+      debugPrint("Xml Parser failed");
+      return null;
+    }
   }
 }
 
@@ -110,6 +119,7 @@ Future<List<Lesson?>> roomallocation(XmlDay plan, String room) async {
   for (int i = 0; i < MAXHOURSPERDAY; i++) {
     lessons.add(null);
   }
+  //print("test")
   for (var node in filteredrooms) {
     lessons[int.parse(node.getElement("St")!.text.toString()) - 1] =
         Lesson.fromxmlnode(node);
@@ -137,10 +147,15 @@ DateTime? nextday(DateTime currentday, List<DateTime> freedates) {
   for (int i = 0; i < 60; i++) {
     currentday = currentday.add(const Duration(days: 1));
     if (currentday.weekday == DateTime.sunday ||
-        currentday.weekday == DateTime.saturday ||
-        freedates.contains(currentday)) {
+        currentday.weekday == DateTime.saturday) {
+      //print("wochenende");
       continue;
     }
+    if (freedates.contains(currentday)) {
+      //print("freier Tag");
+      continue;
+    }
+    //print(currentday);
     return currentday;
   }
 }

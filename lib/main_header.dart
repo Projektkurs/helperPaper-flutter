@@ -20,26 +20,31 @@ export 'main.dart';
 export 'config.dart';
 // popups
 export 'component/menuoptions.dart';
-// popups::configmenus
-export 'component/empty/popup.dart';
-export 'component/clock/popup.dart';
 export 'component/menu.dart';
+export 'component/popup.dart';
 
 // component
 export 'component/component.dart';
 export 'component/typedec.dart';
 export 'component/generalconfig.dart';
-// component::components
-export 'component/clock/component.dart';
-export 'component/example/example.dart';
-export 'component/empty/component.dart';
-export 'component/vertretungsplan/component.dart';
-// component::configs
-export 'component/clock/config.dart';
-export 'component/empty/config.dart';
-export 'component/vertretungsplan/config.dart';
+// component::clock
+export 'components/clock/component.dart';
+export 'components/clock/config.dart';
+export 'components/clock/popup.dart';
+// component::empty
+export 'components/empty/component.dart';
+export 'components/empty/config.dart';
+export 'components/empty/popup.dart';
+// component::example
+export 'components/example/component.dart';
+export 'components/example/config.dart';
+export 'components/example/popup.dart';
+// component::vertretungsplan
+export 'components/vertretungsplan/component.dart';
+export 'components/vertretungsplan/config.dart';
+export 'components/vertretungsplan/popup.dart';
 // component::scaffolding
-export 'component/scaffholding/scaffolding.dart';
+export 'components/scaffholding/scaffolding.dart';
 
 // =true if it runs on epaper
 const bool isepaper = bool.fromEnvironment("isepaper");

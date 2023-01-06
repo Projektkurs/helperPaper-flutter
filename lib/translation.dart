@@ -46,7 +46,7 @@ Map<String, Map<String, String>> get _de_DE => {
         'd_minute_hand': 'setzt die Farbe des Minutenzeigers der Analogen Uhr',
         'second_hand': 'Sekundenzeiger',
         'd_second_hand': 'setzt die Farbe des Sekundenzeigers der Analogen Uhr',
-        'border': 'Umrandung', //enable, width,color,
+        'border': 'Umrandung',
         'buildin_digitalclock': 'eingebaute Digitaluhr',
         'digitalclock': 'Digitaluhr:',
         'hands_numbers': 'Ziffern',

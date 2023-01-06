@@ -3,7 +3,7 @@
  * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
 
-import 'package:helperpaper/component/scaffholding/config.dart';
+import 'package:helperpaper/components/scaffholding/config.dart';
 import 'package:helperpaper/main_header.dart';
 import 'package:helperpaper/component/menu.dart';
 import 'package:progress_stepper/progress_stepper.dart';
@@ -104,6 +104,14 @@ class _EmptyPopupState extends State<EmptyPopup> {
               text: 'Vertretungsplan',
               leading: const Icon(Icons.query_builder),
             ),
+            SelectableRadio<Componentenum>(
+                value: Componentenum.example,
+                groupvalue: widget.popupref.components,
+                onPressed: () {
+                  setenum(Componentenum.example);
+                },
+                text: 'Column',
+                leading: const Icon(Icons.view_column_rounded)),
             //componentTile(widget.gconfig, context, setState)
           ]) //end Component Radio
           ),

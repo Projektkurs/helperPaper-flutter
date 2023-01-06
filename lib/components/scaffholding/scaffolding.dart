@@ -3,7 +3,7 @@
  * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
 
-import 'package:helperpaper/component/scaffholding/config.dart';
+import 'package:helperpaper/components/scaffholding/config.dart';
 import 'package:helperpaper/main_header.dart';
 
 import 'callbacks.dart';

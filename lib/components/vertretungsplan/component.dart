@@ -1,5 +1,5 @@
 import 'package:helperpaper/main_header.dart';
-import 'package:helperpaper/component/vertretungsplan/vpmobil.dart' as vp;
+import 'package:helperpaper/components/vertretungsplan/vpmobil.dart' as vp;
 
 class Vertretungsplan extends Component {
   @override
@@ -28,6 +28,7 @@ class Vertretungsplan extends Component {
 
 class VertretungsplanState extends ComponentState<Vertretungsplan> {
   popup() {}
+  DateTime? lastupdate;
   vp.Plan? vplan;
   @override
   void initState() {
@@ -35,6 +36,7 @@ class VertretungsplanState extends ComponentState<Vertretungsplan> {
 
     //does this create a call stack overflow?
     updateplan() async {
+      lastupdate = DateTime.now();
       vplan = await vp.Plan.newplan(widget.cconfig.raum);
       if (widget.built) {
         if (this.mounted) {
@@ -109,6 +111,9 @@ class VertretungsplanState extends ComponentState<Vertretungsplan> {
     }
     List<Widget> firstrow = [Text("")];
     for (int i = 0; i < 5; i++) {
+      if (i == vplan!.days.length) {
+        break;
+      }
       firstrow.add(Text(
         getday(vplan!.days[i].date),
         textScaleFactor: 1.5,
@@ -138,11 +143,23 @@ class VertretungsplanState extends ComponentState<Vertretungsplan> {
     return componentbuild(Column(children: <Widget>[
       Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Text(
-          "Belegungsplan ${widget.cconfig.raum}",
-          textScaleFactor: 2,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
+        child: Row(children: [
+          Expanded(
+              child: Text(
+            "Belegungsplan ${widget.cconfig.raum}",
+            textScaleFactor: 2,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          )),
+          Expanded(
+              child: Container(
+                  alignment: Alignment.topRight,
+                  child: Text(
+                    lastupdate == null
+                        ? ""
+                        : "letztes Update:${lastupdate!.day}.${lastupdate!.day}",
+                    textScaleFactor: 1.3,
+                  )))
+        ]),
       ),
       Padding(
         padding: const EdgeInsets.all(8.0),

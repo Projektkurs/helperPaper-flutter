@@ -2,8 +2,8 @@
  *
  * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
-import 'package:helperpaper/component/scaffholding/config.dart';
-import 'package:helperpaper/component/vertretungsplan/component.dart';
+import 'package:helperpaper/components/scaffholding/config.dart';
+import 'package:helperpaper/components/vertretungsplan/component.dart';
 import 'package:helperpaper/main_header.dart';
 
 enum Componentenum {
@@ -12,6 +12,7 @@ enum Componentenum {
   clock,
   defaultcase,
   empty,
+  example,
   vertretungsplan
 }
 
@@ -28,22 +29,14 @@ Type stringtoType(String type) {
   switch (type) {
     case ("Scaffolding"):
       return Scaffolding;
-    case ("ScaffoldingConfig"):
-      return ScaffoldingConfig;
     case ("Empty"):
       return Empty;
-    case ("EmptyComponentConfig"):
-      return EmptyComponentConfig;
     case ("Clock"):
       return Clock;
-    case ("ClockConfig"):
-      return ClockConfig;
-    //case ("ExampleComponent"):
-    //  return ExampleComponent;
+    case ("Example"):
+      return Example;
     case ("Vertretungsplan"):
       return Vertretungsplan;
-    case ("VertretungsplanConfig"):
-      return VertretungsplanConfig;
     default:
       return Component;
   }
@@ -61,6 +54,8 @@ Component? jsontoComp(Map<String, dynamic> json, Function resizeWidget,
       return Clock.fromJson(json);
     case (Vertretungsplan):
       return Vertretungsplan.fromJson(json);
+    case (Example):
+      return Example.fromJson(json);
     //case("ExampleComponent"):return ExampleComponent;
     default:
       debugPrint("Warning: jsontoComp from Scaffolding returned null");

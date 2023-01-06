@@ -2,7 +2,7 @@
  *
  * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
-import 'package:helperpaper/component/scaffholding/config.dart';
+import 'package:helperpaper/components/scaffholding/config.dart';
 import 'package:helperpaper/main_header.dart';
 
 class Empty extends Component {
@@ -75,6 +75,14 @@ class EmptyState extends ComponentState<Empty> {
             key: (widget.cconfig as EmptyComponentConfig).key,
             gconfig: GeneralConfig(widget.gconfig.flex),
             cconfig: VertretungsplanConfig("007"));
+        (widget.cconfig as EmptyComponentConfig).apply = true;
+        (widget.cconfig as EmptyComponentConfig).replace!();
+        break;
+      case Componentenum.example:
+        widget.cconfig.replacement = Example(
+            key: (widget.cconfig as EmptyComponentConfig).key,
+            gconfig: GeneralConfig(widget.gconfig.flex),
+            cconfig: ExampleConfig());
         (widget.cconfig as EmptyComponentConfig).apply = true;
         (widget.cconfig as EmptyComponentConfig).replace!();
         break;
