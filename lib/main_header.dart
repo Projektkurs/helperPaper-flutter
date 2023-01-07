@@ -39,6 +39,10 @@ export 'components/empty/popup.dart';
 export 'components/example/component.dart';
 export 'components/example/config.dart';
 export 'components/example/popup.dart';
+// component::note
+export 'components/note/component.dart';
+export 'components/note/config.dart';
+export 'components/note/popup.dart';
 // component::vertretungsplan
 export 'components/vertretungsplan/component.dart';
 export 'components/vertretungsplan/config.dart';

@@ -36,11 +36,11 @@ class Scaffolding extends Component {
     };
     if (state.childs.isNotEmpty) {
       for (int i = 0; i < (state.childs.length + 1) / 2; i++) {
-        debugPrint("encode Childs");
+        //debugPrint("encode Childs");
         retval["Child$i"] = state.childs[i * 2];
       }
     }
-    debugPrint("return");
+    //debugPrint("return");
     return retval;
   }
 

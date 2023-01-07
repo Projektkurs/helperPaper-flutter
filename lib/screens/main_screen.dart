@@ -112,16 +112,22 @@ class _MainScreenState extends State<MainScreen> {
                     title: const Text('save'),
                     onTap: () {
                       widget.appState.jsonsave = jsonEncode(mainscaffolding);
-                      debugPrint(widget.appState.jsonsave);
+                      debugPrint("New Jsonsave: ${widget.appState.jsonsave}");
                       jsonconfig.updateconfig(
                           jsonconfig.defaultconfig, widget.appState.jsonsave);
-                      post(
-                          Uri(
-                              scheme: 'http',
-                              host: jsonconfig.epaperIP,
-                              path: '/config',
-                              port: jsonconfig.epaperPort),
-                          body: widget.appState.jsonsave);
+                      () async {
+                        try {
+                          var _ = await post(
+                              Uri(
+                                  scheme: 'http',
+                                  host: jsonconfig.epaperIP,
+                                  path: '/config',
+                                  port: jsonconfig.epaperPort),
+                              body: widget.appState.jsonsave);
+                        } catch (_) {
+                          debugPrint("WARNING: no epaper connected");
+                        }
+                      }();
                     }),
                 ListTile(
                     leading: const Icon(Icons.file_download),
@@ -140,7 +146,6 @@ class _MainScreenState extends State<MainScreen> {
                     onTap: () {
                       setState(() {
                         widget.appState.jsonsave = emptyjsonconfig;
-                        debugPrint(widget.appState.jsonsave);
                         jsonconfig.updateconfig(
                             jsonconfig.defaultconfig, widget.appState.jsonsave);
                         post(

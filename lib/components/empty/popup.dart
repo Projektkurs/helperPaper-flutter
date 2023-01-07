@@ -96,6 +96,15 @@ class _EmptyPopupState extends State<EmptyPopup> {
               leading: const Icon(Icons.query_builder),
             ),
             SelectableRadio<Componentenum>(
+              value: Componentenum.note,
+              groupvalue: widget.popupref.components,
+              onPressed: () {
+                setenum(Componentenum.note);
+              },
+              text: 'Note',
+              leading: const Icon(Icons.query_builder),
+            ),
+            SelectableRadio<Componentenum>(
               value: Componentenum.vertretungsplan,
               groupvalue: widget.popupref.components,
               onPressed: () {

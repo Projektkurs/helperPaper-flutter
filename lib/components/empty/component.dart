@@ -70,6 +70,15 @@ class EmptyState extends ComponentState<Empty> {
         (widget.cconfig as EmptyComponentConfig).apply = true;
         (widget.cconfig as EmptyComponentConfig).replace!();
         break;
+      case Componentenum.note:
+        widget.cconfig.replacement = Note(
+          key: (widget.cconfig as EmptyComponentConfig).key,
+          gconfig: GeneralConfig(widget.gconfig.flex),
+          cconfig: NoteConfig(),
+        );
+        (widget.cconfig as EmptyComponentConfig).apply = true;
+        (widget.cconfig as EmptyComponentConfig).replace!();
+        break;
       case Componentenum.vertretungsplan:
         widget.cconfig.replacement = Vertretungsplan(
             key: (widget.cconfig as EmptyComponentConfig).key,
