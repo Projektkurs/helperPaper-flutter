@@ -77,21 +77,13 @@ class ClockState extends ComponentState<Clock> {
     now = DateTime.now();
     String time = "${pad(now.hour)}:${pad(now.minute)}:${pad(now.second)}";
     if (widget.cconfig.isdigital) {
-      return componentbuild(LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-        return Container(
-          alignment: Alignment.center,
-          constraints: const BoxConstraints(
-            maxHeight: double.infinity,
-            maxWidth: double.infinity,
-          ),
-          child: Text(time,
-              style: GoogleFonts.chivo(
-                  fontWeight: widget.cconfig.fontweight,
-                  fontSize: min(constraints.maxHeight,
-                      constraints.maxWidth / time.length * 1.83))),
-        );
-      }));
+      return componentbuild(FittedBox(
+        fit: BoxFit.contain,
+        child: Text(time,
+            style: GoogleFonts.chivo(
+              fontWeight: widget.cconfig.fontweight,
+            )),
+      ));
     } else {
       return componentbuild(AnalogClock(
         useMilitaryTime: widget.cconfig.useMilitaryTime,

@@ -6,7 +6,10 @@
 import 'package:helperpaper/main_header.dart';
 
 class NoteConfig {
-  void copyFrom(NoteConfig config) {}
+  String text = "";
+  void copyFrom(NoteConfig config) {
+    text = config.text;
+  }
 
   NoteConfig();
 

@@ -43,8 +43,11 @@ class NoteState extends ComponentState<Note> {
 
   @override
   Widget build(BuildContext context) {
-    return componentbuild(Container(
-      color: Colors.amberAccent,
+    return componentbuild(FittedBox(
+      fit: BoxFit.contain,
+      child: Text(
+        widget.cconfig.text,
+      ),
     ));
   }
 }
