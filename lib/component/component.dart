@@ -14,16 +14,16 @@ abstract class Component extends StatefulWidget {
       : super(key: key);
   var cconfig;
   bool inpopup;
-  String? name;
+  //String? name;
   GeneralConfig gconfig;
   bool built = false;
   Function? setState;
 
   Map<String, dynamic> toJson() =>
-      {'gconfig': gconfig, 'cconfig': cconfig, 'type': name};
+      {'gconfig': gconfig, 'cconfig': cconfig, 'type': runtimeType.toString()};
 }
 
-abstract class ComponentState<T extends Component> extends State<T> {
+class ComponentState<T extends Component> extends State<T> {
   @override
   void initState() {
     SchedulerBinding.instance.scheduleFrameCallback((Duration duration) {
@@ -51,7 +51,10 @@ abstract class ComponentState<T extends Component> extends State<T> {
         ));
   }
 
-  void popup();
+  void popup() {
+    setState(() {});
+  }
+
   bool unitedborder = false;
   Widget componentbuild(Widget child) {
     return Expanded(

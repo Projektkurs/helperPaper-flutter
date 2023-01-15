@@ -45,14 +45,14 @@ class _MainScreenState extends State<MainScreen> {
       }();
     } else {
       if (widget.appState.scafffromjson) {
-        widget.appState.scaffholdingkey = GlobalKey();
+        widget.appState.scaffoldingkey = GlobalKey();
         mainscaffolding = Scaffolding.fromJson(
             jsonDecode(widget.appState.jsonsave),
-            key: widget.appState.scaffholdingkey);
+            key: widget.appState.scaffoldingkey);
         widget.appState.scafffromjson = false;
       } else {
         mainscaffolding = Scaffolding(
-            key: widget.appState.scaffholdingkey,
+            key: widget.appState.scaffoldingkey,
             gconfig: GeneralConfig(
               2 << 40, //arbitrary value for flex
               //should be high as to have many to have smooth transition
@@ -145,20 +145,22 @@ class _MainScreenState extends State<MainScreen> {
                     title: const Text('reset save'),
                     onTap: () {
                       setState(() {
-                        widget.appState.jsonsave = emptyjsonconfig;
+                        //widget.appState.jsonsave = emptyjsonconfig;
+                        widget.appState.mainscaffolding = null;
+                        widget.appState.scaffoldingkey = GlobalKey();
                         jsonconfig.updateconfig(
                             jsonconfig.defaultconfig, widget.appState.jsonsave);
-                        post(
+                        /* post(
                             Uri(
                                 scheme: 'http',
                                 host: jsonconfig.epaperIP,
                                 path: '/config',
                                 port: jsonconfig.epaperPort),
-                            body: widget.appState.jsonsave);
+                            body: widget.appState.jsonsave);*/
                       });
                       widget.appState.maincontainers =
                           jsonDecode(widget.appState.jsonsave)['subcontainers'];
-                      widget.appState.scafffromjson = true;
+                      widget.appState.scafffromjson = false;
                     }),
               ],
             ),

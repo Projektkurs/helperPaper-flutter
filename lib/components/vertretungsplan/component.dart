@@ -20,8 +20,7 @@ class Vertretungsplan extends Component {
       : super(
             key: GlobalKey(),
             gconfig: GeneralConfig.fromJson(json['gconfig']),
-            cconfig:
-                VertretungsplanConfig.fromJson(json["gconfig"]["cconfig"]));
+            cconfig: VertretungsplanConfig.fromJson(json["cconfig"]));
   @override
   State<Vertretungsplan> createState() => VertretungsplanState();
 }
@@ -156,7 +155,7 @@ class VertretungsplanState extends ComponentState<Vertretungsplan> {
                   child: Text(
                     lastupdate == null
                         ? ""
-                        : "letztes Update:${lastupdate!.day}.${lastupdate!.day}",
+                        : "letztes Update: ${lastupdate!.hour}:${lastupdate!.minute}",
                     textScaleFactor: 1.3,
                   )))
         ]),

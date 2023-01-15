@@ -39,6 +39,7 @@ class NoteState extends ComponentState<Note> {
     await popupdialog(
         NotePopup(gconfig: widget.gconfig, cconfig: widget.cconfig));
     setState(() {});
+    super.popup();
   }
 
   @override
@@ -47,6 +48,7 @@ class NoteState extends ComponentState<Note> {
       fit: BoxFit.contain,
       child: Text(
         widget.cconfig.text,
+        overflow: TextOverflow.ellipsis,
       ),
     ));
   }

@@ -48,6 +48,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         floatingActionButton: FloatingActionButton(
             child: const Icon(Icons.save),
             onPressed: () {
+              widget.appState.scafffromjson = true;
               Navigator.pushReplacementNamed(context, "/mainScreen");
             }),
         body: ListView(

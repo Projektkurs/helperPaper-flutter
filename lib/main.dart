@@ -17,7 +17,7 @@ void main() {
   runApp(const Entry());
 }
 
-GeneralConfig globalgconf = GeneralConfig.createGeneral();
+final GeneralConfig globalgconf = GeneralConfig.createGeneral();
 
 //Entry class, used to set default theme
 class Entry extends StatelessWidget {
@@ -51,12 +51,6 @@ class AppState extends State<App> with message {
   //main menu laying on top the top of Widget stack
   //late Popup menu=Popup();
   //own method to parse up a config to be configured by menu
-  /*configMenuMainParse(List<Key> key,GeneralConfig config,double width,double height,void Function(VoidCallback fn) configsetState){
-    //menu.componenttype=type;
-    menu.componentconfig=config;
-    menu.openMenu(1);
-    menu.configsetState=configsetState;
-  }*/
   //textcontroller
   //number of Widgets by the first scaffholding
   int maincontainers = 1;
@@ -113,7 +107,7 @@ class AppState extends State<App> with message {
             "no Widget tree config found, will use the default init as config");
         SchedulerBinding.instance.scheduleFrameCallback((Duration duration) {
           //jsonsave=jsonEncode(mainscaffolding);
-          jsonsave = emptyjsonconfig;
+          jsonsave = jsonEncode(mainscaffolding);
           jsonconfig.addconfig("defaultconfig", jsonsave);
           jsonconfig.defaultconfig = "defaultconfig";
           File(p.join(supportdir, 'config'))
@@ -173,7 +167,7 @@ class AppState extends State<App> with message {
   //Key is used for callbacks(scaffholding/callbacks.dart)
   //it mustn't change, as they are saved at various places in the Widget tree
   //exception to this is if the whole widget tree is droped
-  GlobalKey<ScaffoldingState> scaffholdingkey = GlobalKey();
+  GlobalKey<ScaffoldingState> scaffoldingkey = GlobalKey();
   GlobalKey<ScaffoldState> scaffoldkey = GlobalKey();
   GlobalKey mainscreenkey = GlobalKey();
   GlobalKey settingsscreenkey = GlobalKey();

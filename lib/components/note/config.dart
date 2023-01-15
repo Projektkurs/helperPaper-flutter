@@ -16,7 +16,7 @@ class NoteConfig {
   ///The default digitalNote
   NoteConfig.digital();
 
-  Map<String, dynamic> toJson() => {};
+  Map<String, dynamic> toJson() => {'text': text};
 
-  NoteConfig.fromJson(Map<String, dynamic> json);
+  NoteConfig.fromJson(Map<String, dynamic> json) : text = json['text'];
 }
