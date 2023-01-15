@@ -48,10 +48,6 @@ class App extends StatefulWidget {
 }
 
 class AppState extends State<App> with message {
-  //main menu laying on top the top of Widget stack
-  //late Popup menu=Popup();
-  //own method to parse up a config to be configured by menu
-  //textcontroller
   //number of Widgets by the first scaffholding
   int maincontainers = 1;
   addContainer() {

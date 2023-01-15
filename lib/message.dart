@@ -4,30 +4,30 @@
  */
 
 import 'package:helperpaper/main_header.dart';
-import 'package:path/path.dart' as p;
 
-mixin message{
-  File fifo=File('./updatefifo');
+mixin message {
+  File fifo = File('./updatefifo');
   void setState(void Function() fn);
   late String jsonsave;
   late int maincontainers;
   late bool scafffromjson;
 
-  epaperUpdateInterrupt() async{
-    Future<String> fifocontent=fifo.readAsString();
-    fifocontent.then((message){
+  epaperUpdateInterrupt() async {
+    Future<String> fifocontent = fifo.readAsString();
+    fifocontent.then((message) {
       setState(() {
         //if(message=="config"){
         print("apply Config");
-        jsonsave=File('./configs/defaultconfig').readAsStringSync();
-        maincontainers=jsonDecode(jsonsave)['subcontainers'];
-        (this as AppState).mainscreenkey=GlobalKey();
-        scafffromjson=true;
+        jsonsave = File('./configs/defaultconfig').readAsStringSync();
+        maincontainers = jsonDecode(jsonsave)['subcontainers'];
+        (this as AppState).mainscreenkey = GlobalKey();
+        scafffromjson = true;
         //}else if(message=="generalconfig"){
         //jsonconfig=jsonDecode(message);
         File('config').writeAsString(jsonEncode(jsonconfig));
         //}
       });
-    epaperUpdateInterrupt();});
+      epaperUpdateInterrupt();
+    });
   }
 }

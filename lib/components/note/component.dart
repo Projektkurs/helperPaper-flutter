@@ -14,7 +14,6 @@ class Note extends Component {
       bool inpopup = false})
       : super(key: key, gconfig: gconfig, cconfig: cconfig, inpopup: inpopup);
 
-  String? name = "Note";
   @override
   Map<String, dynamic> toJson() {
     Map<String, dynamic> tmpconf = super.toJson();

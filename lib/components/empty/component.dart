@@ -14,8 +14,6 @@ class Empty extends Component {
     required this.replaceChildren,
   }) : super(key: key, gconfig: gconfig, cconfig: cconfig);
 
-  @override
-  String? name = "Empty";
   final Function resizeWidget;
   final Function replaceChildren;
 
