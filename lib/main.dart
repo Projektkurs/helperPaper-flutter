@@ -24,7 +24,7 @@ class Entry extends StatelessWidget {
   const Entry({
     Key? key,
   }) : super(key: key);
-  static const title = 'SmartClock';
+  static const title = 'helper:Paper';
   //will be used later to switch between end-user mode and embeddded
 
   @override

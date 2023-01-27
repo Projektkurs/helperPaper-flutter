@@ -16,7 +16,7 @@ class GeneralConfig {
   Bordertype? bordertype;
   Color? borderColor;
 
-  void copyFrom(GeneralConfig config) {
+  void takeFrom(GeneralConfig config) {
     flex = config.flex;
     borderWidth = config.borderWidth;
     borderRadius = config.borderRadius;
@@ -28,7 +28,13 @@ class GeneralConfig {
   GeneralConfig(
     this.flex,
   ); //this.cconfig);
-
+  GeneralConfig.copyFrom(GeneralConfig config)
+      : flex = config.flex,
+        borderWidth = config.borderWidth,
+        borderRadius = config.borderRadius,
+        padding = config.padding,
+        bordertype = config.bordertype,
+        borderColor = config.borderColor;
   //must be of ContentType Defaultgeneral
   GeneralConfig.createGeneral()
       : //cconfig = Defaultgeneral(),

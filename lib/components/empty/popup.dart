@@ -3,10 +3,7 @@
  * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
 
-import 'package:helperpaper/components/scaffholding/config.dart';
 import 'package:helperpaper/main_header.dart';
-import 'package:helperpaper/component/menu.dart';
-import 'package:progress_stepper/progress_stepper.dart';
 
 class EmptyPopup extends StatefulWidget {
   final GeneralConfig gconfig;
@@ -25,9 +22,12 @@ class EmptyPopupRef {
 }
 
 class _EmptyPopupState extends State<EmptyPopup> {
+  /// used by the second page to know wether the a mediaquery.pop should be vetoed.
+  bool willpop = false;
   //lambda function cannot be used as they are compiled before getters are
   late List<Widget Function(BuildContext context)> tabs;
   bool blocknext = false;
+  dynamic cconfig;
 
   Widget firstpage(BuildContext context) {
     blocknext = widget.popupref.components == Componentenum.defaultcase;
@@ -121,21 +121,33 @@ class _EmptyPopupState extends State<EmptyPopup> {
                 },
                 text: 'Column',
                 leading: const Icon(Icons.view_column_rounded)),
-            //componentTile(widget.gconfig, context, setState)
-          ]) //end Component Radio
-          ),
+          ])),
       const Spacer(flex: 1)
     ]);
   }
 
   int step = 0;
   Widget secondpage(BuildContext context) {
-    switch (step) {
-      case 1:
-        return Container();
+    late Popup popup;
+    switch (widget.popupref.components) {
+      case (Componentenum.clock):
+        cconfig = ClockConfig();
+        popup = ClockPopup(
+            gconfig: widget.gconfig, cconfig: cconfig, byempty: true);
+        break;
+      case (Componentenum.empty):
+      case (Componentenum.note):
+      case (Componentenum.example):
+      case (Componentenum.vertical):
+      case (Componentenum.horizontal):
       default:
-        return const SizedBox.expand();
+        break;
     }
+    return WillPopScope(
+        child: popup,
+        onWillPop: () async {
+          return false;
+        });
     ;
   }
 
@@ -150,6 +162,9 @@ class _EmptyPopupState extends State<EmptyPopup> {
     //pregenerate widget as blocknext is dependent on it being generated
     Widget tab = tabs[step](context);
     List<Widget> indicatorbar = [];
+    if (step == 1) {
+      return tabs[1](context);
+    }
     for (int i = 0; i <= tabs.length - 1; i++) {
       indicatorbar.add(Expanded(
           flex: 1,

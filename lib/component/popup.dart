@@ -3,7 +3,14 @@ import 'package:helperpaper/main_header.dart';
 abstract class Popup<T> extends StatefulWidget {
   final GeneralConfig gconfig;
   final T cconfig;
-  const Popup({super.key, required this.gconfig, required this.cconfig});
+
+  ///disables the buttons as they are provided by
+  final bool byempty;
+  const Popup(
+      {super.key,
+      required this.gconfig,
+      required this.cconfig,
+      this.byempty = false});
 }
 
 abstract class PopupState<T extends Popup> extends State<T> {
@@ -13,7 +20,7 @@ abstract class PopupState<T extends Popup> extends State<T> {
   late dynamic oldcconfig;
   void initState() {
     oldgconfig = GeneralConfig(0);
-    oldgconfig.copyFrom(widget.gconfig);
+    oldgconfig.takeFrom(widget.gconfig);
     oldcconfig.copyFrom(widget.cconfig);
     super.initState();
   }
@@ -24,16 +31,20 @@ abstract class PopupState<T extends Popup> extends State<T> {
     //pregenerate widget as blocknext is dependent on it being generated
     Widget tab = tabs[step](context);
     List<Widget> indicatorbar = [];
-    for (int i = 0; i <= tabs.length - 1; i++) {
+    int totaltabs = tabs.length - (widget.byempty ? 0 : 1);
+    if (widget.byempty) {}
+    for (int i = 0; i <= totaltabs; i++) {
       indicatorbar.add(Expanded(
           flex: 1,
           child: Container(
             margin: EdgeInsets.only(
                 left: i == 0 ? 30 : 3,
-                right: i == tabs.length - 1 ? 30 : 3,
+                right: i == totaltabs ? 30 : 3,
                 bottom: 2),
             decoration: BoxDecoration(
-                color: i <= step ? Colors.blue : Colors.grey,
+                color: i <= step + (widget.byempty ? 1 : 0)
+                    ? Colors.blue
+                    : Colors.grey,
                 borderRadius: const BorderRadius.all(Radius.circular(5))),
             height: 20,
           )));
@@ -47,13 +58,13 @@ abstract class PopupState<T extends Popup> extends State<T> {
                 ? Colors.grey
                 : const Color.fromARGB(255, 101, 184, 90),
           ),
-          onPressed: () => step == tabs.length - 1
+          onPressed: () => step == totaltabs
               ? Navigator.pop(context)
               : setState(() {
                   debugPrint("nextstep");
                   step++;
                 }),
-          child: Text(step == tabs.length - 1 ? 'Apply' : 'Next',
+          child: Text(step == totaltabs ? 'Apply' : 'Next',
               style: TextStyle(
                   fontSize:
                       Theme.of(context).textTheme.headlineMedium!.fontSize!)),
@@ -70,14 +81,14 @@ abstract class PopupState<T extends Popup> extends State<T> {
             ),
             onPressed: () => step == 0
                 ? () {
-                    widget.gconfig.copyFrom(oldgconfig);
+                    widget.gconfig.takeFrom(oldgconfig);
                     widget.cconfig.copyFrom(oldcconfig);
                     Navigator.pop(context);
                   }()
                 : setState(() {
                     step--;
                   }),
-            child: Text(step == 0 ? 'Cancle' : 'Previous',
+            child: Text(step == 0 ? 'Cancel' : 'Previous',
                 style: TextStyle(
                     fontSize:
                         Theme.of(context).textTheme.headlineMedium!.fontSize!)),
