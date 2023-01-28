@@ -5,11 +5,12 @@
 import 'package:helperpaper/main_header.dart';
 
 class ClockPopup extends Popup<ClockConfig> {
-  const ClockPopup(
-      {super.key,
-      required super.gconfig,
-      required super.cconfig,
-      super.byempty});
+  const ClockPopup({
+    super.key,
+    required super.gconfig,
+    required super.cconfig,
+    super.byempty,
+  });
 
   @override
   State<ClockPopup> createState() => _ClockPopupState();

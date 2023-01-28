@@ -23,7 +23,7 @@ class EmptyPopupRef {
 
 class _EmptyPopupState extends State<EmptyPopup> {
   /// used by the second page to know wether the a mediaquery.pop should be vetoed.
-  bool willpop = false;
+  bool blockscope = false;
   //lambda function cannot be used as they are compiled before getters are
   late List<Widget Function(BuildContext context)> tabs;
   bool blocknext = false;
@@ -128,6 +128,10 @@ class _EmptyPopupState extends State<EmptyPopup> {
 
   int step = 0;
   Widget secondpage(BuildContext context) {
+    void setveto(bool val) {
+      blockscope = val;
+    }
+
     late Popup popup;
     switch (widget.popupref.components) {
       case (Componentenum.clock):
@@ -146,9 +150,13 @@ class _EmptyPopupState extends State<EmptyPopup> {
     return WillPopScope(
         child: popup,
         onWillPop: () async {
+          //print("test:$blockscope");
+          setState(() {
+            step--;
+          });
           return false;
+          //return blockscope;
         });
-    ;
   }
 
   @override

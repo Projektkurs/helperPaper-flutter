@@ -32,8 +32,6 @@ class Example extends Component {
 }
 
 class ExampleState extends ComponentState<Example> {
-  late DateTime now;
-  bool timeupdatective = false;
   @override
   popup() async {
     await popupdialog(
