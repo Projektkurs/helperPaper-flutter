@@ -34,7 +34,7 @@ class VertretungsplanState extends ComponentState<Vertretungsplan> {
     super.initState();
 
     //does this create a call stack overflow?
-    updateplan() async {
+    void updateplan() async {
       lastupdate = DateTime.now();
       vplan = await vp.Plan.newplan(widget.cconfig.raum);
       if (widget.built) {
