@@ -141,6 +141,10 @@ class _EmptyPopupState extends State<EmptyPopup> {
         break;
       case (Componentenum.empty):
       case (Componentenum.note):
+        cconfig = NoteConfig();
+        popup =
+            NotePopup(gconfig: widget.gconfig, cconfig: cconfig, byempty: true);
+        break;
       case (Componentenum.example):
       case (Componentenum.vertical):
       case (Componentenum.horizontal):

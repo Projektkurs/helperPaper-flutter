@@ -27,8 +27,8 @@ Configmenut configmenu = (List<Key> key, GeneralConfig config, double width,
 typedef PopupCallback = void Function(Component widget, Function setState);
 //returns Type of Component, must be exactly what runtimetype.toString returns
 
-Component? jsontoComp(Map<String, dynamic> json, Function resizeWidget,
-    Function replaceChildren) {
+Component? jsontoComp(Map<String, dynamic> json, resizeWidget,
+    void Function(Key?, Widget) replaceChildren) {
   //switch(json['gconfig']["cconfig"]['type']){
   switch ((json['type'])) {
     case ("Scaffolding"):

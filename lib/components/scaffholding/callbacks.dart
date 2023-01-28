@@ -6,8 +6,7 @@
 import 'package:helperpaper/main_header.dart';
 import 'resizeline.dart';
 
-mixin callbacks
-{
+mixin callbacks {
   List<Widget> get childs;
   Scaffolding get widget;
   List<int> get width;
@@ -15,19 +14,18 @@ mixin callbacks
   double get resizelineWidth;
   void setState(VoidCallback fn);
 
-  int _caller(key)
-  {
-    for (int i=0;i<childs.length;i++){
-      if(childs[i].key == key) return i;
+  int _caller(key) {
+    for (int i = 0; i < childs.length; i++) {
+      if (childs[i].key == key) return i;
     }
     //not called by child of scaffholding
     Exception("Key not found in callback of scaffholding");
-    //return 0 to not crash the program 
+    //return 0 to not crash the program
     return 0;
   }
+
   //Key used so children can replace themselves without needing to know their relative position.
-  resizeWidget(Key key, int width) 
-  {
+  resizeWidget(Key key, int width) {
     setState(() {
       this.width[_caller(key)] = width;
     });
@@ -35,12 +33,11 @@ mixin callbacks
 
   //todo check which key is used for new widget.
   //replaces the Widget of given key.
-  replaceChildren(Key key, Widget newwidget) 
-  {
+  void replaceChildren(Key? key, Widget newwidget) {
     //caller might not have recent information on showlines of main
     //scaffholding is guaranteed to have
-    if(newwidget.runtimeType==Scaffolding){
-      (newwidget as Scaffolding).showlines=widget.showlines;
+    if (newwidget.runtimeType == Scaffolding) {
+      (newwidget as Scaffolding).showlines = widget.showlines;
     }
     setState(() {
       childs[_caller(key)] = newwidget;
@@ -48,29 +45,29 @@ mixin callbacks
   }
 
   //used soley by ResizeLine
-  resizefromline(Key key, double length){
+  resizefromline(Key key, double length) {
     //search which widget called function
-    int caller=_caller(key); 
-    if((childs[caller] as ResizeLine).built) {
+    int caller = _caller(key);
+    if ((childs[caller] as ResizeLine).built) {
       //update callcontext
-      setState(() { });
+      setState(() {});
       //pixels in main direction excluding ResizeLine which is not flex
-      double width =
-        widget.direction? callconstraints.maxWidth : callconstraints.maxHeight
-        -(childs.length-1)*resizelineWidth;
-      double totalflex=0;
-      for(int n=0;n<widget.subcontainers;n++){
-        totalflex+=(childs[n*2] as Component).gconfig.flex;
+      double width = widget.direction
+          ? callconstraints.maxWidth
+          : callconstraints.maxHeight - (childs.length - 1) * resizelineWidth;
+      double totalflex = 0;
+      for (int n = 0; n < widget.subcontainers; n++) {
+        totalflex += (childs[n * 2] as Component).gconfig.flex;
       }
-      int flexdif=(totalflex*(length/width)).floor();
+      int flexdif = (totalflex * (length / width)).floor();
       setState(() {
-        (childs[caller-1] as Component).setState!(() {
-          (childs[caller-1] as Component).gconfig.flex+=flexdif;
+        (childs[caller - 1] as Component).setState!(() {
+          (childs[caller - 1] as Component).gconfig.flex += flexdif;
         });
-        (childs[caller+1] as Component).setState!(() {
-          (childs[caller+1] as Component).gconfig.flex-=flexdif;
+        (childs[caller + 1] as Component).setState!(() {
+          (childs[caller + 1] as Component).gconfig.flex -= flexdif;
         });
       });
-    }//todo: do future call with delay so it will be built eventually
+    } //todo: do future call with delay so it will be built eventually
   }
 }

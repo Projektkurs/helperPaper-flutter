@@ -7,7 +7,10 @@ import 'package:helperpaper/main_header.dart';
 
 class ExamplePopup extends Popup<ExampleConfig> {
   const ExamplePopup(
-      {super.key, required super.gconfig, required super.cconfig});
+      {super.key,
+      required super.gconfig,
+      required super.cconfig,
+      super.byempty});
 
   @override
   State<ExamplePopup> createState() => _ExamplePopupState();
@@ -24,7 +27,6 @@ class _ExamplePopupState extends PopupState<ExamplePopup> {
       default:
         return const SizedBox.expand();
     }
-    ;
   }
 
   @override

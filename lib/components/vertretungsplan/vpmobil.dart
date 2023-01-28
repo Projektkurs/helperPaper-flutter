@@ -93,6 +93,7 @@ class XmlDay {
                 "Basic ${base64Encode(utf8.encode('${jsonconfig.vpuser}:${jsonconfig.vppasswd}'))}"
           });
     } catch (_) {
+      debugPrint("connecting to stundenplan24.de failed");
       return null;
     }
     try {

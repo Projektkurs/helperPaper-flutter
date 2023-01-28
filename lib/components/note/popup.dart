@@ -7,7 +7,11 @@ import 'package:flutter/services.dart';
 import 'package:helperpaper/main_header.dart';
 
 class NotePopup extends Popup<NoteConfig> {
-  const NotePopup({super.key, required super.gconfig, required super.cconfig});
+  const NotePopup(
+      {super.key,
+      required super.gconfig,
+      required super.cconfig,
+      super.byempty});
 
   @override
   State<NotePopup> createState() => _NotePopupState();
