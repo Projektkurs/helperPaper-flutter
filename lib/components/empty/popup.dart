@@ -114,13 +114,14 @@ class _EmptyPopupState extends State<EmptyPopup> {
               leading: const Icon(Icons.query_builder),
             ),
             SelectableRadio<Componentenum>(
-                value: Componentenum.example,
-                groupvalue: widget.popupref.components,
-                onPressed: () {
-                  setenum(Componentenum.example);
-                },
-                text: 'Column',
-                leading: const Icon(Icons.view_column_rounded)),
+              value: Componentenum.example,
+              groupvalue: widget.popupref.components,
+              onPressed: () {
+                setenum(Componentenum.example);
+              },
+              text: 'Example',
+              //leading: const Icon(Icons.poin)
+            ),
           ])),
       const Spacer(flex: 1)
     ]);
@@ -146,6 +147,10 @@ class _EmptyPopupState extends State<EmptyPopup> {
             NotePopup(gconfig: widget.gconfig, cconfig: cconfig, byempty: true);
         break;
       case (Componentenum.example):
+        cconfig = ExampleConfig();
+        popup = ExamplePopup(
+            gconfig: widget.gconfig, cconfig: cconfig, byempty: true);
+        break;
       case (Componentenum.vertical):
       case (Componentenum.horizontal):
       default:

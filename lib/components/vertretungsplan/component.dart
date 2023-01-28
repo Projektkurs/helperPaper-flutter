@@ -1,5 +1,5 @@
 import 'package:helperpaper/main_header.dart';
-import 'package:helperpaper/components/vertretungsplan/vpmobil.dart' as vp;
+import 'package:helperpaper/vpmobil.dart' as vp;
 
 class Vertretungsplan extends Component {
   @override

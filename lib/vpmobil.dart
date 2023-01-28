@@ -14,6 +14,7 @@ class Plan {
   static Future<Plan> newplan(String room) async {
     //the startday is eventually not be a schoolday
     XmlDay startday = (await XmlDay.async(null))!;
+    startday.gethourtimes();
     //get all free days
     List<String> freedaysStrings = [];
     startday.xml.findAllElements("ft").forEach((node) {
@@ -73,6 +74,31 @@ class XmlDay {
   XmlDocument xml;
   DateTime date;
   XmlDay(this.xml, this.date);
+
+  List<List<DateTime>> gethourtimes() {
+    List<List<DateTime>> times = [[], []];
+    var xmlhours = xml.findAllElements("KlStunden").first.children;
+    for (var xmlhour in xmlhours) {
+      String? startstring = xmlhour.getAttribute("ZeitVon");
+      List<int> hour_minute = [];
+
+      startstring!.split(":").forEach((element) {
+        hour_minute.add(int.tryParse(element)!);
+      });
+      times[0].add(DateTime.fromMillisecondsSinceEpoch(
+          (hour_minute[0] - 1) * 3600000 + hour_minute[1] * 60000));
+      String? endstring = xmlhour.getAttribute("ZeitBis");
+      hour_minute = [];
+
+      endstring!.split(":").forEach((element) {
+        hour_minute.add(int.tryParse(element)!);
+      });
+      times[1].add(DateTime.fromMillisecondsSinceEpoch(
+          (hour_minute[0] - 1) * 3600000 + hour_minute[1] * 60000));
+    }
+    return times;
+    //xml.getAttributeNode("KlStunden"); //xml.findAllElements("KlStunden");
+  }
 
   static Future<XmlDay?> async(DateTime? date) async {
     //date ??= trim(DateTime.now());

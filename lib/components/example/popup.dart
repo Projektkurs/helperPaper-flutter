@@ -18,7 +18,6 @@ class ExamplePopup extends Popup<ExampleConfig> {
 
 class _ExamplePopupState extends PopupState<ExamplePopup> {
   /// lambda function cannot be used as they are compiled before getters are
-
   int step = 0;
   Widget firstpage(BuildContext context) {
     switch (step) {
@@ -32,7 +31,7 @@ class _ExamplePopupState extends PopupState<ExamplePopup> {
   @override
   void initState() {
     oldcconfig = ExampleConfig();
-    tabs = [firstpage, firstpage];
+    tabs = [firstpage];
     super.initState();
   }
 }
