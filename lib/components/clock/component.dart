@@ -12,11 +12,11 @@ import 'package:google_fonts/google_fonts.dart';
 class Clock extends Component {
   @override
   Clock(
-      {required Key key,
-      required GeneralConfig gconfig,
+      {super.key,
+      required super.gconfig,
       required ClockConfig cconfig,
-      bool inpopup = false})
-      : super(key: key, gconfig: gconfig, cconfig: cconfig, inpopup: inpopup);
+      super.inpopup})
+      : super(cconfig: cconfig);
 
   String? name = "Clock";
   @override

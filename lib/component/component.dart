@@ -7,7 +7,7 @@ import 'package:helperpaper/main_header.dart';
 
 abstract class Component extends StatefulWidget {
   Component(
-      {required Key key,
+      {Key? key,
       required this.gconfig,
       required this.cconfig,
       this.inpopup = false})

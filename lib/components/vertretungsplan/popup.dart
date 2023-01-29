@@ -4,39 +4,64 @@
  */
 
 import 'package:helperpaper/main_header.dart';
-/*
-class ExamplePopup extends Popup<ExampleConfig> {
-  const ExamplePopup(
+
+class VertretungsplanPopup extends Popup<VertretungsplanConfig> {
+  const VertretungsplanPopup(
       {super.key,
       required super.gconfig,
       required super.cconfig,
       super.byempty});
 
   @override
-  State<ExamplePopup> createState() => _ExamplePopupState();
+  State<VertretungsplanPopup> createState() => _VertretungsplanPopupState();
 }
 
-class _ExamplePopupState extends PopupState<ExamplePopup> {
+class _VertretungsplanPopupState extends PopupState<VertretungsplanPopup> {
+  late TextEditingController roomtextcontroller;
+
   /// lambda function cannot be used as they are compiled before getters are
   int step = 0;
   Widget firstpage(BuildContext context) {
-    switch (step) {
-      case 1:
-        return Container();
-      default:
-        return const SizedBox.expand();
-    }
+    return Row(children: [
+      Vertretungsplan(
+        key: UniqueKey(),
+        //key:const Key("0"),
+        gconfig: widget.gconfig,
+        cconfig: widget.cconfig,
+        inpopup: true,
+      ),
+      Expanded(
+          flex: widget.gconfig.flex,
+          child: ListView(children: [
+            Container(
+                margin: const EdgeInsets.all(8),
+                child: TextField(
+                  keyboardType: TextInputType.number,
+                  controller: roomtextcontroller,
+                  onSubmitted: (String value) {
+                    setState(() {
+                      widget.cconfig.raum = value;
+                    });
+                  },
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Raum',
+                  ),
+                ))
+          ]))
+    ]);
   }
 
   @override
   void initState() {
-    oldcconfig = ExampleConfig();
+    roomtextcontroller = TextEditingController(text: widget.cconfig.raum);
+    oldcconfig = VertretungsplanConfig("");
     tabs = [firstpage];
     super.initState();
   }
-}*/
-
-/*extension PopupVplan on State<Vertretungsplan> 
+}
+/*
+extension PopupVplan on State<Vertretungsplan> 
 {
   //start declaration
   /*Popup get widget;

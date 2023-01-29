@@ -3,11 +3,12 @@ import 'package:helperpaper/vpmobil.dart' as vp;
 
 class Vertretungsplan extends Component {
   @override
-  Vertretungsplan({
-    required Key key,
-    required GeneralConfig gconfig,
-    required VertretungsplanConfig cconfig,
-  }) : super(key: key, gconfig: gconfig, cconfig: cconfig);
+  Vertretungsplan(
+      {super.key,
+      required super.gconfig,
+      required VertretungsplanConfig cconfig,
+      super.inpopup})
+      : super(cconfig: cconfig);
 
   void popup() async {}
   @override
@@ -26,30 +27,42 @@ class Vertretungsplan extends Component {
 }
 
 class VertretungsplanState extends ComponentState<Vertretungsplan> {
-  popup() {}
   DateTime? lastupdate;
   vp.Plan? vplan;
+  List<vp.XmlDay>? xmlday;
+  @override
+  popup() async {
+    await popupdialog(
+        VertretungsplanPopup(gconfig: widget.gconfig, cconfig: widget.cconfig));
+    //setState(() {
+    //  neuerplan = false;
+    //});
+    //update vetretungsplan if new room is applied
+    vplan = vp.Plan.newplan(widget.cconfig.raum, xmlday!);
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  void updateplan(List<vp.XmlDay> a) {
+    xmlday = a;
+    lastupdate = DateTime.now();
+    vplan = vp.Plan.newplan(widget.cconfig.raum, a);
+    if (widget.built) {
+      if (mounted) {
+        setState(() {});
+      }
+      debugPrint("plan loaded");
+      vp.addvplanupdatecallback(updateplan);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
 
-    //does this create a call stack overflow?
-    void updateplan() async {
-      lastupdate = DateTime.now();
-      vplan = await vp.Plan.newplan(widget.cconfig.raum);
-      if (widget.built) {
-        if (this.mounted) {
-          setState(() {});
-        }
-        debugPrint("plan loaded");
-        Future.delayed(const Duration(minutes: 5)).then((value) async {
-          updateplan();
-        });
-      }
-    }
-
     SchedulerBinding.instance.scheduleFrameCallback((Duration duration) {
-      updateplan();
+      vp.addvplandirectcallback(updateplan);
     });
   }
 
@@ -127,18 +140,6 @@ class VertretungsplanState extends ComponentState<Vertretungsplan> {
 
   @override
   Widget build(BuildContext context) {
-    //update vetretungsplan if new room is applied
-    if ((widget.cconfig as VertretungsplanConfig).neuerplan == true) {
-      print("ja");
-      () async {
-        vplan = await vp.Plan.newplan(widget.cconfig.raum);
-        (widget.cconfig as VertretungsplanConfig).neuerplan = false;
-        if (mounted) {
-          setState(() {});
-        }
-      }();
-    }
-
     return componentbuild(Column(children: <Widget>[
       Padding(
         padding: const EdgeInsets.all(8.0),

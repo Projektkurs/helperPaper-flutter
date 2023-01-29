@@ -9,6 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:helperpaper/screens/settings_screen.dart';
 import 'screens/main_screen.dart';
+import 'package:helperpaper/vpmobil.dart' as vp;
 
 late String supportdir;
 late JsonConfig jsonconfig;
@@ -133,6 +134,7 @@ class AppState extends State<App> with message {
         maincontainers = jsonDecode(jsonsave)['subcontainers'];
         scafffromjson = true;
       }
+      vp.startupdatehandler();
       //needs to be initialized at the point where settings is opened
       return true;
     }

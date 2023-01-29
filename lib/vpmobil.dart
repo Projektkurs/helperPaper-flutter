@@ -4,6 +4,70 @@ import "package:path/path.dart";
 import "package:xml/xml.dart";
 
 const MAXHOURSPERDAY = 7;
+List<XmlDay>? _xmldays;
+List<void Function(List<XmlDay>)> _callbacks = [];
+
+List<void Function()> _handlers = [];
+bool _updatehandlerruning = false;
+bool startupdatehandler() {
+  if (!_updatehandlerruning) {
+    _vplanAutoUpdater();
+    _updatehandlerruning = true;
+  }
+  return _updatehandlerruning;
+}
+
+/// the given Function is called directly if vplan is already available or
+/// as soon as it is.
+void addvplandirectcallback(void Function(List<XmlDay>) callback) {
+  if (_xmldays == null) {
+    _callbacks.add(callback);
+  } else {
+    callback(_xmldays!);
+  }
+}
+
+/// The given Function is excecuted after the update of the vplan.
+void addvplanupdatecallback(void Function(List<XmlDay>) callback) {
+  _callbacks.add(callback);
+}
+
+/// Updates vplan automatically every 5 minutes
+void _vplanAutoUpdater() async {
+  while (true) {
+    _xmldays = await _getcurrentdays();
+
+    /// as the callbacks itself can call addvplanupdatecallback the Functions need to be copied
+    var currentcallbacks = _callbacks;
+    _callbacks = [];
+    for (var callback in currentcallbacks) {
+      callback(_xmldays!);
+    }
+    await Future.delayed(const Duration(minutes: 5));
+  }
+}
+
+Future<List<XmlDay>> _getcurrentdays() async {
+  XmlDay startday = (await XmlDay.async(null))!;
+  List<String> freedaysStrings = [];
+  startday.xml.findAllElements("ft").forEach((node) {
+    freedaysStrings.add(node.text);
+  });
+  var freedates = freedays(freedaysStrings);
+  // goes one day back in case of the current day being free
+  DateTime currentday = startday.date.subtract(const Duration(days: 1));
+  List<XmlDay> days = [];
+  for (int i = 0; i <= 4; i++) {
+    currentday =
+        nextday(currentday, freedates)!; //the next times needs to exist
+    XmlDay? tmpday = await XmlDay.async(currentday);
+    if (tmpday == null) {
+      break;
+    }
+    days.add(tmpday);
+  }
+  return days;
+}
 
 class Plan {
   final List<List<Lesson?>> lessons;
@@ -11,32 +75,19 @@ class Plan {
   final List<DateTime> freedates;
   Plan(this.lessons, this.days, this.freedates);
 
-  static Future<Plan> newplan(String room) async {
+  static Plan newplan(String room, List<XmlDay> days) {
     //the startday is eventually not be a schoolday
-    XmlDay startday = (await XmlDay.async(null))!;
-    startday.gethourtimes();
+    XmlDay startday = days[0];
     //get all free days
     List<String> freedaysStrings = [];
     startday.xml.findAllElements("ft").forEach((node) {
       freedaysStrings.add(node.text);
     });
     var freedates = freedays(freedaysStrings);
-
-    List<XmlDay> days = [];
     List<List<Lesson?>> lessons = [];
 
-    DateTime currentday = startday.date.subtract(const Duration(days: 1));
-    for (int i = 0; i <= 4; i++) {
-      currentday =
-          nextday(currentday, freedates)!; //the next times needs to exist
-      XmlDay? tmpday = await XmlDay.async(currentday);
-      if (tmpday == null) {
-        break;
-      }
-      days.add(tmpday);
-    }
     for (var i in days) {
-      lessons.add(await roomallocation(i, room));
+      lessons.add(roomallocation(i, room));
     }
     return Plan(lessons, days, freedates);
   }
@@ -135,7 +186,7 @@ DateTime trim(DateTime date) {
   return DateTime(date.year, date.month, date.day);
 }
 
-Future<List<Lesson?>> roomallocation(XmlDay plan, String room) async {
+List<Lesson?> roomallocation(XmlDay plan, String room) {
   var rooms = plan.xml.findAllElements("Ra");
   List<XmlNode> filteredrooms = [];
   //todo: room does not exist
