@@ -9,4 +9,5 @@ class ScaffoldingConfig {
   Map<String, dynamic> toJson() => {};
   ScaffoldingConfig.fromJson(Map<String, dynamic> json);
   ScaffoldingConfig();
+  void copyFrom(ScaffoldingConfig config) {}
 }

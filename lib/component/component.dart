@@ -100,7 +100,7 @@ class ComponentState<T extends Component> extends State<T> {
         }));
   }
 
-  Widget singleMenu(child) {
+  /*Widget singleMenu(child) {
     return Container(
         margin: EdgeInsets.symmetric(
             horizontal: MediaQuery.of(context).size.width * .07,
@@ -112,7 +112,7 @@ class ComponentState<T extends Component> extends State<T> {
                 width: 4.0, color: const Color.fromARGB(255, 73, 73, 73))),
         alignment: Alignment.center,
         child: child);
-  }
+  }*/
 
   Future<void> popupdialog(Widget widget) async {
     return showDialog<void>(

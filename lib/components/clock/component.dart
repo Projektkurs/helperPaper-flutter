@@ -75,7 +75,8 @@ class ClockState extends ComponentState<Clock> {
   Widget build(BuildContext context) {
     String pad(int date) => date < 10 ? "0$date" : date.toString();
     now = DateTime.now();
-    String time = "${pad(now.hour)}:${pad(now.minute)}:${pad(now.second)}";
+    //String time = "${pad(now.hour)}:${pad(now.minute)}:${pad(now.second)}";
+    String time = "${pad(now.hour)}:${pad(now.minute)}";
     if (widget.cconfig.isdigital) {
       return componentbuild(FittedBox(
         fit: BoxFit.contain,

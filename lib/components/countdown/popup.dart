@@ -1,22 +1,22 @@
-/* example - example to build a barebones component
+/* Countdown
  *
  * Copyright 2023 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
 
 import 'package:helperpaper/main_header.dart';
 
-class ExamplePopup extends Popup<ExampleConfig> {
-  const ExamplePopup(
+class CountdownPopup extends Popup<CountdownConfig> {
+  const CountdownPopup(
       {super.key,
       required super.gconfig,
       required super.cconfig,
       super.byempty});
 
   @override
-  State<ExamplePopup> createState() => _ExamplePopupState();
+  State<CountdownPopup> createState() => _CountdownPopupState();
 }
 
-class _ExamplePopupState extends PopupState<ExamplePopup> {
+class _CountdownPopupState extends PopupState<CountdownPopup> {
   /// lambda function cannot be used as they are compiled before getters are
   int step = 0;
   Widget firstpage(BuildContext context) {
@@ -25,7 +25,7 @@ class _ExamplePopupState extends PopupState<ExamplePopup> {
 
   @override
   void initState() {
-    oldcconfig = ExampleConfig();
+    oldcconfig = CountdownConfig();
     tabs = [firstpage];
     super.initState();
   }

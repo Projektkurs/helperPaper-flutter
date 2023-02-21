@@ -4,6 +4,7 @@
  */
 
 import 'package:helperpaper/main_header.dart';
+import 'package:helperpaper/vpmobil.dart' as vp;
 
 class VertretungsplanPopup extends Popup<VertretungsplanConfig> {
   const VertretungsplanPopup(
@@ -16,8 +17,13 @@ class VertretungsplanPopup extends Popup<VertretungsplanConfig> {
   State<VertretungsplanPopup> createState() => _VertretungsplanPopupState();
 }
 
+enum _roomlesson { room, lesson }
+
 class _VertretungsplanPopupState extends PopupState<VertretungsplanPopup> {
   late TextEditingController roomtextcontroller;
+  List<String> rooms = [];
+  List<String> classes = [];
+  late _roomlesson roomlesson;
 
   /// lambda function cannot be used as they are compiled before getters are
   int step = 0;
@@ -25,7 +31,6 @@ class _VertretungsplanPopupState extends PopupState<VertretungsplanPopup> {
     return Row(children: [
       Vertretungsplan(
         key: UniqueKey(),
-        //key:const Key("0"),
         gconfig: widget.gconfig,
         cconfig: widget.cconfig,
         inpopup: true,
@@ -33,78 +38,108 @@ class _VertretungsplanPopupState extends PopupState<VertretungsplanPopup> {
       Expanded(
           flex: widget.gconfig.flex,
           child: ListView(children: [
+            Row(
+              children: [
+                Expanded(
+                    flex: 1,
+                    child: SelectableRadio<_roomlesson>(
+                      value: _roomlesson.lesson,
+                      groupvalue: roomlesson,
+                      onPressed: () {
+                        setState(() {
+                          roomtextcontroller.text = widget.cconfig.lesson;
+                          roomlesson = _roomlesson.lesson;
+                          widget.cconfig.islesson = true;
+                        });
+                      },
+                      text: 'Vertretungsplan',
+                    )),
+                Expanded(
+                    flex: 1,
+                    child: SelectableRadio<_roomlesson>(
+                      value: _roomlesson.room,
+                      groupvalue: roomlesson,
+                      onPressed: () {
+                        setState(() {
+                          roomtextcontroller.text = widget.cconfig.room;
+                          roomlesson = _roomlesson.room;
+                          widget.cconfig.islesson = false;
+                        });
+                      },
+                      text: 'Belegungsplan',
+                    ))
+              ],
+            ),
             Container(
-                margin: const EdgeInsets.all(8),
-                child: TextField(
-                  keyboardType: TextInputType.number,
-                  controller: roomtextcontroller,
-                  onSubmitted: (String value) {
-                    setState(() {
-                      widget.cconfig.raum = value;
-                    });
-                  },
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Raum',
-                  ),
-                ))
+              margin: const EdgeInsets.all(8),
+              child: Autocomplete<String>(
+                //boilerplate.exe for baisically just a autocomplete textfield
+                fieldViewBuilder: (BuildContext context,
+                    TextEditingController textcontroller,
+                    FocusNode focusNode,
+                    VoidCallback onFieldSubmitted) {
+                  roomtextcontroller = textcontroller;
+                  textcontroller.text = widget.cconfig.islesson
+                      ? widget.cconfig.lesson
+                      : widget.cconfig.room;
+                  return TextField(
+                    controller: textcontroller,
+                    focusNode: focusNode,
+                    decoration: InputDecoration(
+                      labelText: widget.cconfig.islesson ? 'Klasse' : 'Raum',
+                    ),
+                    onSubmitted: (String value) {
+                      var optionlist =
+                          widget.cconfig.islesson ? classes : rooms;
+                      if (optionlist.contains(value)) {
+                        setState(() {
+                          if (widget.cconfig.islesson) {
+                            widget.cconfig.lesson = value;
+                          } else {
+                            widget.cconfig.room = value;
+                          }
+                        });
+                      }
+                    },
+                  );
+                },
+                optionsBuilder: (TextEditingValue textEditingValue) {
+                  var optionlist = widget.cconfig.islesson ? classes : rooms;
+                  return optionlist.where((String option) {
+                    return (option.toLowerCase())
+                        .contains(textEditingValue.text.toLowerCase());
+                  });
+                },
+                onSelected: (String value) {
+                  setState(() {
+                    if (widget.cconfig.islesson) {
+                      widget.cconfig.lesson = value;
+                    } else {
+                      widget.cconfig.room = value;
+                    }
+                    roomtextcontroller.text = value;
+                  });
+                },
+              ),
+            )
           ]))
     ]);
   }
 
   @override
   void initState() {
-    roomtextcontroller = TextEditingController(text: widget.cconfig.raum);
-    oldcconfig = VertretungsplanConfig("");
+    roomlesson =
+        widget.cconfig.islesson ? _roomlesson.lesson : _roomlesson.room;
+    vp.addvplandirectcallback((p0) {
+      if (mounted) {
+        setState(() {
+          rooms = p0[0].getrooms();
+          classes = p0[0].getclasses();
+        });
+      }
+    });
+    oldcconfig = VertretungsplanConfig("", "", false);
     tabs = [firstpage];
     super.initState();
   }
 }
-/*
-extension PopupVplan on State<Vertretungsplan> 
-{
-  //start declaration
-  /*Popup get widget;
-  bool get emptyVal;
-  bool testVal = false;
-  Componentenum components = Componentenum.defaultcase;
-  dynamic handleOnPressed(int enable);
-  void setState(VoidCallback fn);
-  //end declaration
-  late TextEditingController _roomtextcontroller;*/
-  popup() async {
-    TextEditingController roomtextcontroller= TextEditingController(text: widget.gconfig.cconfig.raum);
-    await popupdialog(
-    Row(children:[ Vertretungsplan( 
-        key:GlobalKey(),
-        //key:const Key("0"),
-        gconfig: widget.gconfig),
-        Expanded(flex: widget.gconfig.flex,child:
-          ListView(
-          children:[Container(
-            margin: const EdgeInsets.all(8),
-            child: TextField(
-            keyboardType: TextInputType.number,
-            controller: roomtextcontroller,
-            onSubmitted: (String value){
-                widget.gconfig.cconfig.raum= value;
-            },  
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              
-              labelText: 'Raum',),)
-        )]))]));
-
-    (widget.gconfig.cconfig as VertretungsplanConfig).neuerplan=true;
-    setState((){});
-  }
-}*/
-  /*vertretungsplanmenuapplycallback() {
-    _roomtextcontroller= TextEditingController(text: widget.gconfig.cconfig.raum);
-    if (widget.configsetState != null) {
-      (widget.gconfig.cconfig as VertretungsplanConfig).neuerplan=true;
-      widget.configsetState!(() {});
-    }
-    handleOnPressed(-1);
-  }/
-}*/

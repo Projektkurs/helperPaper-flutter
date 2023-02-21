@@ -32,6 +32,10 @@ export 'components/clock/component.dart';
 export 'components/clock/config.dart';
 export 'components/clock/popup.dart';
 // component::empty
+export 'components/countdown/component.dart';
+export 'components/countdown/config.dart';
+export 'components/countdown/popup.dart';
+// component::empty
 export 'components/empty/component.dart';
 export 'components/empty/config.dart';
 export 'components/empty/popup.dart';
@@ -48,7 +52,9 @@ export 'components/vertretungsplan/component.dart';
 export 'components/vertretungsplan/config.dart';
 export 'components/vertretungsplan/popup.dart';
 // component::scaffolding
-export 'components/scaffholding/scaffolding.dart';
+export 'components/scaffolding/component.dart';
+export 'components/scaffolding/config.dart';
+export 'components/scaffolding/popup.dart';
 
 // =true if it runs on epaper
 const bool isepaper = bool.fromEnvironment("isepaper");

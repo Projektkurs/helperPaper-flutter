@@ -34,20 +34,21 @@ class VertretungsplanState extends ComponentState<Vertretungsplan> {
   popup() async {
     await popupdialog(
         VertretungsplanPopup(gconfig: widget.gconfig, cconfig: widget.cconfig));
-    //setState(() {
-    //  neuerplan = false;
-    //});
-    //update vetretungsplan if new room is applied
-    vplan = vp.Plan.newplan(widget.cconfig.raum, xmlday!);
+    vplan = widget.cconfig.islesson
+        ? vp.Plan.classplan('0${widget.cconfig.lesson}', xmlday!)
+        : vp.Plan.roomplan(widget.cconfig.room, xmlday!);
     if (mounted) {
       setState(() {});
     }
   }
 
-  void updateplan(List<vp.XmlDay> a) {
-    xmlday = a;
+  void updateplan(List<vp.XmlDay> day) {
+    xmlday = day;
     lastupdate = DateTime.now();
-    vplan = vp.Plan.newplan(widget.cconfig.raum, a);
+    //vplan = vp.Plan.roomplan(widget.cconfig.raum, a);
+    vplan = widget.cconfig.islesson
+        ? vp.Plan.classplan('0${widget.cconfig.lesson}', xmlday!)
+        : vp.Plan.roomplan(widget.cconfig.room, xmlday!);
     if (widget.built) {
       if (mounted) {
         setState(() {});
@@ -61,9 +62,9 @@ class VertretungsplanState extends ComponentState<Vertretungsplan> {
   void initState() {
     super.initState();
 
-    SchedulerBinding.instance.scheduleFrameCallback((Duration duration) {
-      vp.addvplandirectcallback(updateplan);
-    });
+    //SchedulerBinding.instance.scheduleFrameCallback((Duration duration) {
+    vp.addvplandirectcallback(updateplan);
+    //});
   }
 
   Widget hourformat(vp.Lesson? lesson) {
@@ -71,7 +72,8 @@ class VertretungsplanState extends ComponentState<Vertretungsplan> {
       return const Text("");
     } else {
       var note = lesson.info == "" ? "" : "\nInfo:${lesson.info}";
-      return Text("${lesson.level}: ${lesson.subject}, ${lesson.teacher}$note",
+      return Text(
+          "${widget.cconfig.islesson ? lesson.room : lesson.level}: ${lesson.subject}, ${lesson.teacher}$note",
           style: Theme.of(context).textTheme.titleMedium);
     }
   }
@@ -146,7 +148,9 @@ class VertretungsplanState extends ComponentState<Vertretungsplan> {
         child: Row(children: [
           Expanded(
               child: Text(
-            "Belegungsplan ${widget.cconfig.raum}",
+            widget.cconfig.islesson
+                ? "Vertretungsplan ${widget.cconfig.lesson}"
+                : "Belegungsplan ${widget.cconfig.room}",
             textScaleFactor: 2,
             style: const TextStyle(fontWeight: FontWeight.bold),
           )),

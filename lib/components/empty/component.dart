@@ -2,7 +2,7 @@
  *
  * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
-import 'package:helperpaper/components/scaffholding/config.dart';
+import 'package:helperpaper/components/scaffolding/config.dart';
 import 'package:helperpaper/main_header.dart';
 
 class Empty extends Component {
@@ -55,7 +55,7 @@ class EmptyState extends ComponentState<Empty> {
             showlines: false,
             subcontainers: popupref.scaffoldingchilds,
             gconfig: GeneralConfig(widget.gconfig.flex),
-            cconfig: ScaffoldingConfig());
+            cconfig: popupref.cconfig);
         widget.cconfig.apply = true;
         widget.cconfig.replace!();
         break;
@@ -63,34 +63,38 @@ class EmptyState extends ComponentState<Empty> {
         widget.cconfig.replacement = Clock(
           key: (widget.cconfig as EmptyComponentConfig).key,
           gconfig: GeneralConfig(widget.gconfig.flex),
-          cconfig: ClockConfig(),
+          cconfig: popupref.cconfig,
         );
-        (widget.cconfig as EmptyComponentConfig).apply = true;
+        (widget.cconfig as EmptyComponentConfig).replace!();
+        break;
+      case Componentenum.countdown:
+        widget.cconfig.replacement = Countdown(
+          key: (widget.cconfig as EmptyComponentConfig).key,
+          gconfig: GeneralConfig(widget.gconfig.flex),
+          cconfig: popupref.cconfig,
+        );
         (widget.cconfig as EmptyComponentConfig).replace!();
         break;
       case Componentenum.note:
         widget.cconfig.replacement = Note(
           key: (widget.cconfig as EmptyComponentConfig).key,
           gconfig: GeneralConfig(widget.gconfig.flex),
-          cconfig: NoteConfig(),
+          cconfig: popupref.cconfig,
         );
-        (widget.cconfig as EmptyComponentConfig).apply = true;
         (widget.cconfig as EmptyComponentConfig).replace!();
         break;
       case Componentenum.vertretungsplan:
         widget.cconfig.replacement = Vertretungsplan(
             key: (widget.cconfig as EmptyComponentConfig).key,
             gconfig: GeneralConfig(widget.gconfig.flex),
-            cconfig: VertretungsplanConfig("007"));
-        (widget.cconfig as EmptyComponentConfig).apply = true;
+            cconfig: popupref.cconfig);
         (widget.cconfig as EmptyComponentConfig).replace!();
         break;
       case Componentenum.example:
         widget.cconfig.replacement = Example(
             key: (widget.cconfig as EmptyComponentConfig).key,
             gconfig: GeneralConfig(widget.gconfig.flex),
-            cconfig: ExampleConfig());
-        (widget.cconfig as EmptyComponentConfig).apply = true;
+            cconfig: popupref.cconfig);
         (widget.cconfig as EmptyComponentConfig).replace!();
         break;
       default:
@@ -117,9 +121,6 @@ class EmptyState extends ComponentState<Empty> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.cconfig.apply) {
-      debugPrint("apply");
-    }
     return componentbuild(const SizedBox.expand());
   }
 }

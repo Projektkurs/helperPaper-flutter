@@ -1,15 +1,21 @@
 import 'package:helperpaper/main_header.dart';
 
 class VertretungsplanConfig {
-  late String raum;
+  late String room;
+  late String lesson;
+  late bool islesson;
   void copyFrom(VertretungsplanConfig config) {
-    raum = config.raum;
+    room = config.room;
+    islesson = config.islesson;
   }
 
-  VertretungsplanConfig(this.raum);
+  VertretungsplanConfig(this.room, this.lesson, this.islesson);
 
-  Map<String, dynamic> toJson() => {"raum": raum};
+  Map<String, dynamic> toJson() =>
+      {'room': room, 'lesson': lesson, 'islesson': islesson};
 
   VertretungsplanConfig.fromJson(Map<String, dynamic> json)
-      : raum = json["raum"];
+      : room = json["raum"] ?? "007",
+        lesson = json["lesson"] ?? "05a",
+        islesson = json['islesson'] ?? false;
 }

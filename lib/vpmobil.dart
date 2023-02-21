@@ -2,6 +2,7 @@ import "package:http/http.dart" as http;
 import "package:helperpaper/main_header.dart";
 import "package:path/path.dart";
 import "package:xml/xml.dart";
+import 'dart:collection';
 
 const MAXHOURSPERDAY = 7;
 List<XmlDay>? _xmldays;
@@ -35,7 +36,7 @@ void addvplanupdatecallback(void Function(List<XmlDay>) callback) {
 /// Updates vplan automatically every 5 minutes
 void _vplanAutoUpdater() async {
   while (true) {
-    _xmldays = await _getcurrentdays();
+    _xmldays = await XmlDay._getcurrentdays();
 
     /// as the callbacks itself can call addvplanupdatecallback the Functions need to be copied
     var currentcallbacks = _callbacks;
@@ -43,30 +44,9 @@ void _vplanAutoUpdater() async {
     for (var callback in currentcallbacks) {
       callback(_xmldays!);
     }
+    _xmldays![0].getrooms();
     await Future.delayed(const Duration(minutes: 5));
   }
-}
-
-Future<List<XmlDay>> _getcurrentdays() async {
-  XmlDay startday = (await XmlDay.async(null))!;
-  List<String> freedaysStrings = [];
-  startday.xml.findAllElements("ft").forEach((node) {
-    freedaysStrings.add(node.text);
-  });
-  var freedates = freedays(freedaysStrings);
-  // goes one day back in case of the current day being free
-  DateTime currentday = startday.date.subtract(const Duration(days: 1));
-  List<XmlDay> days = [];
-  for (int i = 0; i <= 4; i++) {
-    currentday =
-        nextday(currentday, freedates)!; //the next times needs to exist
-    XmlDay? tmpday = await XmlDay.async(currentday);
-    if (tmpday == null) {
-      break;
-    }
-    days.add(tmpday);
-  }
-  return days;
 }
 
 class Plan {
@@ -75,15 +55,9 @@ class Plan {
   final List<DateTime> freedates;
   Plan(this.lessons, this.days, this.freedates);
 
-  static Plan newplan(String room, List<XmlDay> days) {
+  static Plan roomplan(String room, List<XmlDay> days) {
     //the startday is eventually not be a schoolday
-    XmlDay startday = days[0];
-    //get all free days
-    List<String> freedaysStrings = [];
-    startday.xml.findAllElements("ft").forEach((node) {
-      freedaysStrings.add(node.text);
-    });
-    var freedates = freedays(freedaysStrings);
+    var freedates = freedays(days[0].xml);
     List<List<Lesson?>> lessons = [];
 
     for (var i in days) {
@@ -91,11 +65,22 @@ class Plan {
     }
     return Plan(lessons, days, freedates);
   }
+
+  static Plan classplan(String level, List<XmlDay> days) {
+    //the startday is eventually not be a schoolday
+    var freedates = freedays(days[0].xml);
+    List<List<Lesson?>> lessons = [];
+
+    for (var i in days) {
+      lessons.add(classalocation(i, level));
+    }
+    return Plan(lessons, days, freedates);
+  }
 }
 
 class Lesson {
   final int hour;
-  final int room;
+  final String room; // a room might be not just a number
   final String subject;
   final String teacher;
   final String info;
@@ -104,7 +89,7 @@ class Lesson {
       this.hour, this.room, this.subject, this.teacher, this.info, this.level);
   Lesson.fromxmlnode(XmlNode node)
       : hour = int.parse(node.getElement("St")!.text.toString()),
-        room = int.parse(node.getElement("Ra")!.text.toString()),
+        room = (node.getElement("Ra")!.text.toString()),
         subject = node.getElement("Fa")!.text.toString(),
         teacher = node.getElement("Le")!.text.toString(),
         info = node.getElement("If")!.text.toString(),
@@ -126,18 +111,31 @@ class XmlDay {
   DateTime date;
   XmlDay(this.xml, this.date);
 
+  /// returns a list within a list which hold the start and end times of the
+  /// lessons. The first list has two rows. The first holds a list of the start
+  /// times and the second a list of the end times.
   List<List<DateTime>> gethourtimes() {
     List<List<DateTime>> times = [[], []];
     var xmlhours = xml.findAllElements("KlStunden").first.children;
+    //get the current Date
+    DateTime now = DateTime.now();
+    now = now.subtract(Duration(
+        hours: now.hour,
+        minutes: now.minute,
+        seconds: now.second,
+        milliseconds: now.millisecond,
+        microseconds: now.microsecond));
     for (var xmlhour in xmlhours) {
       String? startstring = xmlhour.getAttribute("ZeitVon");
       List<int> hour_minute = [];
-
       startstring!.split(":").forEach((element) {
         hour_minute.add(int.tryParse(element)!);
       });
       times[0].add(DateTime.fromMillisecondsSinceEpoch(
           (hour_minute[0] - 1) * 3600000 + hour_minute[1] * 60000));
+      times[0].last =
+          times[0].last.add(Duration(microseconds: now.microsecondsSinceEpoch));
+      print(times[0].last);
       String? endstring = xmlhour.getAttribute("ZeitBis");
       hour_minute = [];
 
@@ -146,9 +144,32 @@ class XmlDay {
       });
       times[1].add(DateTime.fromMillisecondsSinceEpoch(
           (hour_minute[0] - 1) * 3600000 + hour_minute[1] * 60000));
+      times[1].last =
+          times[1].last.add(Duration(microseconds: now.microsecondsSinceEpoch));
     }
     return times;
-    //xml.getAttributeNode("KlStunden"); //xml.findAllElements("KlStunden");
+  }
+
+  static Future<List<XmlDay>> _getcurrentdays() async {
+    XmlDay startday = (await XmlDay.async(null))!;
+    List<String> freedaysStrings = [];
+    startday.xml.findAllElements("ft").forEach((node) {
+      freedaysStrings.add(node.text);
+    });
+    var freedates = freedays(startday.xml);
+    // goes one day back in case of the current day being free
+    DateTime currentday = startday.date.subtract(const Duration(days: 1));
+    List<XmlDay> days = [];
+    for (int i = 0; i <= 4; i++) {
+      currentday =
+          nextday(currentday, freedates)!; //the next times needs to exist
+      XmlDay? tmpday = await XmlDay.async(currentday);
+      if (tmpday == null) {
+        break;
+      }
+      days.add(tmpday);
+    }
+    return days;
   }
 
   static Future<XmlDay?> async(DateTime? date) async {
@@ -180,6 +201,35 @@ class XmlDay {
       return null;
     }
   }
+
+  List<String> _getelementsorted(String elementname) {
+    HashSet<String> roomset = HashSet();
+    var roomiter = xml.findAllElements(elementname);
+    roomiter.forEach((element) {
+      if (!roomset.contains(element.innerText) && element.innerText != "") {
+        //print(element.innerText);
+        roomset.add(element.innerText);
+      }
+    });
+    return List.from(roomset)..sort();
+    //return roomset.toList();
+  }
+
+  List<String> getrooms() {
+    return _getelementsorted("Ra");
+  }
+
+  List<String> getclasses() {
+    HashSet<String> roomset = HashSet();
+    var roomiter = xml.findAllElements("Kurz");
+    roomiter.forEach((element) {
+      if (!roomset.contains(element.innerText) &&
+          element.innerText.startsWith("0")) {
+        roomset.add(element.innerText.substring(1));
+      }
+    });
+    return List.from(roomset)..sort();
+  }
 }
 
 DateTime trim(DateTime date) {
@@ -189,15 +239,13 @@ DateTime trim(DateTime date) {
 List<Lesson?> roomallocation(XmlDay plan, String room) {
   var rooms = plan.xml.findAllElements("Ra");
   List<XmlNode> filteredrooms = [];
-  //todo: room does not exist
   rooms.forEach((node) {
-    node.text == room ? filteredrooms.add(node.ancestors.first) : "";
+    node.text == room ? filteredrooms.add(node.ancestors.first) : 0;
   });
   List<Lesson?> lessons = [];
   for (int i = 0; i < MAXHOURSPERDAY; i++) {
     lessons.add(null);
   }
-  //print("test")
   for (var node in filteredrooms) {
     lessons[int.parse(node.getElement("St")!.text.toString()) - 1] =
         Lesson.fromxmlnode(node);
@@ -206,7 +254,38 @@ List<Lesson?> roomallocation(XmlDay plan, String room) {
   return lessons;
 }
 
-List<DateTime> freedays(List<String> days) {
+List<Lesson?> classalocation(XmlDay plan, String level) {
+  var levels = plan.xml.findAllElements("Kurz");
+  XmlNode? levelnode;
+
+  levels.forEach((node) {
+    //print(node.text);
+    node.text == level ? levelnode = (node.ancestors.first) : 0;
+  });
+  //print(levelnode);
+  List<Lesson?> lessons = [];
+  for (int i = 0; i < MAXHOURSPERDAY; i++) {
+    lessons.add(null);
+  }
+  //for (var node in filteredrooms) {
+  //st is the hour in which the lesson takes place
+  //  lessons[int.parse(node.getElement("St")!.text.toString()) - 1] =
+  //      Lesson.fromxmlnode(node);
+  //}
+  for (var node in levelnode!.findAllElements("Std")) {
+    //print(node);
+    lessons[int.parse(node.getElement("St")!.text.toString()) - 1] =
+        (Lesson.fromxmlnode(node));
+  }
+  return lessons;
+}
+
+List<DateTime> freedays(XmlDocument xml) {
+  //get all free days
+  List<String> freedaysStrings = [];
+  xml.findAllElements("ft").forEach((node) {
+    freedaysStrings.add(node.text);
+  });
   DateTime freetodate(String strdate) {
     return DateTime(int.parse(strdate.substring(0, 2)) + 2000,
         int.parse(strdate.substring(2, 4)), int.parse(strdate.substring(4, 6)));
@@ -214,7 +293,7 @@ List<DateTime> freedays(List<String> days) {
 
   List<DateTime> dates = [];
 
-  for (var i in days) {
+  for (var i in freedaysStrings) {
     dates.add(freetodate(i));
   }
   return dates;
@@ -226,14 +305,11 @@ DateTime? nextday(DateTime currentday, List<DateTime> freedates) {
     currentday = currentday.add(const Duration(days: 1));
     if (currentday.weekday == DateTime.sunday ||
         currentday.weekday == DateTime.saturday) {
-      //print("wochenende");
       continue;
     }
     if (freedates.contains(currentday)) {
-      //print("freier Tag");
       continue;
     }
-    //print(currentday);
     return currentday;
   }
 }

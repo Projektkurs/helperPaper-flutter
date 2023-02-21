@@ -17,6 +17,8 @@ class EmptyPopup extends StatefulWidget {
 class EmptyPopupRef {
   Componentenum components = Componentenum.defaultcase;
   Widget? replacement;
+  GeneralConfig? gconfig;
+  dynamic cconfig;
   int scaffoldingchilds = 2;
   EmptyPopupRef();
 }
@@ -96,6 +98,15 @@ class _EmptyPopupState extends State<EmptyPopup> {
               leading: const Icon(Icons.query_builder),
             ),
             SelectableRadio<Componentenum>(
+              value: Componentenum.countdown,
+              groupvalue: widget.popupref.components,
+              onPressed: () {
+                setenum(Componentenum.countdown);
+              },
+              text: 'Countdown',
+              leading: const Icon(Icons.query_builder),
+            ),
+            SelectableRadio<Componentenum>(
               value: Componentenum.note,
               groupvalue: widget.popupref.components,
               onPressed: () {
@@ -136,22 +147,48 @@ class _EmptyPopupState extends State<EmptyPopup> {
     late Popup popup;
     switch (widget.popupref.components) {
       case (Componentenum.clock):
-        cconfig = ClockConfig();
+        widget.popupref.cconfig = ClockConfig();
         popup = ClockPopup(
-            gconfig: widget.gconfig, cconfig: cconfig, byempty: true);
+            gconfig: widget.gconfig,
+            cconfig: widget.popupref.cconfig,
+            byempty: true);
+        break;
+      case (Componentenum.countdown):
+        widget.popupref.cconfig = CountdownConfig();
+        popup = CountdownPopup(
+            gconfig: widget.gconfig,
+            cconfig: widget.popupref.cconfig,
+            byempty: true);
         break;
       case (Componentenum.empty):
       case (Componentenum.note):
-        cconfig = NoteConfig();
-        popup =
-            NotePopup(gconfig: widget.gconfig, cconfig: cconfig, byempty: true);
+        widget.popupref.cconfig = NoteConfig();
+        popup = NotePopup(
+            gconfig: widget.gconfig,
+            cconfig: widget.popupref.cconfig,
+            byempty: true);
         break;
       case (Componentenum.example):
-        cconfig = ExampleConfig();
+        widget.popupref.cconfig = ExampleConfig();
         popup = ExamplePopup(
-            gconfig: widget.gconfig, cconfig: cconfig, byempty: true);
+            gconfig: widget.gconfig,
+            cconfig: widget.popupref.cconfig,
+            byempty: true);
+        break;
+      case (Componentenum.vertretungsplan):
+        widget.popupref.cconfig = VertretungsplanConfig("007", "5a", false);
+        popup = VertretungsplanPopup(
+            gconfig: widget.gconfig,
+            cconfig: widget.popupref.cconfig,
+            byempty: true);
         break;
       case (Componentenum.vertical):
+        widget.popupref.cconfig = ScaffoldingConfig();
+        popup = ScaffoldingPopup(
+            gconfig: widget.gconfig,
+            cconfig: widget.popupref.cconfig,
+            byempty: true);
+        break;
       case (Componentenum.horizontal):
       default:
         break;
@@ -170,7 +207,10 @@ class _EmptyPopupState extends State<EmptyPopup> {
 
   @override
   void initState() {
-    tabs = [firstpage, secondpage, secondpage];
+    tabs = [
+      firstpage,
+      secondpage,
+    ];
     super.initState();
   }
 

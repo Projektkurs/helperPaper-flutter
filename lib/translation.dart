@@ -36,7 +36,14 @@ Map<String, Map<String, String>> get _de_DE => {
         'load': 'Layout Laden',
         'resetlayout': 'Layout Zurücksetzen',
       },
-      'widgets': {},
+      'widgets': {
+        'clock': 'Uhr',
+        'countdown': 'Countdown',
+        'empty': 'Leeres Widget',
+        'note': 'Notiz',
+        'subschedule': 'Vertretungsplan',
+        'scaffolding': 'Gerüst'
+      },
       'settings': {},
       'pop_clk': {
         'clockhands': 'Uhrzeiger',
@@ -55,5 +62,11 @@ Map<String, Map<String, String>> get _de_DE => {
         'clockface2': 'reduziert',
         'clockface3': 'erweitert',
         'marks': 'Marken'
+      },
+      'countdown': {
+        'befor_start': 'Die erste Stunde\nhat noch nicht begonnen.',
+        'after_last': 'die letzte Stunde\nist vorbei.',
+        'break': 'Es ist die Pause\n vor der % Stunde.',
+        'lesson': 'Es ist die % Stunde.'
       }
     };

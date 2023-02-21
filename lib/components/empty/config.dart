@@ -9,7 +9,6 @@ class EmptyComponentConfig {
   int width = 0;
   int height = 0;
   Component? replacement;
-  bool apply = false;
   Function? replace;
   late Key key;
   EmptyComponentConfig();

@@ -2,7 +2,7 @@
  *
  * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
-import 'package:helperpaper/components/scaffholding/config.dart';
+import 'package:helperpaper/components/scaffolding/config.dart';
 import 'package:helperpaper/components/vertretungsplan/component.dart';
 import 'package:helperpaper/main_header.dart';
 
@@ -10,6 +10,7 @@ enum Componentenum {
   horizontal,
   vertical,
   clock,
+  countdown,
   defaultcase,
   empty,
   example,
@@ -37,6 +38,8 @@ Component? jsontoComp(Map<String, dynamic> json, resizeWidget,
       return Empty.fromJson(json, resizeWidget, replaceChildren);
     case ("Clock"):
       return Clock.fromJson(json);
+    case ("Countdown"):
+      return Countdown.fromJson(json);
     case ("Note"):
       return Note.fromJson(json);
     case ("Vertretungsplan"):

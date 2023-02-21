@@ -10,9 +10,6 @@ class ExampleConfig {
 
   ExampleConfig();
 
-  ///The default digitalExample
-  ExampleConfig.digital();
-
   Map<String, dynamic> toJson() => {};
 
   ExampleConfig.fromJson(Map<String, dynamic> json);
