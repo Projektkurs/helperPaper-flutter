@@ -104,7 +104,7 @@ class _EmptyPopupState extends State<EmptyPopup> {
                 setenum(Componentenum.countdown);
               },
               text: 'Countdown',
-              leading: const Icon(Icons.query_builder),
+              leading: const Icon(Icons.timelapse),
             ),
             SelectableRadio<Componentenum>(
               value: Componentenum.note,
@@ -113,7 +113,7 @@ class _EmptyPopupState extends State<EmptyPopup> {
                 setenum(Componentenum.note);
               },
               text: 'Note',
-              leading: const Icon(Icons.query_builder),
+              leading: const Icon(Icons.text_snippet),
             ),
             SelectableRadio<Componentenum>(
               value: Componentenum.vertretungsplan,
@@ -122,7 +122,8 @@ class _EmptyPopupState extends State<EmptyPopup> {
                 setenum(Componentenum.vertretungsplan);
               },
               text: 'Vertretungsplan',
-              leading: const Icon(Icons.query_builder),
+              //leading: const Icon(Icons.calendar_month),
+              leading: const Icon(Icons.event_note),
             ),
             SelectableRadio<Componentenum>(
               value: Componentenum.example,

@@ -1,6 +1,7 @@
 import 'package:helperpaper/main_header.dart';
 import 'package:helperpaper/message.dart';
 import 'package:helperpaper/vpmobil.dart' as vp;
+import 'package:google_fonts/google_fonts.dart';
 
 class Countdown extends Component {
   @override
@@ -42,9 +43,12 @@ class CountdownState extends ComponentState<Countdown> {
   void initState() {
     super.initState();
     vp.addvplandirectcallback((List<vp.XmlDay> daylist) {
-      print("test");
-      xmlday = daylist[0];
-      hourtimes = xmlday!.gethourtimes();
+      if (mounted) {
+        setState(() {
+          xmlday = daylist[0];
+          hourtimes = xmlday!.gethourtimes();
+        });
+      }
     });
   }
 
@@ -100,24 +104,16 @@ class CountdownState extends ComponentState<Countdown> {
         //flutter  appBar: ...,
         //body: Center(
         //child:
-        Column(
-      children: [
-        SizedBox(
-          height: 50,
-        ),
         FittedBox(
             fit: BoxFit.contain,
-            child:
-                // Hinzufügen eines Widgets um den Countdown-Timer anzuzeigen
-                Text(
-              message, //'$hours:$minutes:$seconds',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                  fontSize: 50),
-            )),
-        SizedBox(height: 20),
-      ],
-    ));
+            child: Text(message,
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis, //'$hours:$minutes:$seconds',
+                style: GoogleFonts.chivo(
+                    //fontWeight: widget.cconfig.fontweight,
+                    //    fontWeight: FontWeight.bold,
+                    //    color: Colors.black,
+                    //    fontSize: 50),
+                    ))));
   }
 }
