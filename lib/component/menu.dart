@@ -1,4 +1,4 @@
-/* component_menu.dart - mixin for options common component configs 
+/* menu.dart - mixin for options common component configs 
  *
  * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
@@ -6,6 +6,8 @@
 import 'package:helperpaper/main_header.dart';
 export 'package:helperpaper/component/selectableradio.dart';
 
+/// opens a Dialog in which the user can select a Color. on closing, the Color
+/// will be returned. The input color will be the default value
 Future<Color> colorDialog(
     BuildContext context, Color color, Function setState) async {
   await showDialog<void>(
@@ -40,10 +42,7 @@ Future<Color> colorDialog(
   );
   return color;
 }
-// void setState(VoidCallback fn);
 
-//  Color testcolor=Colors.blue;
-//static final List<String> _cornermap=["round","test"];
 final List<String> _cornerlist =
     Bordertype.values.map((dynamic e) => e.toString().split('.').last).toList();
 final List<DropdownMenuItem<String>> _cornerstyle = _cornerlist
@@ -52,7 +51,7 @@ final List<DropdownMenuItem<String>> _cornerstyle = _cornerlist
           child: Text(e),
         ))
     .toList();
-String _corner_style_val = _cornerlist[0];
+String _cornerStyleVal = _cornerlist[0];
 Widget componentTile(
     GeneralConfig generalconfig, BuildContext context, Function setState) {
   return ExpansionTile(title: const Text("General"), children: [
@@ -84,7 +83,7 @@ Widget componentTile(
                   (Theme.of(context).textTheme.titleSmall!.fontSize ?? 16) * 4,
               child: Text("Radius",
                   style: Theme.of(context).textTheme.titleSmall)),
-          trailing: Container(
+          trailing: SizedBox(
               width: (Theme.of(context).textTheme.titleSmall!.fontSize ?? 16) *
                   2.5,
               child: Text(
@@ -103,11 +102,11 @@ Widget componentTile(
           leading: Text("Corner Style",
               style: Theme.of(context).textTheme.titleSmall),
           title: DropdownButton<String>(
-              value: _corner_style_val,
+              value: _cornerStyleVal,
               items: _cornerstyle,
               onChanged: (e) {
                 setState(() {
-                  _corner_style_val = e ?? _corner_style_val;
+                  _cornerStyleVal = e ?? _cornerStyleVal;
                 });
               })),
       ListTile(
@@ -135,7 +134,7 @@ Widget componentTile(
         },
       ),
     ]),
-    ExpansionTile(title: const Text("Text"), children: []),
-    ExpansionTile(title: const Text("Colors"), children: [])
+    const ExpansionTile(title: Text("Text"), children: []),
+    const ExpansionTile(title: Text("Colors"), children: [])
   ]);
 }

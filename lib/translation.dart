@@ -1,3 +1,8 @@
+/* translation.dart - framework to communicate between epaper and device
+ *
+ * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
+ */
+
 var currentLanguage = 'de_DE';
 
 /// the delay of Tooltip messages
@@ -9,16 +14,16 @@ const Duration msgdur = Duration(milliseconds: 300);
 Map<String, Map<String, String>> get tr {
   switch (currentLanguage) {
     case ('de_DE'):
-      return _de_DE;
+      return deDE;
     default:
-      return _de_DE;
+      return deDE;
   }
 }
 
 /// The german translation
 ///
 ///
-Map<String, Map<String, String>> get _de_DE => {
+Map<String, Map<String, String>> get deDE => {
       'generic': {
         'active': 'Aktiv',
         'color': 'Farbe',
@@ -64,7 +69,7 @@ Map<String, Map<String, String>> get _de_DE => {
         'marks': 'Marken'
       },
       'countdown': {
-        'befor_start': 'Die erste Stunde\nhat noch nicht begonnen.',
+        'before_start': 'Die erste Stunde\nhat noch nicht begonnen.',
         'after_last': 'die letzte Stunde\nist vorbei.',
         'break': 'Es ist die Pause\n vor der % Stunde.',
         'lesson': 'Es ist die % Stunde.'

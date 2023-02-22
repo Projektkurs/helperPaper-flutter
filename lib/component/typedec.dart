@@ -1,9 +1,7 @@
-/* misc.dart -  miscellaneous functions and enums
+/* typedec.dart -  miscellaneous functions and enums
  *
  * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
-import 'package:helperpaper/components/scaffolding/config.dart';
-import 'package:helperpaper/components/vertretungsplan/component.dart';
 import 'package:helperpaper/main_header.dart';
 
 enum Componentenum {
@@ -18,19 +16,18 @@ enum Componentenum {
   vertretungsplan
 }
 
-//used by most Components to open the config menu if they are pressed.
-//assigned to configMenuMainParse in main.dart
+///used by most Components to open the config menu if they are pressed.
+///assigned to configMenuMainParse in main.dart
 typedef Configmenut = void Function(List<Key> key, GeneralConfig config,
     double width, double height, void Function(VoidCallback fn) configsetState);
 
 Configmenut configmenu = (List<Key> key, GeneralConfig config, double width,
     double height, void Function(VoidCallback fn) configsetState) {};
 typedef PopupCallback = void Function(Component widget, Function setState);
-//returns Type of Component, must be exactly what runtimetype.toString returns
 
+/// returns Type of Component, must be exactly what runtimetype.toString returns
 Component? jsontoComp(Map<String, dynamic> json, resizeWidget,
     void Function(Key?, Widget) replaceChildren) {
-  //switch(json['gconfig']["cconfig"]['type']){
   switch ((json['type'])) {
     case ("Scaffolding"):
       return Scaffolding.fromJson(json);

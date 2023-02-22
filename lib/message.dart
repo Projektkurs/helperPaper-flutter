@@ -16,16 +16,11 @@ mixin message {
     Future<String> fifocontent = fifo.readAsString();
     fifocontent.then((message) {
       setState(() {
-        //if(message=="config"){
-        print("apply Config");
         jsonsave = File('./configs/defaultconfig').readAsStringSync();
         maincontainers = jsonDecode(jsonsave)['subcontainers'];
         (this as AppState).mainscreenkey = GlobalKey();
         scafffromjson = true;
-        //}else if(message=="generalconfig"){
-        //jsonconfig=jsonDecode(message);
         File('config').writeAsString(jsonEncode(jsonconfig));
-        //}
       });
       epaperUpdateInterrupt();
     });

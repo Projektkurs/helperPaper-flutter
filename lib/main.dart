@@ -50,6 +50,7 @@ class App extends StatefulWidget {
 
 class AppState extends State<App> with message {
   //number of Widgets by the first scaffholding
+  @override
   int maincontainers = 1;
   addContainer() {
     debugPrint("increasing main containers");
@@ -64,9 +65,6 @@ class AppState extends State<App> with message {
       maincontainers > 1 ? maincontainers-- : null;
     });
   }
-
-  //changes variable "enabled" of every resizeline  -> see resizeline.dart
-  bool _showlines = false;
 
   late Future<bool> configisload;
   @override
@@ -144,7 +142,6 @@ class AppState extends State<App> with message {
       updatescreen() async {
         Future.delayed(const Duration(minutes: 5)).then((value) async {
           setState(() {
-            print("apply Config");
             jsonsave = File('./configs/defaultconfig').readAsStringSync();
             maincontainers = jsonDecode(jsonsave)['subcontainers'];
             scafffromjson = true;
@@ -170,8 +167,9 @@ class AppState extends State<App> with message {
   GlobalKey mainscreenkey = GlobalKey();
   GlobalKey settingsscreenkey = GlobalKey();
   Scaffolding? mainscaffolding;
+
+  ///controlls wether the next setState of MainScreen will be built from the Json config or a new Screen is used
   @override
-  //controlls wether the next setState of MainScreen will be built from the Json config or a new Screen is used
   bool scafffromjson = false;
   bool firstbuild = true;
   @override

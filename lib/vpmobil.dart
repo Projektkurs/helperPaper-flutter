@@ -1,14 +1,11 @@
 import "package:http/http.dart" as http;
 import "package:helperpaper/main_header.dart";
-import "package:path/path.dart";
 import "package:xml/xml.dart";
 import 'dart:collection';
 
-const MAXHOURSPERDAY = 7;
+const maxHoursPerDay = 7;
 List<XmlDay>? _xmldays;
 List<void Function(List<XmlDay>)> _callbacks = [];
-
-List<void Function()> _handlers = [];
 bool _updatehandlerruning = false;
 bool startupdatehandler() {
   if (!_updatehandlerruning) {
@@ -49,6 +46,8 @@ void _vplanAutoUpdater() async {
   }
 }
 
+/// a complete plan of School lessons for the next 5 days. If vpmobil does not have
+/// the plans for all five days, it might be less.
 class Plan {
   final List<List<Lesson?>> lessons;
   final List<XmlDay> days;
@@ -67,7 +66,7 @@ class Plan {
   }
 
   static Plan classplan(String level, List<XmlDay> days) {
-    //the startday is eventually not be a schoolday
+    //the startday might eventually not be a schoolday
     var freedates = freedays(days[0].xml);
     List<List<Lesson?>> lessons = [];
 
@@ -78,6 +77,7 @@ class Plan {
   }
 }
 
+/// a school lesson with its related data.
 class Lesson {
   final int hour;
   final String room; // a room might be not just a number
@@ -127,23 +127,22 @@ class XmlDay {
         microseconds: now.microsecond));
     for (var xmlhour in xmlhours) {
       String? startstring = xmlhour.getAttribute("ZeitVon");
-      List<int> hour_minute = [];
+      List<int> hourMinute = [];
       startstring!.split(":").forEach((element) {
-        hour_minute.add(int.tryParse(element)!);
+        hourMinute.add(int.tryParse(element)!);
       });
       times[0].add(DateTime.fromMillisecondsSinceEpoch(
-          (hour_minute[0] - 1) * 3600000 + hour_minute[1] * 60000));
+          (hourMinute[0] - 1) * 3600000 + hourMinute[1] * 60000));
       times[0].last =
           times[0].last.add(Duration(microseconds: now.microsecondsSinceEpoch));
-      print(times[0].last);
       String? endstring = xmlhour.getAttribute("ZeitBis");
-      hour_minute = [];
+      hourMinute = [];
 
       endstring!.split(":").forEach((element) {
-        hour_minute.add(int.tryParse(element)!);
+        hourMinute.add(int.tryParse(element)!);
       });
       times[1].add(DateTime.fromMillisecondsSinceEpoch(
-          (hour_minute[0] - 1) * 3600000 + hour_minute[1] * 60000));
+          (hourMinute[0] - 1) * 3600000 + hourMinute[1] * 60000));
       times[1].last =
           times[1].last.add(Duration(microseconds: now.microsecondsSinceEpoch));
     }
@@ -205,14 +204,12 @@ class XmlDay {
   List<String> _getelementsorted(String elementname) {
     HashSet<String> roomset = HashSet();
     var roomiter = xml.findAllElements(elementname);
-    roomiter.forEach((element) {
+    for (var element in roomiter) {
       if (!roomset.contains(element.innerText) && element.innerText != "") {
-        //print(element.innerText);
         roomset.add(element.innerText);
       }
-    });
+    }
     return List.from(roomset)..sort();
-    //return roomset.toList();
   }
 
   List<String> getrooms() {
@@ -222,12 +219,12 @@ class XmlDay {
   List<String> getclasses() {
     HashSet<String> roomset = HashSet();
     var roomiter = xml.findAllElements("Kurz");
-    roomiter.forEach((element) {
+    for (var element in roomiter) {
       if (!roomset.contains(element.innerText) &&
           element.innerText.startsWith("0")) {
         roomset.add(element.innerText.substring(1));
       }
-    });
+    }
     return List.from(roomset)..sort();
   }
 }
@@ -239,11 +236,11 @@ DateTime trim(DateTime date) {
 List<Lesson?> roomallocation(XmlDay plan, String room) {
   var rooms = plan.xml.findAllElements("Ra");
   List<XmlNode> filteredrooms = [];
-  rooms.forEach((node) {
+  for (var node in rooms) {
     node.text == room ? filteredrooms.add(node.ancestors.first) : 0;
-  });
+  }
   List<Lesson?> lessons = [];
-  for (int i = 0; i < MAXHOURSPERDAY; i++) {
+  for (int i = 0; i < maxHoursPerDay; i++) {
     lessons.add(null);
   }
   for (var node in filteredrooms) {
@@ -257,14 +254,13 @@ List<Lesson?> roomallocation(XmlDay plan, String room) {
 List<Lesson?> classalocation(XmlDay plan, String level) {
   var levels = plan.xml.findAllElements("Kurz");
   XmlNode? levelnode;
-
-  levels.forEach((node) {
+  for (var node in levels) {
     //print(node.text);
     node.text == level ? levelnode = (node.ancestors.first) : 0;
-  });
+  }
   //print(levelnode);
   List<Lesson?> lessons = [];
-  for (int i = 0; i < MAXHOURSPERDAY; i++) {
+  for (int i = 0; i < maxHoursPerDay; i++) {
     lessons.add(null);
   }
   //for (var node in filteredrooms) {
@@ -312,4 +308,5 @@ DateTime? nextday(DateTime currentday, List<DateTime> freedates) {
     }
     return currentday;
   }
+  return null;
 }

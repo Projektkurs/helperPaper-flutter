@@ -1,4 +1,4 @@
-/* empty_menu.dart - config menu for Empty component 
+/* empty/popup.dart - popup menu for empty component 
  *
  * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
@@ -27,7 +27,7 @@ class _EmptyPopupState extends State<EmptyPopup> {
   /// used by the second page to know wether the a mediaquery.pop should be vetoed.
   bool blockscope = false;
   //lambda function cannot be used as they are compiled before getters are
-  late List<Widget Function(BuildContext context)> tabs;
+  late List<Widget? Function(BuildContext context)> tabs;
   bool blocknext = false;
   dynamic cconfig;
 
@@ -49,36 +49,13 @@ class _EmptyPopupState extends State<EmptyPopup> {
           //start Component Radio
           flex: 10,
           child: ListView(children: [
-            ListTile(
-                leading: SizedBox(
-                    width: (Theme.of(context).textTheme.titleMedium!.fontSize ??
-                            16) *
-                        4,
-                    child: Text("Width",
-                        style: Theme.of(context).textTheme.titleMedium)),
-                trailing: SizedBox(
-                    width: (Theme.of(context).textTheme.titleMedium!.fontSize ??
-                            16) *
-                        2.5,
-                    child: Text((widget.popupref.scaffoldingchilds)
-                        .toStringAsFixed(0))),
-                title: Slider(
-                    value: widget.popupref.scaffoldingchilds.toDouble(),
-                    onChanged: (double value) {
-                      setState(() {
-                        widget.popupref.scaffoldingchilds =
-                            value.round().toInt();
-                      });
-                    },
-                    min: 2,
-                    max: 8)),
             SelectableRadio<Componentenum>(
                 value: Componentenum.horizontal,
                 groupvalue: widget.popupref.components,
                 onPressed: () {
                   setenum(Componentenum.horizontal);
                 },
-                text: 'Column',
+                text: 'Spalte',
                 leading: const Icon(Icons.view_column_rounded)),
             SelectableRadio<Componentenum>(
                 value: Componentenum.vertical,
@@ -86,15 +63,47 @@ class _EmptyPopupState extends State<EmptyPopup> {
                 onPressed: () {
                   setenum(Componentenum.vertical);
                 },
-                text: 'Row',
+                text: 'Zeile',
                 leading: const Icon(Icons.table_rows)),
+            widget.popupref.components == Componentenum.vertical ||
+                    widget.popupref.components == Componentenum.horizontal
+                ? ListTile(
+                    leading: SizedBox(
+                        width: (Theme.of(context)
+                                    .textTheme
+                                    .titleMedium!
+                                    .fontSize ??
+                                16) *
+                            4,
+                        child: Text("Containeranzahl",
+                            style: Theme.of(context).textTheme.titleMedium)),
+                    trailing: SizedBox(
+                        width: (Theme.of(context)
+                                    .textTheme
+                                    .titleMedium!
+                                    .fontSize ??
+                                16) *
+                            2.5,
+                        child: Text((widget.popupref.scaffoldingchilds)
+                            .toStringAsFixed(0))),
+                    title: Slider(
+                        value: widget.popupref.scaffoldingchilds.toDouble(),
+                        onChanged: (double value) {
+                          setState(() {
+                            widget.popupref.scaffoldingchilds =
+                                value.round().toInt();
+                          });
+                        },
+                        min: 2,
+                        max: 8))
+                : const SizedBox.shrink(),
             SelectableRadio<Componentenum>(
               value: Componentenum.clock,
               groupvalue: widget.popupref.components,
               onPressed: () {
                 setenum(Componentenum.clock);
               },
-              text: 'Clock',
+              text: 'Uhr',
               leading: const Icon(Icons.query_builder),
             ),
             SelectableRadio<Componentenum>(
@@ -112,7 +121,7 @@ class _EmptyPopupState extends State<EmptyPopup> {
               onPressed: () {
                 setenum(Componentenum.note);
               },
-              text: 'Note',
+              text: 'Notiz',
               leading: const Icon(Icons.text_snippet),
             ),
             SelectableRadio<Componentenum>(
@@ -131,7 +140,7 @@ class _EmptyPopupState extends State<EmptyPopup> {
               onPressed: () {
                 setenum(Componentenum.example);
               },
-              text: 'Example',
+              text: 'Beispiel Widget',
               //leading: const Icon(Icons.poin)
             ),
           ])),
@@ -140,11 +149,10 @@ class _EmptyPopupState extends State<EmptyPopup> {
   }
 
   int step = 0;
-  Widget secondpage(BuildContext context) {
-    void setveto(bool val) {
-      blockscope = val;
-    }
-
+  // for any reason, the programm crashes if a function which returns Widget
+  // that is used by build calls Navigator.pop, meaning that it will return null
+  // if the context is needed to be poped and Navigator.pop is called in build
+  Widget? secondpage(BuildContext context) {
     late Popup popup;
     switch (widget.popupref.components) {
       case (Componentenum.clock):
@@ -185,24 +193,20 @@ class _EmptyPopupState extends State<EmptyPopup> {
         break;
       case (Componentenum.vertical):
         widget.popupref.cconfig = ScaffoldingConfig();
-        popup = ScaffoldingPopup(
-            gconfig: widget.gconfig,
-            cconfig: widget.popupref.cconfig,
-            byempty: true);
-        break;
+        return null;
       case (Componentenum.horizontal):
+        widget.popupref.cconfig = ScaffoldingConfig();
+        return null;
       default:
         break;
     }
     return WillPopScope(
         child: popup,
         onWillPop: () async {
-          //print("test:$blockscope");
           setState(() {
             step--;
           });
           return false;
-          //return blockscope;
         });
   }
 
@@ -218,10 +222,14 @@ class _EmptyPopupState extends State<EmptyPopup> {
   @override
   Widget build(BuildContext context) {
     //pregenerate widget as blocknext is dependent on it being generated
-    Widget tab = tabs[step](context);
+    Widget? tab = tabs[step](context);
     List<Widget> indicatorbar = [];
+    if (tab == null) {
+      Navigator.pop(context);
+      return const SizedBox();
+    }
     if (step == 1) {
-      return tabs[1](context);
+      return tabs[1](context)!;
     }
     for (int i = 0; i <= tabs.length - 1; i++) {
       indicatorbar.add(Expanded(
@@ -254,7 +262,7 @@ class _EmptyPopupState extends State<EmptyPopup> {
                   : setState(() {
                       step++;
                     }),
-          child: Text(step == tabs.length - 1 ? 'Apply' : 'Next',
+          child: Text(step == tabs.length - 1 ? 'Anwenden' : 'Weiter',
               style: TextStyle(
                   fontSize:
                       Theme.of(context).textTheme.headlineLarge!.fontSize!)),
@@ -277,13 +285,13 @@ class _EmptyPopupState extends State<EmptyPopup> {
                 : setState(() {
                     step--;
                   }),
-            child: Text(step == 0 ? 'Cancle' : 'Previous',
+            child: Text(step == 0 ? 'Zurück' : 'Weiter',
                 style: TextStyle(
                     fontSize:
                         Theme.of(context).textTheme.headlineLarge!.fontSize!)),
           ),
           body: Column(
-              children: [Expanded(child: tab), Row(children: indicatorbar)]),
+              children: [Expanded(child: tab!), Row(children: indicatorbar)]),
         ));
   }
 }

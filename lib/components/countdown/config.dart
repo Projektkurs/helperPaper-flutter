@@ -1,16 +1,17 @@
-/* Countdown - Countdown
+/* countdown/config.dart - config of countdown component
  *
  * Copyright 2023 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
- */
-
-import 'package:helperpaper/main_header.dart';
-
+*/
 class CountdownConfig {
-  void copyFrom(CountdownConfig config) {}
+  bool showbar = true;
+  void copyFrom(CountdownConfig config) {
+    showbar = config.showbar;
+  }
 
   CountdownConfig();
 
-  Map<String, dynamic> toJson() => {};
+  Map<String, dynamic> toJson() => {'showbar': showbar};
 
-  CountdownConfig.fromJson(Map<String, dynamic> json);
+  CountdownConfig.fromJson(Map<String, dynamic> json)
+      : showbar = json['showbar'] ?? true;
 }

@@ -1,15 +1,14 @@
-/* empty.dart - initial component used which config can be used to replace itself
+/* empty/component.dart - initial component used which config can be used to replace itself
  *
  * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
-import 'package:helperpaper/components/scaffolding/config.dart';
 import 'package:helperpaper/main_header.dart';
 
 class Empty extends Component {
   Empty({
     required Key key,
     required GeneralConfig gconfig,
-    required EmptyComponentConfig cconfig,
+    required EmptyConfig cconfig,
     required this.resizeWidget,
     required this.replaceChildren,
   }) : super(key: key, gconfig: gconfig, cconfig: cconfig);
@@ -22,7 +21,7 @@ class Empty extends Component {
       : super(
             key: GlobalKey(),
             gconfig: GeneralConfig.fromJson(json['gconfig']),
-            cconfig: EmptyComponentConfig.fromJson(json['cconfig']));
+            cconfig: EmptyConfig.fromJson(json['cconfig']));
 
   @override
   EmptyState createState() => EmptyState();
@@ -42,11 +41,14 @@ class EmptyState extends ComponentState<Empty> {
             key: widget.cconfig.key,
             direction: true,
             showlines: false,
-            subcontainers: 2,
+            subcontainers: popupref.scaffoldingchilds,
             gconfig: GeneralConfig(widget.gconfig.flex),
             cconfig: ScaffoldingConfig());
-        widget.cconfig.apply = true;
-        widget.cconfig.replace!();
+        // even though it is clear trough the constructor of Empty
+        // that cconfig is of type EmptyConfig the rust compiler does not
+        // recognice this optimization option, which is why
+        // it is explicitly type casted here
+        (widget.cconfig as EmptyConfig).replace!();
         break;
       case Componentenum.vertical:
         widget.cconfig.replacement = Scaffolding(
@@ -56,53 +58,49 @@ class EmptyState extends ComponentState<Empty> {
             subcontainers: popupref.scaffoldingchilds,
             gconfig: GeneralConfig(widget.gconfig.flex),
             cconfig: popupref.cconfig);
-        widget.cconfig.apply = true;
-        widget.cconfig.replace!();
+        (widget.cconfig as EmptyConfig).replace!();
         break;
       case Componentenum.clock:
         widget.cconfig.replacement = Clock(
-          key: (widget.cconfig as EmptyComponentConfig).key,
+          key: (widget.cconfig as EmptyConfig).key,
           gconfig: GeneralConfig(widget.gconfig.flex),
           cconfig: popupref.cconfig,
         );
-        (widget.cconfig as EmptyComponentConfig).replace!();
+        (widget.cconfig as EmptyConfig).replace!();
         break;
       case Componentenum.countdown:
         widget.cconfig.replacement = Countdown(
-          key: (widget.cconfig as EmptyComponentConfig).key,
+          key: (widget.cconfig as EmptyConfig).key,
           gconfig: GeneralConfig(widget.gconfig.flex),
           cconfig: popupref.cconfig,
         );
-        (widget.cconfig as EmptyComponentConfig).replace!();
+        (widget.cconfig as EmptyConfig).replace!();
         break;
       case Componentenum.note:
         widget.cconfig.replacement = Note(
-          key: (widget.cconfig as EmptyComponentConfig).key,
+          key: (widget.cconfig as EmptyConfig).key,
           gconfig: GeneralConfig(widget.gconfig.flex),
           cconfig: popupref.cconfig,
         );
-        (widget.cconfig as EmptyComponentConfig).replace!();
+        (widget.cconfig as EmptyConfig).replace!();
         break;
       case Componentenum.vertretungsplan:
         widget.cconfig.replacement = Vertretungsplan(
-            key: (widget.cconfig as EmptyComponentConfig).key,
+            key: (widget.cconfig as EmptyConfig).key,
             gconfig: GeneralConfig(widget.gconfig.flex),
             cconfig: popupref.cconfig);
-        (widget.cconfig as EmptyComponentConfig).replace!();
+        (widget.cconfig as EmptyConfig).replace!();
         break;
       case Componentenum.example:
         widget.cconfig.replacement = Example(
-            key: (widget.cconfig as EmptyComponentConfig).key,
+            key: (widget.cconfig as EmptyConfig).key,
             gconfig: GeneralConfig(widget.gconfig.flex),
             cconfig: popupref.cconfig);
-        (widget.cconfig as EmptyComponentConfig).replace!();
+        (widget.cconfig as EmptyConfig).replace!();
         break;
       default:
         break;
     }
-    if (widget.cconfig.replacement != null) {}
-    debugPrint("widget got replaced");
-    setState(() {});
   }
 
   _replace() {

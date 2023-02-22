@@ -1,9 +1,7 @@
-/* scaffolding.dart - wraper for components or itself
+/* scaffolding/component.dart - wraper for components or itself
  *
  * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
-
-import 'package:helperpaper/components/scaffolding/config.dart';
 import 'package:helperpaper/main_header.dart';
 
 import 'callbacks.dart';
@@ -27,7 +25,6 @@ class Scaffolding extends Component {
   @override
   Map<String, dynamic> toJson() {
     Map<String, dynamic> retval = {
-      //'key':key.toString(),
       'direction': direction,
       'subcontainers': ((state.childs.length + 1) / 2).floor(),
       'gconfig': gconfig,
@@ -36,11 +33,9 @@ class Scaffolding extends Component {
     };
     if (state.childs.isNotEmpty) {
       for (int i = 0; i < (state.childs.length + 1) / 2; i++) {
-        //debugPrint("encode Childs");
         retval["Child$i"] = state.childs[i * 2];
       }
     }
-    //debugPrint("return");
     return retval;
   }
 
@@ -137,7 +132,7 @@ class ScaffoldingState extends State<Scaffolding> with callbacks {
                 }
                 tmpcomp ??= Empty(
                   gconfig: GeneralConfig(widget.gconfig.flex),
-                  cconfig: EmptyComponentConfig(),
+                  cconfig: EmptyConfig(),
                   key: GlobalKey(),
                   resizeWidget: resizeWidget,
                   replaceChildren: replaceChildren,

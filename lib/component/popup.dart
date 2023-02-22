@@ -1,8 +1,14 @@
+/* popup.dart - A popup widget with a navigation bar
+ *
+ * Copyright 2023 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
+ * 
+ */
+
 import 'package:helperpaper/main_header.dart';
 
-abstract class Popup<T> extends StatefulWidget {
+abstract class Popup<cconfigtype> extends StatefulWidget {
   final GeneralConfig gconfig;
-  final T cconfig;
+  final cconfigtype cconfig;
 
   /// disables the buttons the 'next' and 'previous' buttons, as well as the progress bar.
   /// this is currently soley used by the empty widget for disabling the own buttons
@@ -22,6 +28,7 @@ abstract class PopupState<T extends Popup> extends State<T> {
   bool blocknext = false;
   late GeneralConfig oldgconfig;
   late dynamic oldcconfig;
+  @override
   void initState() {
     oldgconfig = GeneralConfig(0);
     oldgconfig.takeFrom(widget.gconfig);
@@ -75,7 +82,9 @@ abstract class PopupState<T extends Popup> extends State<T> {
                   step++;
                 }),
           child: Text(
-              step == totaltabs - (widget.byempty ? 1 : 0) ? 'Apply' : 'Next',
+              step == totaltabs - (widget.byempty ? 1 : 0)
+                  ? 'Anwenden'
+                  : 'Weiter',
               style: TextStyle(
                   fontSize:
                       Theme.of(context).textTheme.headlineMedium!.fontSize!)),
@@ -99,7 +108,7 @@ abstract class PopupState<T extends Popup> extends State<T> {
                 : setState(() {
                     step--;
                   }),
-            child: Text(step == 0 && !widget.byempty ? 'Cancel' : 'Previous',
+            child: Text(step == 0 && !widget.byempty ? 'Abbrechen' : 'Zurück',
                 style: TextStyle(
                     fontSize:
                         Theme.of(context).textTheme.headlineMedium!.fontSize!)),
@@ -107,5 +116,52 @@ abstract class PopupState<T extends Popup> extends State<T> {
           body: Column(
               children: [Expanded(child: tab), Row(children: indicatorbar)]),
         ));
+  }
+}
+
+/// provides a default interaction model with the popups
+class Defaultdialog extends StatefulWidget {
+  const Defaultdialog(
+      {Key? key, this.appBar, required this.child, this.applybutton})
+      : super(key: key);
+  final Widget? applybutton;
+  final Widget child;
+  final PreferredSize? appBar;
+  @override
+  DefaultdialogState createState() => DefaultdialogState();
+}
+
+class DefaultdialogState extends State<Defaultdialog> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        width: MediaQuery.of(context).size.width * 0.95,
+        height: MediaQuery.of(context).size.height * 0.95,
+        decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(Radius.circular(20)),
+            border: Border.all(
+                width: 4.0, color: const Color.fromARGB(255, 73, 73, 73))),
+        child: ClipRRect(
+            borderRadius: const BorderRadius.all(Radius.circular(20)),
+            child: Scaffold(
+                floatingActionButton: widget.applybutton ??
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        alignment: Alignment.center,
+                        padding: EdgeInsets.all(
+                            MediaQuery.of(context).size.width * .006),
+                        backgroundColor:
+                            const Color.fromARGB(255, 101, 184, 90),
+                      ),
+                      onPressed: () => Navigator.pop(context),
+                      child: Text('Apply',
+                          style: TextStyle(
+                              fontSize: Theme.of(context)
+                                  .textTheme
+                                  .headlineMedium!
+                                  .fontSize!)),
+                    ),
+                appBar: widget.appBar,
+                body: widget.child)));
   }
 }

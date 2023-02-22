@@ -1,8 +1,7 @@
-/* Countdown
+/* countdown/config.dart - popup menu for countdown component
  *
  * Copyright 2023 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
- */
-
+*/
 import 'package:helperpaper/main_header.dart';
 
 class CountdownPopup extends Popup<CountdownConfig> {
@@ -18,9 +17,26 @@ class CountdownPopup extends Popup<CountdownConfig> {
 
 class _CountdownPopupState extends PopupState<CountdownPopup> {
   /// lambda function cannot be used as they are compiled before getters are
-  int step = 0;
   Widget firstpage(BuildContext context) {
-    return const SizedBox.expand();
+    return Row(children: [
+      Countdown(
+        key: UniqueKey(),
+        gconfig: widget.gconfig,
+        cconfig: widget.cconfig,
+        inpopup: true,
+      ),
+      Expanded(
+          flex: widget.gconfig.flex,
+          child: ListView(children: [
+            ListTile(
+                leading: const Text("Verbleibende Zeit als Leiste"),
+                title: Switch(
+                    value: widget.cconfig.showbar,
+                    onChanged: (val) => setState(() {
+                          widget.cconfig.showbar = val;
+                        })))
+          ]))
+    ]);
   }
 
   @override

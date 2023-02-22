@@ -1,24 +1,24 @@
-/* empty_component-config.dart - config of empty_component
+/* empty/config.dart - config of empty component
  *
  * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
 
 import 'package:helperpaper/main_header.dart';
 
-class EmptyComponentConfig {
+class EmptyConfig {
   int width = 0;
   int height = 0;
   Component? replacement;
   Function? replace;
   late Key key;
-  EmptyComponentConfig();
+  EmptyConfig();
 
   Map<String, dynamic> toJson() => {
         'width': width,
         'height': height,
       };
 
-  EmptyComponentConfig.fromJson(Map<String, dynamic> json)
+  EmptyConfig.fromJson(Map<String, dynamic> json)
       : width = json['width'],
         height = json['height'];
 }

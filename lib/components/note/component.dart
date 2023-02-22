@@ -1,4 +1,4 @@
-/* Note - Note to build a barebones component
+/* note/component.dart - a Widget that can show custom text as selected in popup
  *
  * Copyright 2023 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
@@ -6,7 +6,6 @@
 import 'package:helperpaper/main_header.dart';
 
 class Note extends Component {
-  @override
   Note(
       {required Key key,
       required GeneralConfig gconfig,

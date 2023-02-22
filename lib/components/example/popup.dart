@@ -1,4 +1,4 @@
-/* example - example to build a barebones component
+/* example/popup.dart - popup menu of example component
  *
  * Copyright 2023 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
@@ -17,8 +17,6 @@ class ExamplePopup extends Popup<ExampleConfig> {
 }
 
 class _ExamplePopupState extends PopupState<ExamplePopup> {
-  /// lambda function cannot be used as they are compiled before getters are
-  int step = 0;
   Widget firstpage(BuildContext context) {
     return const SizedBox.expand();
   }

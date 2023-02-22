@@ -1,3 +1,8 @@
+/* fontweight.dart - json decode for FontWeight
+ *
+ * Copyright 2023 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
+ */
+
 import 'main_header.dart';
 
 FontWeight fontweightfromString(String val) {

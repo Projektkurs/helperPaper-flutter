@@ -1,6 +1,8 @@
-/* clock.dart - a clock based upon the dart-libary: "analog_clock"
+/* clock/component.dart - a clock based upon the dart-libary: "analog_clock"
+ * it also has a simple digital clock
  *
- * Copyright 2022 by Béla Wohlers <bela.wohlers@gmx.de>
+ * Copyright 2022-2022 by Béla Wohlers <bela.wohlers@gmx.de>
+ * Copyright 2023 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  *
 */
 
@@ -8,9 +10,8 @@ import 'package:helperpaper/main_header.dart';
 import 'package:analog_clock/analog_clock.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-// Creates an analog or digital clock
+/// This Component can either be a digital or analog clock
 class Clock extends Component {
-  @override
   Clock(
       {super.key,
       required super.gconfig,
@@ -18,7 +19,7 @@ class Clock extends Component {
       super.inpopup})
       : super(cconfig: cconfig);
 
-  String? name = "Clock";
+  final String? name = "Clock";
   @override
   Map<String, dynamic> toJson() {
     Map<String, dynamic> tmpconf = super.toJson();
@@ -50,13 +51,12 @@ class ClockState extends ComponentState<Clock> {
 
   timeupdate() async {
     timeupdatective = true;
-    Future.delayed(Duration(seconds: 1)).then((value) {
+    Future.delayed(const Duration(seconds: 1)).then((value) {
       if (widget.cconfig.isdigital && mounted) {
         if (!(now.minute == DateTime.now().minute &&
             !widget.cconfig.showsecond)) {
           setState(() {});
         }
-
         timeupdate();
       } else {
         timeupdatective = false;
@@ -67,7 +67,6 @@ class ClockState extends ComponentState<Clock> {
   @override
   initState() {
     super.initState();
-
     timeupdate();
   }
 
@@ -75,7 +74,6 @@ class ClockState extends ComponentState<Clock> {
   Widget build(BuildContext context) {
     String pad(int date) => date < 10 ? "0$date" : date.toString();
     now = DateTime.now();
-    //String time = "${pad(now.hour)}:${pad(now.minute)}:${pad(now.second)}";
     String time = "${pad(now.hour)}:${pad(now.minute)}";
     if (widget.cconfig.isdigital) {
       return componentbuild(FittedBox(
@@ -96,7 +94,6 @@ class ClockState extends ComponentState<Clock> {
         hourHandColor: widget.cconfig.hourColor,
         minuteHandColor: widget.cconfig.minuteColor,
         secondHandColor: widget.cconfig.secondColor,
-        //textScaleFactor: widget.cconfig.textScaleFactor,
         digitalClockColor: widget.cconfig.digitalClockColor,
         numberColor: widget.cconfig.numberColor,
         textScaleFactor: widget.cconfig.textScaleFactor,

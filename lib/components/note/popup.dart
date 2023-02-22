@@ -1,9 +1,8 @@
-/* Note - Note to build a barebones component
+/* note/popup.dart - popup menu of note component
  *
  * Copyright 2023 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
 
-import 'package:flutter/services.dart';
 import 'package:helperpaper/main_header.dart';
 
 class NotePopup extends Popup<NoteConfig> {
@@ -21,8 +20,6 @@ class _NotePopupState extends PopupState<NotePopup> {
   late TextEditingController _textctrl;
   String text = "";
 
-  /// lambda function cannot be used as they are compiled before getters are
-  int step = 0;
   Widget firstpage(BuildContext context) {
     return Container(
         margin: const EdgeInsets.all(8),
@@ -41,7 +38,7 @@ class _NotePopupState extends PopupState<NotePopup> {
   void initState() {
     _textctrl = TextEditingController(text: widget.cconfig.text);
     oldcconfig = NoteConfig();
-    tabs = [firstpage, firstpage];
+    tabs = [firstpage];
     super.initState();
   }
 }

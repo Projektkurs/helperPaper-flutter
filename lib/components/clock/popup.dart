@@ -1,6 +1,6 @@
-/* clock_menu.dart - config menu for Clock component 
+/* clock/popup.dart - popup menu for clock component 
  *
- * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
+ * Copyright 2023 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
 import 'package:helperpaper/main_header.dart';
 
@@ -28,8 +28,6 @@ class _ClockPopupState extends PopupState<ClockPopup> {
                 child: Text(e),
               ))
           .toList();
-
-  /// lambda function cannot be used as they are compiled before getters are
 
   Widget firstpage(BuildContext context) {
     late List<Widget> configmenu;
@@ -118,8 +116,8 @@ class _ClockPopupState extends PopupState<ClockPopup> {
       configmenu = [
         ExpansionTile(
           title: Text(ctr['clockhands']!),
-          children: clockhands,
           initiallyExpanded: true,
+          children: clockhands,
         ),
         ExpansionTile(
           title: Text(ctr['buildin_digitalclock']!),
@@ -234,7 +232,7 @@ class _ClockPopupState extends PopupState<ClockPopup> {
         Expanded(
             flex: widget.gconfig.flex,
             child: Container(
-                margin: EdgeInsets.all(8),
+                margin: const EdgeInsets.all(8),
                 child: ListView(children: [
                   Row(
                     children: [
@@ -264,19 +262,11 @@ class _ClockPopupState extends PopupState<ClockPopup> {
     );
   }
 
-  int step = 0;
-  Widget secondpage(BuildContext context) {
-    switch (step) {
-      case 1:
-        return Container();
-      default:
-        return const SizedBox.expand();
-    }
-  }
-
   @override
   void initState() {
-    tabs = [firstpage, secondpage];
+    tabs = [
+      firstpage,
+    ];
     oldcconfig = ClockConfig();
     super.initState();
   }

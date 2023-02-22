@@ -1,10 +1,14 @@
+/* countdown/component.dart - a countdown that shows the time remainding of 
+ * the current lesson / break as well as which lesson it is
+ *
+ * Copyright 2023 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
+*/
+
 import 'package:helperpaper/main_header.dart';
-import 'package:helperpaper/message.dart';
 import 'package:helperpaper/vpmobil.dart' as vp;
 import 'package:google_fonts/google_fonts.dart';
 
 class Countdown extends Component {
-  @override
   Countdown(
       {required Key key,
       required GeneralConfig gconfig,
@@ -31,7 +35,9 @@ class Countdown extends Component {
 class CountdownState extends ComponentState<Countdown> {
   var ctr = tr['countdown']!;
   String message = "";
+  late DateTime now;
   vp.XmlDay? xmlday;
+  @override
   popup() async {
     await popupdialog(
         CountdownPopup(gconfig: widget.gconfig, cconfig: widget.cconfig));
@@ -42,6 +48,7 @@ class CountdownState extends ComponentState<Countdown> {
   @override
   void initState() {
     super.initState();
+    now = DateTime.now();
     vp.addvplandirectcallback((List<vp.XmlDay> daylist) {
       if (mounted) {
         setState(() {
@@ -52,16 +59,27 @@ class CountdownState extends ComponentState<Countdown> {
     });
   }
 
+  timeupdate() async {
+    Future.delayed(const Duration(seconds: 1)).then((value) {
+      // TODO: currently, if the widget is removed from the tree, this function
+      // still runs. Create a function that on build checks wether this function
+      // is running and if not, call it again
+      if (mounted) {
+        if (!(now.minute == DateTime.now().minute)) {
+          setState(() {});
+        }
+      }
+      timeupdate();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    /// cheap two length leftpad
-    String pad(int date) => date < 10 ? "0$date" : date.toString();
     if (hourtimes == null) {
       return componentbuild(const SizedBox());
     }
     var starttimes = hourtimes![0];
     var endtimes = hourtimes![1];
-    // assumption: all lessons have an equal duration
 
     /// -2 means the day has not startet and -1 that the last lesson is over
     /// the first lesson is lesson 0
@@ -70,14 +88,16 @@ class CountdownState extends ComponentState<Countdown> {
     /// e.g. if isbreak is true and lesson:=1, it is the break after the first
     /// lesson
     bool isbreak = false;
-    Duration lessonlength = starttimes[0].difference(endtimes[0]);
-    DateTime now = DateTime.now();
-    // todo: calculating which lesson currently takes place should not
+    // assumption: all lessons have an equal duration
+    Duration lessonlength = endtimes[0].difference(starttimes[0]);
+    now = DateTime.now();
+    // TODO: calculating which lesson currently takes place should not
     // be recalculated each time
     if (starttimes[0].isAfter(now)) {
       message = ctr['before_start']!;
       lesson = -2;
-    } else if (endtimes.last.isBefore(now)) {
+    } // the for loop is dependent on this condition being checked before
+    else if (endtimes.last.isBefore(now)) {
       message = ctr['after_last']!;
       lesson = -1;
     } else {
@@ -95,25 +115,67 @@ class CountdownState extends ComponentState<Countdown> {
         }
       }
     }
-    // Stunden, Minuten und Sekunden werden aus der aktuellen Dauervaraiable extrahiert
-    //final hours = pad(myDuration.inHours.remainder(24));
-    //final minutes = pad(myDuration.inMinutes.remainder(60));
-    //final seconds = pad(myDuration.inSeconds.remainder(60));
-    return componentbuild(
-        //Scaffold(
-        //flutter  appBar: ...,
-        //body: Center(
-        //child:
-        FittedBox(
-            fit: BoxFit.contain,
-            child: Text(message,
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis, //'$hours:$minutes:$seconds',
-                style: GoogleFonts.chivo(
-                    //fontWeight: widget.cconfig.fontweight,
-                    //    fontWeight: FontWeight.bold,
-                    //    color: Colors.black,
-                    //    fontSize: 50),
-                    ))));
+    const int totalbarflex = 2 << 30;
+    int firstbar = 0;
+    int secondbar = 0;
+    if (lesson == -2) {
+      message =
+          "$message\n\n${starttimes[0].difference(now).inMinutes} Minuten bis\n Unterrichtsstart";
+    }
+    if (!widget.cconfig.showbar) {
+      if (lesson >= 0 && !isbreak) {
+        message =
+            "$message\n\nnoch ${endtimes[lesson].difference(now).inMinutes} Minuten";
+      }
+      if (lesson >= 0 && isbreak) {
+        message =
+            "$message\n\nnoch ${starttimes[lesson + 1].difference(now).inMinutes} Minuten";
+      }
+    } else {
+      if (lesson >= 0 && !isbreak) {
+        secondbar = (totalbarflex.toDouble() *
+                endtimes[lesson].difference(now).inSeconds /
+                lessonlength.inSeconds)
+            .floor();
+        firstbar = totalbarflex - secondbar;
+      }
+    }
+    return componentbuild(Column(children: [
+      Expanded(
+          flex: 10,
+          child: FittedBox(
+              fit: BoxFit.contain,
+              child: Text(message,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.chivo()))),
+      !widget.cconfig.showbar || lesson == -2
+          ? const SizedBox.shrink()
+          : Expanded(
+              flex: 10,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  verticalDirection: VerticalDirection.up,
+                  children: [
+                    Container(
+                      alignment: Alignment.bottomCenter,
+                      height: 100,
+                      padding: const EdgeInsets.all(5),
+                      margin: const EdgeInsets.fromLTRB(10, 10, 10, 40),
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black, width: 4)),
+                      child: Row(
+                        children: [
+                          Expanded(
+                              flex: firstbar,
+                              child: Container(
+                                color: Colors.black,
+                              )),
+                          Expanded(flex: secondbar, child: Container())
+                        ],
+                      ),
+                    )
+                  ])),
+    ]));
   }
 }

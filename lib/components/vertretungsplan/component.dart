@@ -1,16 +1,20 @@
+/* vertretungsplan/component.dart - a substitution plan that uses vpmobile to 
+ * gather its information
+ *
+ * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
+ */
+
 import 'package:helperpaper/main_header.dart';
 import 'package:helperpaper/vpmobil.dart' as vp;
 
+// TODO: rename Vertretungsplan to SubstitutionPlan or SubPlan
 class Vertretungsplan extends Component {
-  @override
   Vertretungsplan(
       {super.key,
       required super.gconfig,
       required VertretungsplanConfig cconfig,
       super.inpopup})
       : super(cconfig: cconfig);
-
-  void popup() async {}
   @override
   Map<String, dynamic> toJson() {
     Map<String, dynamic> tmpconf = super.toJson();
@@ -45,26 +49,19 @@ class VertretungsplanState extends ComponentState<Vertretungsplan> {
   void updateplan(List<vp.XmlDay> day) {
     xmlday = day;
     lastupdate = DateTime.now();
-    //vplan = vp.Plan.roomplan(widget.cconfig.raum, a);
     vplan = widget.cconfig.islesson
         ? vp.Plan.classplan('0${widget.cconfig.lesson}', xmlday!)
         : vp.Plan.roomplan(widget.cconfig.room, xmlday!);
-    if (widget.built) {
-      if (mounted) {
-        setState(() {});
-      }
-      debugPrint("plan loaded");
-      vp.addvplanupdatecallback(updateplan);
+    if (mounted) {
+      setState(() {});
     }
+    vp.addvplanupdatecallback(updateplan);
   }
 
   @override
   void initState() {
     super.initState();
-
-    //SchedulerBinding.instance.scheduleFrameCallback((Duration duration) {
     vp.addvplandirectcallback(updateplan);
-    //});
   }
 
   Widget hourformat(vp.Lesson? lesson) {
@@ -123,7 +120,7 @@ class VertretungsplanState extends ComponentState<Vertretungsplan> {
     if (vplan == null) {
       return [];
     }
-    List<Widget> firstrow = [Text("")];
+    List<Widget> firstrow = [const Text("")];
     for (int i = 0; i < 5; i++) {
       if (i == vplan!.days.length) {
         break;

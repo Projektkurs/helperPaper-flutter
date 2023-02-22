@@ -4,25 +4,23 @@
  */
 
 // dart and flutter packages
-export 'package:flutter/material.dart';
-export 'package:flutter/scheduler.dart' hide Flow;
 export 'dart:async';
 export 'dart:io';
 export 'dart:math';
 export 'dart:convert';
+export 'package:flutter/material.dart';
+export 'package:flutter/scheduler.dart' hide Flow;
 export 'package:http/http.dart';
 export 'package:flutter_colorpicker/flutter_colorpicker.dart';
-
-export 'misc.dart';
+export 'fontweight.dart';
 export 'translation.dart';
+
 // main
 export 'main.dart';
 export 'config.dart';
 // popups
-export 'component/menuoptions.dart';
 export 'component/menu.dart';
 export 'component/popup.dart';
-
 // component
 export 'component/component.dart';
 export 'component/typedec.dart';
@@ -54,7 +52,6 @@ export 'components/vertretungsplan/popup.dart';
 // component::scaffolding
 export 'components/scaffolding/component.dart';
 export 'components/scaffolding/config.dart';
-export 'components/scaffolding/popup.dart';
 
 // =true if it runs on epaper
 const bool isepaper = bool.fromEnvironment("isepaper");

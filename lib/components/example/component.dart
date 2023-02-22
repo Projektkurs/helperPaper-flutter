@@ -1,4 +1,4 @@
-/* example - example to build a barebones component
+/* example/component.dart - example to build a barebones component
  *
  * Copyright 2023 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
@@ -6,7 +6,6 @@
 import 'package:helperpaper/main_header.dart';
 
 class Example extends Component {
-  @override
   Example(
       {required Key key,
       required GeneralConfig gconfig,
@@ -14,7 +13,7 @@ class Example extends Component {
       bool inpopup = false})
       : super(key: key, gconfig: gconfig, cconfig: cconfig, inpopup: inpopup);
 
-  String? name = "Example";
+  final String? name = "Example";
   @override
   Map<String, dynamic> toJson() {
     Map<String, dynamic> tmpconf = super.toJson();

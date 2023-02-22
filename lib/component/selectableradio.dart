@@ -8,6 +8,7 @@
 
 import 'package:helperpaper/main_header.dart';
 
+/// Like the Radio with different looks
 class SelectableRadio<T> extends StatefulWidget {
   const SelectableRadio(
       {super.key,
@@ -30,8 +31,8 @@ class _SelectableRadioState extends State<SelectableRadio> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration:
-          BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5))),
+      decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(5))),
       padding: const EdgeInsets.all(2),
       alignment: Alignment.center,
       child: ListTile(

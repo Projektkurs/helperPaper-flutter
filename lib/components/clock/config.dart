@@ -1,7 +1,8 @@
-/* clock-config.dart - config of component clock
+/* clock/config.dart - config of clock component
  *
- * Copyright 2022 by Béla Wohlers <bela.wohlers@gmx.de>
- * 
+ * Copyright 2022-2022 by Béla Wohlers <bela.wohlers@gmx.de>
+ * Copyright 2023 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
+ *
 */
 import 'package:helperpaper/main_header.dart';
 

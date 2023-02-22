@@ -1,10 +1,7 @@
-/* Note - Note to build a barebones component
+/* note/config.dart - config of note component
  *
  * Copyright 2023 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
-
-import 'package:helperpaper/main_header.dart';
-
 class NoteConfig {
   String text = "";
   void copyFrom(NoteConfig config) {

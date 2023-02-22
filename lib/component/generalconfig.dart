@@ -3,18 +3,30 @@
  * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
 
-import 'package:helperpaper/components/scaffolding/config.dart';
 import 'package:helperpaper/main_header.dart';
 
-class Defaultgeneral {}
-
+/// a Class that saves information which is used by every Component
+/// the reason behind this variables beeing outsourced into a distinct class
+/// is that the data can be loaded and stored into json format which should not
+/// need a specific component to work.
 class GeneralConfig {
+  /// relativ size of the widget in the direction of the scaffolding
   int flex;
   double? borderWidth;
   double? borderRadius;
   double? padding;
   Bordertype? bordertype;
   Color? borderColor;
+
+  GeneralConfig(
+    this.flex,
+  );
+
+  GeneralConfig.createGeneral()
+      : flex = 1,
+        borderWidth = 5,
+        borderRadius = 10,
+        padding = 5;
 
   void takeFrom(GeneralConfig config) {
     flex = config.flex;
@@ -25,30 +37,18 @@ class GeneralConfig {
     borderColor = config.borderColor;
   }
 
-  GeneralConfig(
-    this.flex,
-  ); //this.cconfig);
-  GeneralConfig.copyFrom(GeneralConfig config)
+  GeneralConfig.createFrom(GeneralConfig config)
       : flex = config.flex,
         borderWidth = config.borderWidth,
         borderRadius = config.borderRadius,
         padding = config.padding,
         bordertype = config.bordertype,
         borderColor = config.borderColor;
-  //must be of ContentType Defaultgeneral
-  GeneralConfig.createGeneral()
-      : //cconfig = Defaultgeneral(),
-        flex = 1,
-        borderWidth = 5,
-        borderRadius = 10,
-        padding = 5;
 
+  /// encode Config into Json format
   Map<String, dynamic> toJson() {
     Map<String, dynamic> map = {
       'flex': flex,
-      //'type': type.toString(),
-      //'cconfig': cconfig,
-      //border:
       'borderWidth': borderWidth,
       'borderRadius': borderRadius,
     };
@@ -64,13 +64,13 @@ class GeneralConfig {
     return map;
   }
 
+  /// create a GeneralConfig from a json map
+  /// this method will always return a GeneralConfig, even if the input
+  /// Map is empty
   GeneralConfig.fromJson(Map<String, dynamic> json)
-      : flex = json['flex'],
-        //cconfig = cconf,
-        //border
-        borderWidth = json["borderWidth"],
-        borderRadius = json["borderRadius"];
-  //type=stringtoType(json['type']);
+      : flex = json['flex'] ?? 1,
+        borderWidth = json["borderWidth"] ?? 5,
+        borderRadius = json["borderRadius"] ?? 10;
 }
 
 enum Bordertype { round, sharp, fused }

@@ -12,11 +12,21 @@ abstract class Component extends StatefulWidget {
       required this.cconfig,
       this.inpopup = false})
       : super(key: key);
-  var cconfig;
-  bool inpopup;
-  //String? name;
-  GeneralConfig gconfig;
+
+  /// saves the configuration that is specific for a specific implementation of Component
+  final dynamic cconfig;
+
+  /// if true, the Component cannot be double clicked to open the popup
+  /// this is used by the empty popup to not open the popup recursively
+  final bool inpopup;
+
+  /// saves general information about the Component
+  final GeneralConfig gconfig;
+
+  /// will be set to true as soon as the state is mounted
   bool built = false;
+
+  /// setState of the Widget
   Function? setState;
 
   Map<String, dynamic> toJson() =>
@@ -100,20 +110,8 @@ class ComponentState<T extends Component> extends State<T> {
         }));
   }
 
-  /*Widget singleMenu(child) {
-    return Container(
-        margin: EdgeInsets.symmetric(
-            horizontal: MediaQuery.of(context).size.width * .07,
-            vertical: MediaQuery.of(context).size.height * .07),
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: const BorderRadius.all(Radius.circular(20)),
-            border: Border.all(
-                width: 4.0, color: const Color.fromARGB(255, 73, 73, 73))),
-        alignment: Alignment.center,
-        child: child);
-  }*/
-
+  /// opens the given Widget in a menu that overlays the rest of the Layout
+  /// the widget has a fixed size and rounded corners
   Future<void> popupdialog(Widget widget) async {
     return showDialog<void>(
         context: context,
@@ -127,52 +125,5 @@ class ComponentState<T extends Component> extends State<T> {
               scrollable: false,
               content: widget);
         });
-  }
-}
-
-class Defaultdialog extends StatefulWidget {
-  const Defaultdialog(
-      {Key? key, this.appBar, required this.child, this.applybutton})
-      : super(key: key);
-  final Widget? applybutton;
-  final Widget child;
-  final PreferredSize? appBar;
-  @override
-  _DefaultdialogState createState() => _DefaultdialogState();
-}
-
-class _DefaultdialogState extends State<Defaultdialog> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        width: MediaQuery.of(context).size.width * 0.95,
-        height: MediaQuery.of(context).size.height * 0.95,
-        decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(Radius.circular(20)),
-            border: Border.all(
-                width: 4.0, color: const Color.fromARGB(255, 73, 73, 73))),
-        child: ClipRRect(
-            borderRadius: const BorderRadius.all(Radius.circular(20)),
-            child: Scaffold(
-                floatingActionButton: widget.applybutton ??
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        alignment: Alignment.center,
-                        padding: EdgeInsets.all(
-                            MediaQuery.of(context).size.width * .006),
-                        backgroundColor:
-                            const Color.fromARGB(255, 101, 184, 90),
-                        //backgroundColor: Theme.of(context).colorScheme.primary,
-                      ), //.copyWith(elevation: ButtonStyleButton.allOrNull(0.0)),
-                      onPressed: () => Navigator.pop(context),
-                      child: Text('Apply',
-                          style: TextStyle(
-                              fontSize: Theme.of(context)
-                                  .textTheme
-                                  .headlineMedium!
-                                  .fontSize!)),
-                    ),
-                appBar: widget.appBar,
-                body: widget.child)));
   }
 }

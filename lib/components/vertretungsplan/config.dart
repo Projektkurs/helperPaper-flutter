@@ -1,4 +1,7 @@
-import 'package:helperpaper/main_header.dart';
+/* vertretungsplan/config.dart - config of vertretungsplan component
+ *
+ * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
+ */
 
 class VertretungsplanConfig {
   late String room;

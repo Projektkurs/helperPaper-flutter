@@ -1,6 +1,6 @@
-/* vertretungsplan.dart - config menu for Vertretungsplan 
+/* vertretungsplan/popup.dart - config menu for Vertretungsplan 
  *
- * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
+ * Copyright 2023 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
 
 import 'package:helperpaper/main_header.dart';
@@ -17,16 +17,13 @@ class VertretungsplanPopup extends Popup<VertretungsplanConfig> {
   State<VertretungsplanPopup> createState() => _VertretungsplanPopupState();
 }
 
-enum _roomlesson { room, lesson }
+enum _Roomlesson { room, lesson }
 
 class _VertretungsplanPopupState extends PopupState<VertretungsplanPopup> {
   late TextEditingController roomtextcontroller;
   List<String> rooms = [];
   List<String> classes = [];
-  late _roomlesson roomlesson;
-
-  /// lambda function cannot be used as they are compiled before getters are
-  int step = 0;
+  late _Roomlesson roomlesson;
   Widget firstpage(BuildContext context) {
     return Row(children: [
       Vertretungsplan(
@@ -42,13 +39,13 @@ class _VertretungsplanPopupState extends PopupState<VertretungsplanPopup> {
               children: [
                 Expanded(
                     flex: 1,
-                    child: SelectableRadio<_roomlesson>(
-                      value: _roomlesson.lesson,
+                    child: SelectableRadio<_Roomlesson>(
+                      value: _Roomlesson.lesson,
                       groupvalue: roomlesson,
                       onPressed: () {
                         setState(() {
                           roomtextcontroller.text = widget.cconfig.lesson;
-                          roomlesson = _roomlesson.lesson;
+                          roomlesson = _Roomlesson.lesson;
                           widget.cconfig.islesson = true;
                         });
                       },
@@ -56,13 +53,13 @@ class _VertretungsplanPopupState extends PopupState<VertretungsplanPopup> {
                     )),
                 Expanded(
                     flex: 1,
-                    child: SelectableRadio<_roomlesson>(
-                      value: _roomlesson.room,
+                    child: SelectableRadio<_Roomlesson>(
+                      value: _Roomlesson.room,
                       groupvalue: roomlesson,
                       onPressed: () {
                         setState(() {
                           roomtextcontroller.text = widget.cconfig.room;
-                          roomlesson = _roomlesson.room;
+                          roomlesson = _Roomlesson.room;
                           widget.cconfig.islesson = false;
                         });
                       },
@@ -72,8 +69,8 @@ class _VertretungsplanPopupState extends PopupState<VertretungsplanPopup> {
             ),
             Container(
               margin: const EdgeInsets.all(8),
-              child: Autocomplete<String>(
-                //boilerplate.exe for baisically just a autocomplete textfield
+              child: // just a autocomplete textfield for room/lesson
+                  Autocomplete<String>(
                 fieldViewBuilder: (BuildContext context,
                     TextEditingController textcontroller,
                     FocusNode focusNode,
@@ -129,7 +126,7 @@ class _VertretungsplanPopupState extends PopupState<VertretungsplanPopup> {
   @override
   void initState() {
     roomlesson =
-        widget.cconfig.islesson ? _roomlesson.lesson : _roomlesson.room;
+        widget.cconfig.islesson ? _Roomlesson.lesson : _Roomlesson.room;
     vp.addvplandirectcallback((p0) {
       if (mounted) {
         setState(() {

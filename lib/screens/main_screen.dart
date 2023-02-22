@@ -3,11 +3,13 @@
  * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
 
-import 'package:helperpaper/components/scaffolding/config.dart';
 import 'package:helperpaper/main_header.dart';
 import 'package:path/path.dart' as p;
 
 class MainScreen extends StatefulWidget {
+  //Key is used for callbacks(scaffholding/callbacks.dart)
+  //it mustn't change, as they are saved at various places in the Widget tree
+  //exception to this is if the whole widget tree is droped
   const MainScreen({required super.key, required this.appState});
   final AppState appState;
 
@@ -18,9 +20,6 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   bool showlines = false;
   bool firstbuild = true;
-  //Key is used for callbacks(scaffholding/callbacks.dart)
-  //it mustn't change, as they are saved at various places in the Widget tree
-  //exception to this is if the whole widget tree is droped
   _updatelines() {
     setState(() {
       showlines = !showlines;
@@ -55,7 +54,7 @@ class _MainScreenState extends State<MainScreen> {
             key: widget.appState.scaffoldingkey,
             gconfig: GeneralConfig(
               2 << 40, //arbitrary value for flex
-              //should be high as to have many to have smooth transition
+              // high to have many to have smooth transition
             ),
             cconfig: ScaffoldingConfig(),
             direction: true,
@@ -72,7 +71,6 @@ class _MainScreenState extends State<MainScreen> {
             Flex(
                 direction: Axis.horizontal,
                 children: [mainscaffolding ?? Container()]),
-            //widget.appState.menu
           ])));
     } else {
       return Scaffold(
@@ -82,34 +80,32 @@ class _MainScreenState extends State<MainScreen> {
               children: <Widget>[
                 ListTile(
                   leading: const Icon(Icons.add),
-                  title: const Text('add Container'),
+                  title: const Text('Container hinzufügen'),
                   onTap: widget.appState.addContainer,
                 ),
                 ListTile(
                   leading: const Icon(Icons.remove),
-                  title: const Text('remove Container'),
+                  title: const Text('Container entfernen'),
                   onTap: widget.appState.removeContainer,
                 ),
                 ListTile(
                   leading: const Icon(Icons.view_array_outlined),
-                  title: const Text('resize widgets'),
+                  title: const Text('größe verändern'),
                   onTap: () {
                     _updatelines();
-                    //Navigator.of(context).pop();
                   },
                 ),
                 ListTile(
                   leading: const Icon(Icons.settings),
-                  title: const Text('Settings'),
+                  title: const Text('Einstellungen'),
                   onTap: () {
-                    //Navigator.of(context).pop();
                     Navigator.of(context)
                         .pushReplacementNamed('/settingsScreen');
                   },
                 ),
                 ListTile(
                     leading: const Icon(Icons.file_upload),
-                    title: const Text('save'),
+                    title: const Text('Speichern'),
                     onTap: () {
                       widget.appState.jsonsave = jsonEncode(mainscaffolding);
                       debugPrint("New Jsonsave: ${widget.appState.jsonsave}");
@@ -131,7 +127,7 @@ class _MainScreenState extends State<MainScreen> {
                     }),
                 ListTile(
                     leading: const Icon(Icons.file_download),
-                    title: const Text('load'),
+                    title: const Text('Laden'),
                     onTap: () {
                       setState(() {
                         debugPrint("apply Config");
@@ -142,21 +138,13 @@ class _MainScreenState extends State<MainScreen> {
                     }),
                 ListTile(
                     leading: const Icon(Icons.reset_tv),
-                    title: const Text('reset save'),
+                    title: const Text('Zurücksetzen'),
                     onTap: () {
                       setState(() {
-                        //widget.appState.jsonsave = emptyjsonconfig;
                         widget.appState.mainscaffolding = null;
                         widget.appState.scaffoldingkey = GlobalKey();
                         jsonconfig.updateconfig(
                             jsonconfig.defaultconfig, widget.appState.jsonsave);
-                        /* post(
-                            Uri(
-                                scheme: 'http',
-                                host: jsonconfig.epaperIP,
-                                path: '/config',
-                                port: jsonconfig.epaperPort),
-                            body: widget.appState.jsonsave);*/
                       });
                       widget.appState.maincontainers =
                           jsonDecode(widget.appState.jsonsave)['subcontainers'];
@@ -166,29 +154,22 @@ class _MainScreenState extends State<MainScreen> {
             ),
           ),
           body: Center(
-              child: Stack(children: [
-            // menu laying on top of the main Scaffholding
-            Flex(
-                direction: Axis.horizontal,
-                children: [mainscaffolding ?? Container()]),
-            //widget.appState.menu
-          ])),
-          //start: Buttons in the bottom right to add/remove Containers
-          //and enable/disable resizelines
+            child: mainscaffolding ?? Container(),
+          ),
           floatingActionButton: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 Flexible(
                     child: FloatingActionButton(
-                  //random tag, not refferenced
+                  // random tag, not refferenced. Otherwise, flutter could have a situtation where
+                  // it changes screens and tries to do a hero animation
                   heroTag: "dkjfhdlkfjdhflkjhflhslakfhuoewqzrq2d",
                   onPressed: () =>
                       widget.appState.scaffoldkey.currentState!.openDrawer(),
                   tooltip: 'menu',
                   child: const Icon(Icons.menu),
                 )),
-              ]) //end: Buttons
-          );
+              ]));
     }
   }
 }
