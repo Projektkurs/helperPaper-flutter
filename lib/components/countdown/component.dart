@@ -59,6 +59,9 @@ class CountdownState extends ComponentState<Countdown> {
     });
   }
 
+  // TODO: the update should not just be delayed by 1 second and then check whether
+  // the next minute started, but directly change the duration to update on the next
+  // minute or the epaper update interval. this is also true for clock
   timeupdate() async {
     Future.delayed(const Duration(seconds: 1)).then((value) {
       // TODO: currently, if the widget is removed from the tree, this function
@@ -139,6 +142,13 @@ class CountdownState extends ComponentState<Countdown> {
             .floor();
         firstbar = totalbarflex - secondbar;
       }
+      if (lesson >= 0 && isbreak) {
+        secondbar = (totalbarflex.toDouble() *
+                endtimes[lesson + 1].difference(now).inSeconds /
+                endtimes[lesson + 1].difference(starttimes[lesson]).inSeconds)
+            .floor();
+        firstbar = totalbarflex - secondbar;
+      }
     }
     return componentbuild(Column(children: [
       Expanded(
@@ -150,7 +160,7 @@ class CountdownState extends ComponentState<Countdown> {
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.chivo()))),
       !widget.cconfig.showbar || lesson == -2
-          ? const SizedBox.shrink()
+          ? const Expanded(flex: 0, child: SizedBox.shrink())
           : Expanded(
               flex: 10,
               child: Column(

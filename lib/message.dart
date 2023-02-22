@@ -6,7 +6,7 @@
 import 'package:helperpaper/main_header.dart';
 
 mixin message {
-  File fifo = File('./updatefifo');
+  File fifo = File('../updatefifo');
   void setState(void Function() fn);
   late String jsonsave;
   late int maincontainers;

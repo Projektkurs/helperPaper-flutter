@@ -132,7 +132,7 @@ class XmlDay {
         hourMinute.add(int.tryParse(element)!);
       });
       times[0].add(DateTime.fromMillisecondsSinceEpoch(
-          (hourMinute[0] - 1) * 3600000 + hourMinute[1] * 60000));
+          (hourMinute[0]) * 3600000 + hourMinute[1] * 60000));
       times[0].last =
           times[0].last.add(Duration(microseconds: now.microsecondsSinceEpoch));
       String? endstring = xmlhour.getAttribute("ZeitBis");
@@ -142,7 +142,7 @@ class XmlDay {
         hourMinute.add(int.tryParse(element)!);
       });
       times[1].add(DateTime.fromMillisecondsSinceEpoch(
-          (hourMinute[0] - 1) * 3600000 + hourMinute[1] * 60000));
+          (hourMinute[0]) * 3600000 + hourMinute[1] * 60000));
       times[1].last =
           times[1].last.add(Duration(microseconds: now.microsecondsSinceEpoch));
     }

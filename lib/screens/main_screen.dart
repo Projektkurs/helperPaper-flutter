@@ -154,7 +154,7 @@ class _MainScreenState extends State<MainScreen> {
             ),
           ),
           body: Center(
-            child: mainscaffolding ?? Container(),
+            child: Column(children: [mainscaffolding ?? Container()]),
           ),
           floatingActionButton: Column(
               mainAxisAlignment: MainAxisAlignment.end,
