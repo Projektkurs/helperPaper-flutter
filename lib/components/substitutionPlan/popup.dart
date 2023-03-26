@@ -3,7 +3,7 @@
  * Copyright 2023 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
 
-import 'package:helperpaper/main_header.dart';
+import 'package:helperpaper/header.dart';
 import 'package:helperpaper/vpmobil.dart' as vp;
 
 class VertretungsplanPopup extends Popup<VertretungsplanConfig> {
@@ -26,7 +26,7 @@ class _VertretungsplanPopupState extends PopupState<VertretungsplanPopup> {
   late _Roomlesson roomlesson;
   Widget firstpage(BuildContext context) {
     return Row(children: [
-      Vertretungsplan(
+      SubstitutionPlan(
         key: UniqueKey(),
         gconfig: widget.gconfig,
         cconfig: widget.cconfig,
@@ -86,17 +86,7 @@ class _VertretungsplanPopupState extends PopupState<VertretungsplanPopup> {
                       labelText: widget.cconfig.islesson ? 'Klasse' : 'Raum',
                     ),
                     onSubmitted: (String value) {
-                      var optionlist =
-                          widget.cconfig.islesson ? classes : rooms;
-                      if (optionlist.contains(value)) {
-                        setState(() {
-                          if (widget.cconfig.islesson) {
-                            widget.cconfig.lesson = value;
-                          } else {
-                            widget.cconfig.room = value;
-                          }
-                        });
-                      }
+                      onFieldSubmitted();
                     },
                   );
                 },
@@ -135,7 +125,7 @@ class _VertretungsplanPopupState extends PopupState<VertretungsplanPopup> {
         });
       }
     });
-    oldcconfig = VertretungsplanConfig("", "", false);
+    oldcconfig = VertretungsplanConfig('', '', false);
     tabs = [firstpage];
     super.initState();
   }

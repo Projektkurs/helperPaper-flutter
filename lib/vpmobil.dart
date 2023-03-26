@@ -1,7 +1,8 @@
 import "package:http/http.dart" as http;
-import "package:helperpaper/main_header.dart";
+import 'package:helperpaper/header.dart';
 import "package:xml/xml.dart";
 import 'dart:collection';
+import 'dart:convert';
 
 const maxHoursPerDay = 7;
 List<XmlDay>? _xmldays;
@@ -33,7 +34,12 @@ void addvplanupdatecallback(void Function(List<XmlDay>) callback) {
 /// Updates vplan automatically every 5 minutes
 void _vplanAutoUpdater() async {
   while (true) {
-    _xmldays = await XmlDay._getcurrentdays();
+    while (_xmldays == null) {
+      _xmldays = await XmlDay._getcurrentdays() ?? _xmldays;
+      if (_xmldays == null) {
+        await Future.delayed(const Duration(seconds: 10));
+      }
+    }
 
     /// as the callbacks itself can call addvplanupdatecallback the Functions need to be copied
     var currentcallbacks = _callbacks;
@@ -149,8 +155,11 @@ class XmlDay {
     return times;
   }
 
-  static Future<List<XmlDay>> _getcurrentdays() async {
-    XmlDay startday = (await XmlDay.async(null))!;
+  static Future<List<XmlDay>?> _getcurrentdays() async {
+    XmlDay? startday = (await XmlDay.async(null));
+    if (startday == null) {
+      return null;
+    }
     List<String> freedaysStrings = [];
     startday.xml.findAllElements("ft").forEach((node) {
       freedaysStrings.add(node.text);
@@ -168,11 +177,14 @@ class XmlDay {
       }
       days.add(tmpday);
     }
+    // for if the internet connection brakes between the first and second request
+    if (days.isEmpty) {
+      return null;
+    }
     return days;
   }
 
   static Future<XmlDay?> async(DateTime? date) async {
-    //date ??= trim(DateTime.now());
     //vpmobil needs day and month to have two digits; eg. January, 4th -> 01.04
     String pad(int date) => date < 10 ? "0$date" : date.toString();
 
@@ -180,7 +192,8 @@ class XmlDay {
         ? "Klassen.xml"
         : "PlanKl${date.year}${pad(date.month)}${pad(date.day)}.xml";
     debugPrint("Xmlname:$xmlname");
-    http.Response? plan;
+
+    late Response plan;
     try {
       plan = await http.get(
           Uri.https("z2.stundenplan24.de",
@@ -194,7 +207,8 @@ class XmlDay {
       return null;
     }
     try {
-      return XmlDay(XmlDocument.parse(plan.body), date ?? trim(DateTime.now()));
+      return XmlDay(XmlDocument.parse(utf8.decode(plan.bodyBytes)),
+          date ?? trim(DateTime.now()));
     } catch (_) {
       debugPrint("Xml Parser failed");
       return null;

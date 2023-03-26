@@ -2,7 +2,7 @@
  *
  * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
-import 'package:helperpaper/main_header.dart';
+import 'package:helperpaper/header.dart';
 
 class Empty extends Component {
   Empty({
@@ -84,8 +84,23 @@ class EmptyState extends ComponentState<Empty> {
         );
         (widget.cconfig as EmptyConfig).replace!();
         break;
-      case Componentenum.vertretungsplan:
-        widget.cconfig.replacement = Vertretungsplan(
+      case Componentenum.image:
+        widget.cconfig.replacement = ImageComponent(
+          key: (widget.cconfig as EmptyConfig).key,
+          gconfig: GeneralConfig(widget.gconfig.flex),
+          cconfig: popupref.cconfig,
+        );
+        (widget.cconfig as EmptyConfig).replace!();
+        break;
+      case Componentenum.substitutionPlan:
+        widget.cconfig.replacement = SubstitutionPlan(
+            key: (widget.cconfig as EmptyConfig).key,
+            gconfig: GeneralConfig(widget.gconfig.flex),
+            cconfig: popupref.cconfig);
+        (widget.cconfig as EmptyConfig).replace!();
+        break;
+      case Componentenum.roomReservation:
+        widget.cconfig.replacement = RoomResevation(
             key: (widget.cconfig as EmptyConfig).key,
             gconfig: GeneralConfig(widget.gconfig.flex),
             cconfig: popupref.cconfig);
@@ -93,6 +108,13 @@ class EmptyState extends ComponentState<Empty> {
         break;
       case Componentenum.example:
         widget.cconfig.replacement = Example(
+            key: (widget.cconfig as EmptyConfig).key,
+            gconfig: GeneralConfig(widget.gconfig.flex),
+            cconfig: popupref.cconfig);
+        (widget.cconfig as EmptyConfig).replace!();
+        break;
+      case Componentenum.userInformation:
+        widget.cconfig.replacement = UserInformation(
             key: (widget.cconfig as EmptyConfig).key,
             gconfig: GeneralConfig(widget.gconfig.flex),
             cconfig: popupref.cconfig);

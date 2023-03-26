@@ -3,7 +3,7 @@
  * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
 
-import 'package:helperpaper/main_header.dart';
+import 'package:helperpaper/header.dart';
 import 'resizeline.dart';
 
 mixin callbacks {
@@ -19,7 +19,7 @@ mixin callbacks {
       if (childs[i].key == key) return i;
     }
     //not called by child of scaffholding
-    Exception("Key not found in callback of scaffholding");
+    Exception('Key not found in callback of scaffholding');
     //return 0 to not crash the program
     return 0;
   }

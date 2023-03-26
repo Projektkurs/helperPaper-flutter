@@ -1,29 +1,29 @@
-/* example/popup.dart - popup menu of example component
+/* UserInformation/popup.dart - popup menu of UserInformation component
  *
  * Copyright 2023 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
 
 import 'package:helperpaper/header.dart';
 
-class ExamplePopup extends Popup<ExampleConfig> {
-  const ExamplePopup(
+class UserInformationPopup extends Popup<UserInformationConfig> {
+  const UserInformationPopup(
       {super.key,
       required super.gconfig,
       required super.cconfig,
       super.byempty});
 
   @override
-  State<ExamplePopup> createState() => _ExamplePopupState();
+  State<UserInformationPopup> createState() => _UserInformationPopupState();
 }
 
-class _ExamplePopupState extends PopupState<ExamplePopup> {
+class _UserInformationPopupState extends PopupState<UserInformationPopup> {
   Widget firstpage(BuildContext context) {
     return const SizedBox.expand();
   }
 
   @override
   void initState() {
-    oldcconfig = ExampleConfig();
+    oldcconfig = UserInformationConfig();
     tabs = [firstpage];
     super.initState();
   }

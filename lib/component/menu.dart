@@ -3,7 +3,7 @@
  * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
 
-import 'package:helperpaper/main_header.dart';
+import 'package:helperpaper/header.dart';
 export 'package:helperpaper/component/selectableradio.dart';
 
 /// opens a Dialog in which the user can select a Color. on closing, the Color
@@ -54,14 +54,14 @@ final List<DropdownMenuItem<String>> _cornerstyle = _cornerlist
 String _cornerStyleVal = _cornerlist[0];
 Widget componentTile(
     GeneralConfig generalconfig, BuildContext context, Function setState) {
-  return ExpansionTile(title: const Text("General"), children: [
-    ExpansionTile(title: const Text("Border"), children: [
+  return ExpansionTile(title: const Text('General'), children: [
+    ExpansionTile(title: const Text('Border'), children: [
       ListTile(
           leading: SizedBox(
               width:
                   (Theme.of(context).textTheme.titleSmall!.fontSize ?? 16) * 4,
               child:
-                  Text("Width", style: Theme.of(context).textTheme.titleSmall)),
+                  Text('Width', style: Theme.of(context).textTheme.titleSmall)),
           trailing: SizedBox(
               width: (Theme.of(context).textTheme.titleSmall!.fontSize ?? 16) *
                   2.5,
@@ -81,7 +81,7 @@ Widget componentTile(
           leading: SizedBox(
               width:
                   (Theme.of(context).textTheme.titleSmall!.fontSize ?? 16) * 4,
-              child: Text("Radius",
+              child: Text('Radius',
                   style: Theme.of(context).textTheme.titleSmall)),
           trailing: SizedBox(
               width: (Theme.of(context).textTheme.titleSmall!.fontSize ?? 16) *
@@ -99,7 +99,7 @@ Widget componentTile(
               min: 0,
               max: 30)),
       ListTile(
-          leading: Text("Corner Style",
+          leading: Text('Corner Style',
               style: Theme.of(context).textTheme.titleSmall),
           title: DropdownButton<String>(
               value: _cornerStyleVal,
@@ -111,12 +111,12 @@ Widget componentTile(
               })),
       ListTile(
           enabled: true,
-          leading: Text("Corner Radius",
+          leading: Text('Corner Radius',
               style: Theme.of(context).textTheme.titleSmall)),
       ListTile(
         enabled: true,
         leading:
-            Text("Border Color", style: Theme.of(context).textTheme.titleSmall),
+            Text('Border Color', style: Theme.of(context).textTheme.titleSmall),
         //replace at some point with relative size
         title: Icon(Icons.color_lens,
             color: generalconfig.borderColor ??
@@ -134,7 +134,7 @@ Widget componentTile(
         },
       ),
     ]),
-    const ExpansionTile(title: Text("Text"), children: []),
-    const ExpansionTile(title: Text("Colors"), children: [])
+    const ExpansionTile(title: Text('Text'), children: []),
+    const ExpansionTile(title: Text('Colors'), children: [])
   ]);
 }

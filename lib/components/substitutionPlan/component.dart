@@ -4,12 +4,12 @@
  * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
 
-import 'package:helperpaper/main_header.dart';
+import 'package:helperpaper/header.dart';
 import 'package:helperpaper/vpmobil.dart' as vp;
 
 // TODO: rename Vertretungsplan to SubstitutionPlan or SubPlan
-class Vertretungsplan extends Component {
-  Vertretungsplan(
+class SubstitutionPlan extends Component {
+  SubstitutionPlan(
       {super.key,
       required super.gconfig,
       required VertretungsplanConfig cconfig,
@@ -21,16 +21,16 @@ class Vertretungsplan extends Component {
     return tmpconf;
   }
 
-  Vertretungsplan.fromJson(Map<String, dynamic> json)
+  SubstitutionPlan.fromJson(Map<String, dynamic> json)
       : super(
             key: GlobalKey(),
             gconfig: GeneralConfig.fromJson(json['gconfig']),
             cconfig: VertretungsplanConfig.fromJson(json["cconfig"]));
   @override
-  State<Vertretungsplan> createState() => VertretungsplanState();
+  State<SubstitutionPlan> createState() => VertretungsplanState();
 }
 
-class VertretungsplanState extends ComponentState<Vertretungsplan> {
+class VertretungsplanState extends ComponentState<SubstitutionPlan> {
   DateTime? lastupdate;
   vp.Plan? vplan;
   List<vp.XmlDay>? xmlday;
@@ -68,7 +68,7 @@ class VertretungsplanState extends ComponentState<Vertretungsplan> {
     if (lesson == null) {
       return const Text("");
     } else {
-      var note = lesson.info == "" ? "" : "\nInfo:${lesson.info}";
+      var note = lesson.info == "" ? "" : "\nInfo: ${lesson.info}";
       return Text(
           "${widget.cconfig.islesson ? lesson.room : lesson.level}: ${lesson.subject}, ${lesson.teacher}$note",
           style: Theme.of(context).textTheme.titleMedium);

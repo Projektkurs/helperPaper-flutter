@@ -3,7 +3,7 @@
  * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
 
-import 'package:helperpaper/main_header.dart';
+import 'package:helperpaper/header.dart';
 
 class EmptyConfig {
   int width = 0;

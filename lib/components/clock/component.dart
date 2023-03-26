@@ -1,12 +1,11 @@
-/* clock/component.dart - a clock based upon the dart-libary: "analog_clock"
+/* clock/component.dart - a clock based upon the dart-libary: 'analog_clock'
  * it also has a simple digital clock
  *
  * Copyright 2022-2022 by Béla Wohlers <bela.wohlers@gmx.de>
  * Copyright 2023 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
- *
 */
 
-import 'package:helperpaper/main_header.dart';
+import 'package:helperpaper/header.dart';
 import 'package:analog_clock/analog_clock.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -19,7 +18,7 @@ class Clock extends Component {
       super.inpopup})
       : super(cconfig: cconfig);
 
-  final String? name = "Clock";
+  final String? name = 'Clock';
   @override
   Map<String, dynamic> toJson() {
     Map<String, dynamic> tmpconf = super.toJson();
@@ -72,9 +71,9 @@ class ClockState extends ComponentState<Clock> {
 
   @override
   Widget build(BuildContext context) {
-    String pad(int date) => date < 10 ? "0$date" : date.toString();
+    String pad(int date) => date < 10 ? '0$date' : date.toString();
     now = DateTime.now();
-    String time = "${pad(now.hour)}:${pad(now.minute)}";
+    String time = '${pad(now.hour)}:${pad(now.minute)}';
     if (widget.cconfig.isdigital) {
       return componentbuild(FittedBox(
         fit: BoxFit.contain,

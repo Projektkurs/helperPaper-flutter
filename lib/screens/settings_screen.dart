@@ -2,9 +2,12 @@
  *
  * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
-
-import 'package:helperpaper/main_header.dart';
+import 'package:flutter/services.dart';
+import 'package:helperpaper/header.dart';
 import 'package:path/path.dart' as p;
+import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
+import 'package:helperpaper/httpserver.dart' as req;
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({required super.key, required this.appState});
@@ -14,30 +17,313 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  late TextEditingController _textcontroller;
-  late TextEditingController _porttextcontroller;
+  Future<void> userdialog() async {
+    var updating = false;
+    return showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          print("test");
+
+          return Updatecredentials();
+        });
+  }
+
   late TextEditingController _vpusertextcontroller;
   late TextEditingController _vppasswdtextcontroller;
+  late TextEditingController _servertextcontroller;
+  late TextEditingController _epapertextcontroller;
+  TextEditingController? _firstNameController;
+  TextEditingController? _surnameController;
+  TextEditingController? _emailController;
+  TextEditingController? _phoneNumberController;
+
   @override
   void initState() {
     super.initState();
-    _textcontroller = TextEditingController(text: jsonconfig.epaperIP);
     _vpusertextcontroller = TextEditingController(text: jsonconfig.vpuser);
     _vppasswdtextcontroller = TextEditingController(text: jsonconfig.vppasswd);
-    _porttextcontroller =
-        TextEditingController(text: jsonconfig.epaperPort.toString());
+    _servertextcontroller = TextEditingController(text: jsonconfig.server);
+    _epapertextcontroller = TextEditingController();
   }
 
-  @override
-  void dispose() {
-    _textcontroller.dispose();
-    _porttextcontroller.dispose();
-    super.dispose();
+  Future<bool> changecredentials() async {
+    if (jsonresponse == null) {
+      return false;
+    }
+    //String xform = "";
+    /*var controllers = [
+      _firstNameController,
+      _surnameController,
+      _emailController,
+      _phoneNumberController,
+    ];*/
+    Map<String, dynamic> body = {
+      'firstname': _firstNameController!.text,
+      'surname': _surnameController!.text,
+      'email': _emailController!.text,
+      'phone_number': _phoneNumberController!.text
+    };
+    var response =
+        await req.req_resource('/user/change', bodyWithUsername: body);
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+    /*var fieldnames = [
+      'firstname',
+      'surname',
+      'email',
+      'phone_number',
+    ];
+    for (var i in Iterable.generate(controllers.length)) {
+      var controller = controllers[i];
+      var fieldname = fieldnames[i];
+      var field = jsonresponse[fieldname] ?? '';
+      if (controller!.text != field) {
+        xform += '$fieldname=${controller.text}&';
+      }
+    }
+    print(xform);*/
   }
 
-  bool _validport = true;
+  final ImagePicker _picker = ImagePicker();
+
+  dynamic jsonresponse;
+  Map<String, dynamic>? epapers;
+  var editcredentials = false;
+
+  Future<void> createuserwidget() async {
+    if (jsonconfig.user == "") {
+      try {
+        http.get(Uri.parse("${jsonconfig.server}/status/")).then((value) {
+          userwidget = ExpansionTile(
+              title: Text("Nutzer"),
+              initiallyExpanded: true,
+              children: [
+                ListTile(
+                  title: Text("Anmelden"),
+                  onTap: () {
+                    userdialog().then((value) => setState(() {}));
+                  },
+                )
+              ]);
+        });
+      } catch (_) {}
+      return;
+    }
+    try {
+      //userwidget = const SizedBox();
+      var epaperfuture = req.req_resource("/epaper/get");
+      if (jsonresponse == null) {
+        var url = Uri.parse('${jsonconfig.server}/user/get');
+        var headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+        var body =
+            'username=${jsonconfig.user}&password=${jsonconfig.password}';
+        var response = await http.post(url, headers: headers, body: body);
+        jsonresponse = jsonDecode(response.body);
+      }
+      _firstNameController ??=
+          TextEditingController(text: jsonresponse['firstname'] ?? '');
+      _surnameController ??=
+          TextEditingController(text: jsonresponse['surname'] ?? '');
+      _emailController ??=
+          TextEditingController(text: jsonresponse['email'] ?? '');
+      _phoneNumberController ??=
+          TextEditingController(text: jsonresponse['phone_number'] ?? '');
+
+      print(jsonresponse);
+      //var changecredentials = false;
+      epapers = jsonDecode((await epaperfuture).body);
+      //_epapertextcontroller.text;
+      userwidget = ExpansionTile(
+          title: Text("Nutzer"),
+          trailing: Text("angemeldet als: ${jsonconfig.user}",
+              style: TextStyle(
+                  color: jsonconfig.user == "admin"
+                      ? Colors.blueGrey //? Colors.red
+                      : Colors.blueGrey)),
+          initiallyExpanded: true,
+          children: [
+            ListTile(
+              title: Text("Nutzer wechseln"),
+              onTap: () {
+                userdialog().then((value) => setState(() {}));
+              },
+            ),
+            ListTile(
+                title: Container(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Flexible(child: Text("Vorname: ")),
+                        Flexible(
+                          child: TextField(
+                            decoration: null,
+                            controller: _firstNameController,
+                            enabled: editcredentials,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        const Flexible(child: Text("Name: ")),
+                        Flexible(
+                          child: TextField(
+                            decoration: null,
+                            controller: _surnameController,
+                            enabled: editcredentials,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        const Flexible(child: Text("Email: ")),
+                        Flexible(
+                          child: TextField(
+                            decoration: null,
+                            controller: _emailController,
+                            enabled: editcredentials,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        const Flexible(child: Text("Telefon: ")),
+                        Flexible(
+                          child: TextField(
+                            decoration: null,
+                            controller: _phoneNumberController,
+                            enabled: editcredentials,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        if (!editcredentials)
+                          TextButton(
+                              onPressed: () {
+                                editcredentials = true;
+                                createuserwidget();
+                                return;
+                              },
+                              child: const Text("Ändern"))
+                        else
+                          TextButton(
+                              onPressed: () {
+                                editcredentials = false;
+                                createuserwidget();
+                                return;
+                              },
+                              child: const Text("Abbrechen")),
+                        if (editcredentials)
+                          TextButton(
+                              onPressed: () {
+                                editcredentials = false;
+                                //todo: Await
+                                changecredentials();
+                                createuserwidget();
+                                return;
+                              },
+                              child: const Text("Annehmen"))
+                      ],
+                    ),
+                    const TextField(
+                      decoration: null,
+                    )
+                  ]),
+            )),
+            ListTile(
+              title: const Text("Bild hochladen"),
+              trailing: FloatingActionButton(
+                heroTag: "aslkdjgasdfljkdashgfadsjhkfgasdjkhfagsuewzrtuk",
+                onPressed: () {
+                  _picker.pickImage(source: ImageSource.gallery);
+                },
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.all(8),
+              child: // just a autocomplete textfield for room/lesson
+                  Autocomplete<String>(fieldViewBuilder: (BuildContext context,
+                      TextEditingController textcontroller,
+                      FocusNode focusNode,
+                      VoidCallback onFieldSubmitted) {
+                _epapertextcontroller = textcontroller;
+                var epapersbackward =
+                    Map.fromIterable(epapers!.keys, key: (value) {
+                  return epapers![value];
+                }, value: (key) {
+                  return key;
+                });
+                textcontroller.text = epapersbackward[jsonconfig.epaper] ?? "";
+                //textcontroller.text = ;
+                return TextField(
+                  controller: textcontroller,
+                  focusNode: focusNode,
+                  decoration: const InputDecoration(
+                    labelText: 'Raum',
+                  ),
+                  onSubmitted: (String value) {
+                    onFieldSubmitted();
+                  },
+                );
+              }, optionsBuilder: (TextEditingValue textEditingValue) {
+                var optionlist = epapers!.keys;
+                return optionlist.where((String option) {
+                  return (option.toLowerCase())
+                      .contains(textEditingValue.text.toLowerCase());
+                });
+              }, onSelected: (String value) {
+                jsonconfig.epaper = epapers![value];
+                _epapertextcontroller.text = value;
+                setState(() {});
+                File(p.join(supportdir, 'config'))
+                    .writeAsString(jsonEncode(jsonconfig));
+                jsonconfig.upload();
+              }),
+            ),
+            ListTile(
+              title: const Text("Abmelden"),
+              onTap: () {
+                jsonconfig.user = "";
+                jsonconfig.password = "";
+
+                debugPrint(jsonEncode(jsonconfig));
+                File(p.join(supportdir, 'config'))
+                    .writeAsString(jsonEncode(jsonconfig));
+                jsonconfig.upload();
+                jsonresponse == null;
+                fromuserwidget = false;
+                userwidget = null;
+                createuserwidget().then((value) {
+                  setState(() {});
+                });
+              },
+            )
+          ]);
+
+      fromuserwidget = true;
+      setState(() {});
+    } catch (_) {}
+  }
+
+  bool fromuserwidget = false;
+  Widget? userwidget;
   @override
   Widget build(BuildContext context) {
+    if (!fromuserwidget) {
+      createuserwidget();
+    } else {
+      fromuserwidget = false;
+    }
     return Scaffold(
         //experimental
         resizeToAvoidBottomInset: true,
@@ -49,12 +335,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: const Icon(Icons.save),
             onPressed: () {
               widget.appState.scafffromjson = true;
-              Navigator.pushReplacementNamed(context, "/mainScreen");
+              Navigator.pushReplacementNamed(context, '/mainScreen');
             }),
         body: ListView(
           children: [
 // E-Paper
-            ExpansionTile(title: const Text("E-Paper"), children: [
+            /*ExpansionTile(title: const Text('E-Paper'), children: [
               Container(
                   margin: const EdgeInsets.all(8),
                   child: TextField(
@@ -62,8 +348,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     onSubmitted: (String value) {
                       jsonconfig.epaperIP = value;
                       debugPrint(jsonEncode(jsonconfig));
-                      File(p.join(supportdir, 'config'))
-                          .writeAsString(jsonEncode(jsonconfig));
                     },
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
@@ -103,13 +387,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       errorText: _validport
                           ? null
                           : () {
-                              return "Invalid port";
+                              return 'Invalid port';
                             }(),
                       border: const OutlineInputBorder(),
                       labelText: 'epaper Port',
                     ),
                   ))
-            ]),
+            ]),*/
             Container(
                 margin: const EdgeInsets.all(8),
                 child: TextField(
@@ -123,12 +407,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   },
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: 'vpmobil user',
+                    labelText: 'vpmobil Nutzer',
                   ),
                 )),
             Container(
                 margin: const EdgeInsets.all(8),
                 child: TextField(
+                  obscureText: true,
                   controller: _vppasswdtextcontroller,
                   onSubmitted: (String value) {
                     jsonconfig.vppasswd = value;
@@ -139,10 +424,150 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   },
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: 'vpmobil password',
+                    labelText: 'vpmobil Passwort',
                   ),
                 )),
+            if (userwidget != null)
+              userwidget!
+            else
+              Container(
+                  margin: const EdgeInsets.all(8),
+                  child: TextField(
+                    controller: _servertextcontroller,
+                    onSubmitted: (String value) {
+                      jsonconfig.server = value;
+                      debugPrint(jsonEncode(jsonconfig));
+                      File(p.join(supportdir, 'config'))
+                          .writeAsString(jsonEncode(jsonconfig));
+                      jsonconfig.upload();
+                      fromuserwidget = true;
+                      createuserwidget().then((value) => setState(() {}));
+                    },
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Server ip',
+                    ),
+                  )),
           ],
         ));
+  }
+}
+
+class Updatecredentials extends StatefulWidget {
+  const Updatecredentials({Key? key}) : super(key: key);
+
+  @override
+  _UpdateCredentialsState createState() => _UpdateCredentialsState();
+}
+
+class _UpdateCredentialsState extends State<Updatecredentials> {
+  late TextEditingController _usertextcontroller;
+  late TextEditingController _passwordtextcontroller;
+  bool updating = false;
+  bool success = false;
+  bool wrongcredentials = false;
+  @override
+  void initState() {
+    super.initState();
+    _usertextcontroller = TextEditingController(text: jsonconfig.user);
+    _passwordtextcontroller = TextEditingController();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    void submitt() {
+      () async {
+        var url = Uri.parse('${jsonconfig.server}/user/isvalid');
+        var headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+        var body =
+            'username=${_usertextcontroller.text}&password=${_passwordtextcontroller.text}';
+        var response = await http.post(url, headers: headers, body: body);
+        print(response.statusCode);
+        if (response.statusCode == 200) {
+          setState(() {
+            success = true;
+          });
+          jsonconfig.user = _usertextcontroller.text;
+          jsonconfig.password = _passwordtextcontroller.text;
+          var file = File(p.join(supportdir, 'config'))
+              .writeAsString(jsonEncode(jsonconfig));
+          await Future.delayed(const Duration(milliseconds: 500));
+          file.then((value) => Navigator.pop(context));
+        } else {
+          setState(() {
+            wrongcredentials = true;
+            updating = false;
+          });
+        }
+      }();
+      updating = true;
+      setState(() {});
+    }
+
+    if (success) {
+      return const AlertDialog(
+        content: Text(
+          "Erfolgreich Eingeloggt",
+          style: TextStyle(color: Colors.greenAccent),
+          textScaleFactor: 3,
+        ),
+      );
+    }
+    return AlertDialog(
+      key: UniqueKey(),
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(20))),
+      scrollable: false,
+      title: const Text('Einloggen'),
+      content: IntrinsicHeight(
+          child: Focus(
+              autofocus: true,
+              child: RawKeyboardListener(
+                  focusNode: FocusNode(),
+                  onKey: (key) {
+                    if (key.logicalKey == LogicalKeyboardKey.enter) {
+                      submitt();
+                    }
+                  },
+                  child: Column(children: [
+                    Container(
+                        margin: const EdgeInsets.all(8),
+                        child: TextField(
+                          controller: _usertextcontroller,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Nutzername',
+                          ),
+                        )),
+                    Container(
+                        margin: const EdgeInsets.all(8),
+                        child: TextField(
+                          controller: _passwordtextcontroller,
+                          obscureText: true,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Passwort',
+                          ),
+                        )),
+                    if (wrongcredentials)
+                      const Text(
+                        "Nutzername oder Passwort falsch",
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    if (updating) const CircularProgressIndicator()
+                  ])))),
+      actions: [
+        TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text("abbrechen")),
+        TextButton(
+            onPressed: () {
+              submitt();
+            },
+            child: const Text("Anmelden"))
+      ],
+    );
   }
 }

@@ -3,7 +3,7 @@
  * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
 
-import 'package:helperpaper/main_header.dart';
+import 'package:helperpaper/header.dart';
 
 class EmptyPopup extends StatefulWidget {
   final GeneralConfig gconfig;
@@ -75,7 +75,7 @@ class _EmptyPopupState extends State<EmptyPopup> {
                                     .fontSize ??
                                 16) *
                             4,
-                        child: Text("Containeranzahl",
+                        child: Text('Containeranzahl',
                             style: Theme.of(context).textTheme.titleMedium)),
                     trailing: SizedBox(
                         width: (Theme.of(context)
@@ -125,14 +125,40 @@ class _EmptyPopupState extends State<EmptyPopup> {
               leading: const Icon(Icons.text_snippet),
             ),
             SelectableRadio<Componentenum>(
-              value: Componentenum.vertretungsplan,
+              value: Componentenum.substitutionPlan,
               groupvalue: widget.popupref.components,
               onPressed: () {
-                setenum(Componentenum.vertretungsplan);
+                setenum(Componentenum.substitutionPlan);
               },
               text: 'Vertretungsplan',
-              //leading: const Icon(Icons.calendar_month),
               leading: const Icon(Icons.event_note),
+            ),
+            SelectableRadio<Componentenum>(
+              value: Componentenum.roomReservation,
+              groupvalue: widget.popupref.components,
+              onPressed: () {
+                setenum(Componentenum.roomReservation);
+              },
+              text: 'Raumbuchung',
+              leading: const Icon(Icons.event_note),
+            ),
+            SelectableRadio<Componentenum>(
+              value: Componentenum.image,
+              groupvalue: widget.popupref.components,
+              onPressed: () {
+                setenum(Componentenum.image);
+              },
+              text: 'Bild',
+              leading: const Icon(Icons.image),
+            ),
+            SelectableRadio<Componentenum>(
+              value: Componentenum.userInformation,
+              groupvalue: widget.popupref.components,
+              onPressed: () {
+                setenum(Componentenum.userInformation);
+              },
+              text: 'Kontaktdaten',
+              //leading: const Icon(Icons.poin)
             ),
             SelectableRadio<Componentenum>(
               value: Componentenum.example,
@@ -177,6 +203,13 @@ class _EmptyPopupState extends State<EmptyPopup> {
             cconfig: widget.popupref.cconfig,
             byempty: true);
         break;
+      case (Componentenum.image):
+        widget.popupref.cconfig = ImageConfig();
+        popup = ImagePopup(
+            gconfig: widget.gconfig,
+            cconfig: widget.popupref.cconfig,
+            byempty: true);
+        break;
       case (Componentenum.example):
         widget.popupref.cconfig = ExampleConfig();
         popup = ExamplePopup(
@@ -184,9 +217,23 @@ class _EmptyPopupState extends State<EmptyPopup> {
             cconfig: widget.popupref.cconfig,
             byempty: true);
         break;
-      case (Componentenum.vertretungsplan):
-        widget.popupref.cconfig = VertretungsplanConfig("007", "5a", false);
+      case (Componentenum.substitutionPlan):
+        widget.popupref.cconfig = VertretungsplanConfig('007', '5a', false);
         popup = VertretungsplanPopup(
+            gconfig: widget.gconfig,
+            cconfig: widget.popupref.cconfig,
+            byempty: true);
+        break;
+      case (Componentenum.roomReservation):
+        widget.popupref.cconfig = RoomResevationConfig();
+        popup = RoomResevationPopup(
+            gconfig: widget.gconfig,
+            cconfig: widget.popupref.cconfig,
+            byempty: true);
+        break;
+      case (Componentenum.userInformation):
+        widget.popupref.cconfig = UserInformationConfig();
+        popup = UserInformationPopup(
             gconfig: widget.gconfig,
             cconfig: widget.popupref.cconfig,
             byempty: true);
@@ -291,7 +338,7 @@ class _EmptyPopupState extends State<EmptyPopup> {
                         Theme.of(context).textTheme.headlineLarge!.fontSize!)),
           ),
           body: Column(
-              children: [Expanded(child: tab!), Row(children: indicatorbar)]),
+              children: [Expanded(child: tab), Row(children: indicatorbar)]),
         ));
   }
 }

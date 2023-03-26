@@ -25,11 +25,12 @@ export 'component/popup.dart';
 export 'component/component.dart';
 export 'component/typedec.dart';
 export 'component/generalconfig.dart';
+
 // component::clock
 export 'components/clock/component.dart';
 export 'components/clock/config.dart';
 export 'components/clock/popup.dart';
-// component::empty
+// component::countdown
 export 'components/countdown/component.dart';
 export 'components/countdown/config.dart';
 export 'components/countdown/popup.dart';
@@ -41,17 +42,29 @@ export 'components/empty/popup.dart';
 export 'components/example/component.dart';
 export 'components/example/config.dart';
 export 'components/example/popup.dart';
+// component::image
+export 'components/image/component.dart';
+export 'components/image/config.dart';
+export 'components/image/popup.dart';
 // component::note
 export 'components/note/component.dart';
 export 'components/note/config.dart';
 export 'components/note/popup.dart';
-// component::vertretungsplan
-export 'components/vertretungsplan/component.dart';
-export 'components/vertretungsplan/config.dart';
-export 'components/vertretungsplan/popup.dart';
+// component::roomResevation
+export 'components/roomReservation/component.dart';
+export 'components/roomReservation/config.dart';
+export 'components/roomReservation/popup.dart';
 // component::scaffolding
 export 'components/scaffolding/component.dart';
 export 'components/scaffolding/config.dart';
+// component::substitutionPlan
+export 'components/substitutionPlan/component.dart';
+export 'components/substitutionPlan/config.dart';
+export 'components/substitutionPlan/popup.dart';
+// component::userInformation
+export 'components/userInformation/component.dart';
+export 'components/userInformation/config.dart';
+export 'components/userInformation/popup.dart';
 
 // =true if it runs on epaper
 const bool isepaper = bool.fromEnvironment("isepaper");

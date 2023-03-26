@@ -3,7 +3,7 @@
  * Copyright 2023 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
 
-import 'package:helperpaper/main_header.dart';
+import 'package:helperpaper/header.dart';
 
 class Example extends Component {
   Example(
@@ -13,7 +13,7 @@ class Example extends Component {
       bool inpopup = false})
       : super(key: key, gconfig: gconfig, cconfig: cconfig, inpopup: inpopup);
 
-  final String? name = "Example";
+  final String? name = 'Example';
   @override
   Map<String, dynamic> toJson() {
     Map<String, dynamic> tmpconf = super.toJson();

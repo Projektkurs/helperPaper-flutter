@@ -18,7 +18,7 @@ class VertretungsplanConfig {
       {'room': room, 'lesson': lesson, 'islesson': islesson};
 
   VertretungsplanConfig.fromJson(Map<String, dynamic> json)
-      : room = json["raum"] ?? "007",
-        lesson = json["lesson"] ?? "05a",
+      : room = json['raum'] ?? '007',
+        lesson = json['lesson'] ?? '05a',
         islesson = json['islesson'] ?? false;
 }

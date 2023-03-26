@@ -2,7 +2,7 @@
  *
  * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
-import 'package:helperpaper/main_header.dart';
+import 'package:helperpaper/header.dart';
 
 enum Componentenum {
   horizontal,
@@ -13,7 +13,10 @@ enum Componentenum {
   empty,
   example,
   note,
-  vertretungsplan
+  substitutionPlan,
+  image,
+  roomReservation,
+  userInformation
 }
 
 ///used by most Components to open the config menu if they are pressed.
@@ -29,22 +32,28 @@ typedef PopupCallback = void Function(Component widget, Function setState);
 Component? jsontoComp(Map<String, dynamic> json, resizeWidget,
     void Function(Key?, Widget) replaceChildren) {
   switch ((json['type'])) {
-    case ("Scaffolding"):
+    case ('Scaffolding'):
       return Scaffolding.fromJson(json);
-    case ("Empty"):
+    case ('Empty'):
       return Empty.fromJson(json, resizeWidget, replaceChildren);
-    case ("Clock"):
+    case ('Clock'):
       return Clock.fromJson(json);
-    case ("Countdown"):
+    case ('Countdown'):
       return Countdown.fromJson(json);
-    case ("Note"):
+    case ('Note'):
       return Note.fromJson(json);
-    case ("Vertretungsplan"):
-      return Vertretungsplan.fromJson(json);
-    case ("Example"):
+    case ('SubstitutionPlan'):
+      return SubstitutionPlan.fromJson(json);
+    case ('Example'):
       return Example.fromJson(json);
+    case ('ImageComponent'):
+      return ImageComponent.fromJson(json);
+    case ('RoomResevation'):
+      return RoomResevation.fromJson(json);
+    case ('UserInformation'):
+      return UserInformation.fromJson(json);
     default:
-      debugPrint("Warning: jsontoComp from Scaffolding returned null");
+      debugPrint('Warning: jsontoComp from Scaffolding returned null');
       return null;
   }
 }

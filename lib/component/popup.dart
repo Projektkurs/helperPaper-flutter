@@ -4,7 +4,7 @@
  * 
  */
 
-import 'package:helperpaper/main_header.dart';
+import 'package:helperpaper/header.dart';
 
 abstract class Popup<cconfigtype> extends StatefulWidget {
   final GeneralConfig gconfig;
@@ -41,7 +41,7 @@ abstract class PopupState<T extends Popup> extends State<T> {
   Widget build(BuildContext context) {
     if (step > tabs.length) {
       debugPrint(
-          "WARNING: Popup Menu wasnt closed properly. Trying to close the menu");
+          'WARNING: Popup Menu wasnt closed properly. Trying to close the menu');
       Navigator.pop(context);
     }
     //pregenerate widget as blocknext is dependent on it being generated
@@ -78,7 +78,7 @@ abstract class PopupState<T extends Popup> extends State<T> {
           onPressed: () => step == totaltabs - (widget.byempty ? 1 : 0)
               ? Navigator.pop(context)
               : setState(() {
-                  debugPrint("nextstep");
+                  debugPrint('nextstep');
                   step++;
                 }),
           child: Text(

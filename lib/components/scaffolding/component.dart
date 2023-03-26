@@ -2,7 +2,7 @@
  *
  * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
-import 'package:helperpaper/main_header.dart';
+import 'package:helperpaper/header.dart';
 
 import 'callbacks.dart';
 import 'resizeline.dart';
@@ -29,11 +29,11 @@ class Scaffolding extends Component {
       'subcontainers': ((state.childs.length + 1) / 2).floor(),
       'gconfig': gconfig,
       'cconfig': cconfig,
-      'type': "Scaffolding"
+      'type': 'Scaffolding'
     };
     if (state.childs.isNotEmpty) {
       for (int i = 0; i < (state.childs.length + 1) / 2; i++) {
-        retval["Child$i"] = state.childs[i * 2];
+        retval['Child$i'] = state.childs[i * 2];
       }
     }
     return retval;

@@ -3,7 +3,7 @@
  * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
 
-import 'package:helperpaper/main_header.dart';
+import 'package:helperpaper/header.dart';
 
 /// a Class that saves information which is used by every Component
 /// the reason behind this variables beeing outsourced into a distinct class
@@ -69,8 +69,8 @@ class GeneralConfig {
   /// Map is empty
   GeneralConfig.fromJson(Map<String, dynamic> json)
       : flex = json['flex'] ?? 1,
-        borderWidth = json["borderWidth"] ?? 5,
-        borderRadius = json["borderRadius"] ?? 10;
+        borderWidth = json['borderWidth'] ?? 5,
+        borderRadius = json['borderRadius'] ?? 10;
 }
 
 enum Bordertype { round, sharp, fused }

@@ -2,7 +2,7 @@
  *
  * Copyright 2023 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
-import 'package:helperpaper/main_header.dart';
+import 'package:helperpaper/header.dart';
 
 class ClockPopup extends Popup<ClockConfig> {
   const ClockPopup({
@@ -183,7 +183,7 @@ class _ClockPopupState extends PopupState<ClockPopup> {
             initiallyExpanded: true,
             children: [
               ListTile(
-                  leading: Text(ctr["hands_numbers"]!,
+                  leading: Text(ctr['hands_numbers']!,
                       style: Theme.of(context).textTheme.titleSmall),
                   title: DropdownButton<String>(
                       value: _numberface[!widget.cconfig.showNumbers

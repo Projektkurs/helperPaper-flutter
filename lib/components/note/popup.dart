@@ -3,7 +3,7 @@
  * Copyright 2023 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
 
-import 'package:helperpaper/main_header.dart';
+import 'package:helperpaper/header.dart';
 
 class NotePopup extends Popup<NoteConfig> {
   const NotePopup(
@@ -18,7 +18,7 @@ class NotePopup extends Popup<NoteConfig> {
 
 class _NotePopupState extends PopupState<NotePopup> {
   late TextEditingController _textctrl;
-  String text = "";
+  String text = '';
 
   Widget firstpage(BuildContext context) {
     return Container(

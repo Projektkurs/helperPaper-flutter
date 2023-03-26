@@ -3,7 +3,7 @@
  * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
 
-import 'package:helperpaper/main_header.dart';
+import 'package:helperpaper/header.dart';
 import 'package:helperpaper/message.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;

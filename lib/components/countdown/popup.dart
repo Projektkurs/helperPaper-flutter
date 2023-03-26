@@ -2,7 +2,7 @@
  *
  * Copyright 2023 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
 */
-import 'package:helperpaper/main_header.dart';
+import 'package:helperpaper/header.dart';
 
 class CountdownPopup extends Popup<CountdownConfig> {
   const CountdownPopup(
@@ -29,7 +29,7 @@ class _CountdownPopupState extends PopupState<CountdownPopup> {
           flex: widget.gconfig.flex,
           child: ListView(children: [
             ListTile(
-                leading: const Text("Verbleibende Zeit als Leiste"),
+                leading: const Text('Verbleibende Zeit als Leiste'),
                 title: Switch(
                     value: widget.cconfig.showbar,
                     onChanged: (val) => setState(() {

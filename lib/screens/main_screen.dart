@@ -3,8 +3,10 @@
  * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
 
-import 'package:helperpaper/main_header.dart';
+import 'package:helperpaper/header.dart';
 import 'package:path/path.dart' as p;
+import 'package:permission_handler/permission_handler.dart' as perm;
+import 'dart:io' show Platform;
 
 class MainScreen extends StatefulWidget {
   //Key is used for callbacks(scaffholding/callbacks.dart)
@@ -29,6 +31,9 @@ class _MainScreenState extends State<MainScreen> {
   Scaffolding? mainscaffolding;
   @override
   Widget build(BuildContext context) {
+    if (Platform.isAndroid) {
+      //perm.Permission.phone.request();
+    }
     //cannot be in initstate as setState should cannot be called there
     if (firstbuild) {
       () async {
@@ -90,7 +95,7 @@ class _MainScreenState extends State<MainScreen> {
                 ),
                 ListTile(
                   leading: const Icon(Icons.view_array_outlined),
-                  title: const Text('größe verändern'),
+                  title: const Text('Größe verändern'),
                   onTap: () {
                     _updatelines();
                   },
@@ -108,20 +113,16 @@ class _MainScreenState extends State<MainScreen> {
                     title: const Text('Speichern'),
                     onTap: () {
                       widget.appState.jsonsave = jsonEncode(mainscaffolding);
-                      debugPrint("New Jsonsave: ${widget.appState.jsonsave}");
+                      debugPrint('New Jsonsave: ${widget.appState.jsonsave}');
                       jsonconfig.updateconfig(
                           jsonconfig.defaultconfig, widget.appState.jsonsave);
                       () async {
                         try {
                           var _ = await post(
-                              Uri(
-                                  scheme: 'http',
-                                  host: jsonconfig.epaperIP,
-                                  path: '/config',
-                                  port: jsonconfig.epaperPort),
+                              Uri.parse("${jsonconfig.epaper}/config"),
                               body: widget.appState.jsonsave);
                         } catch (_) {
-                          debugPrint("WARNING: no epaper connected");
+                          debugPrint('WARNING: no epaper connected');
                         }
                       }();
                     }),
@@ -130,7 +131,7 @@ class _MainScreenState extends State<MainScreen> {
                     title: const Text('Laden'),
                     onTap: () {
                       setState(() {
-                        debugPrint("apply Config");
+                        debugPrint('apply Config');
                         widget.appState.maincontainers = jsonDecode(
                             widget.appState.jsonsave)['subcontainers'];
                         widget.appState.scafffromjson = true;
@@ -163,7 +164,7 @@ class _MainScreenState extends State<MainScreen> {
                     child: FloatingActionButton(
                   // random tag, not refferenced. Otherwise, flutter could have a situtation where
                   // it changes screens and tries to do a hero animation
-                  heroTag: "dkjfhdlkfjdhflkjhflhslakfhuoewqzrq2d",
+                  heroTag: 'dkjfhdlkfjdhflkjhflhslakfhuoewqzrq2d',
                   onPressed: () =>
                       widget.appState.scaffoldkey.currentState!.openDrawer(),
                   tooltip: 'menu',

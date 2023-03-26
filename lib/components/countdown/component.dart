@@ -4,10 +4,11 @@
  * Copyright 2023 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
 */
 
-import 'package:helperpaper/main_header.dart';
+import 'package:helperpaper/header.dart';
 import 'package:helperpaper/vpmobil.dart' as vp;
 import 'package:google_fonts/google_fonts.dart';
 
+// TODO: disable countdown on weekends / free days
 class Countdown extends Component {
   Countdown(
       {required Key key,
@@ -34,7 +35,7 @@ class Countdown extends Component {
 
 class CountdownState extends ComponentState<Countdown> {
   var ctr = tr['countdown']!;
-  String message = "";
+  String message = '';
   late DateTime now;
   vp.XmlDay? xmlday;
   @override
@@ -93,6 +94,7 @@ class CountdownState extends ComponentState<Countdown> {
     bool isbreak = false;
     // assumption: all lessons have an equal duration
     Duration lessonlength = endtimes[0].difference(starttimes[0]);
+    //now = DateTime.now().subtract(Duration(hours: 5));
     now = DateTime.now();
     // TODO: calculating which lesson currently takes place should not
     // be recalculated each time
@@ -107,13 +109,13 @@ class CountdownState extends ComponentState<Countdown> {
       for (int i = 0; i < starttimes.length; i++) {
         if (starttimes[i].isBefore(now) && endtimes[i].isAfter(now)) {
           lesson = i;
-          message = ctr['lesson']!.replaceAll("%", "${i + 1}.");
+          message = ctr['lesson']!.replaceAll('%', '${i + 1}.');
           break;
         }
         if (endtimes[i].isBefore(now) && starttimes[i + 1].isAfter(now)) {
           lesson = i;
           isbreak = true;
-          message = ctr['break']!.replaceAll("%", "${i + 2}.");
+          message = ctr['break']!.replaceAll('%', '${i + 2}.');
           break;
         }
       }
@@ -123,16 +125,16 @@ class CountdownState extends ComponentState<Countdown> {
     int secondbar = 0;
     if (lesson == -2) {
       message =
-          "$message\n\n${starttimes[0].difference(now).inMinutes} Minuten bis\n Unterrichtsstart";
+          '$message\n\n${starttimes[0].difference(now).inMinutes} Minuten bis\n Unterrichtsstart';
     }
     if (!widget.cconfig.showbar) {
       if (lesson >= 0 && !isbreak) {
         message =
-            "$message\n\nnoch ${endtimes[lesson].difference(now).inMinutes} Minuten";
+            '$message\n\nnoch ${endtimes[lesson].difference(now).inMinutes} Minuten';
       }
       if (lesson >= 0 && isbreak) {
         message =
-            "$message\n\nnoch ${starttimes[lesson + 1].difference(now).inMinutes} Minuten";
+            '$message\n\nnoch ${starttimes[lesson + 1].difference(now).inMinutes} Minuten';
       }
     } else {
       if (lesson >= 0 && !isbreak) {

@@ -3,7 +3,7 @@
  * Copyright 2023 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
 class NoteConfig {
-  String text = "";
+  String text = '';
   void copyFrom(NoteConfig config) {
     text = config.text;
   }

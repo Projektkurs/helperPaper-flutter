@@ -6,7 +6,7 @@
  * with some features not implemented. It just differs in appearance
  */
 
-import 'package:helperpaper/main_header.dart';
+import 'package:helperpaper/header.dart';
 
 /// Like the Radio with different looks
 class SelectableRadio<T> extends StatefulWidget {
