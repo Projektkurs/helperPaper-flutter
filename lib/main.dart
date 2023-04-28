@@ -4,29 +4,23 @@
  */
 
 import 'package:helperpaper/header.dart';
-import 'package:helperpaper/message.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
-import 'package:helperpaper/screens/settings_screen.dart';
-import 'screens/main_screen.dart';
+import 'package:helperpaper/screens/settings.dart';
+import 'screens/layout.dart';
 import 'package:helperpaper/vpmobil.dart' as vp;
 
-late String supportdir;
-late JsonConfig jsonconfig;
 void main() {
-  //tz.initializeTimeZones();
-  runApp(const Entry());
+  runApp(const EntryPoint());
 }
 
 final GeneralConfig globalgconf = GeneralConfig.createGeneral();
 
 //Entry class, used to set default theme
-class Entry extends StatelessWidget {
-  const Entry({
+class EntryPoint extends StatelessWidget {
+  const EntryPoint({
     Key? key,
   }) : super(key: key);
   static const title = 'helper:Paper';
-  //will be used later to switch between end-user mode and embeddded
 
   @override
   Widget build(BuildContext context) {
@@ -48,120 +42,88 @@ class App extends StatefulWidget {
   AppState createState() => AppState();
 }
 
-class AppState extends State<App> with message {
-  //number of Widgets by the first scaffholding
-  @override
+class AppState extends State<App> {
+  /// this function is just used on the epaper.
+  /// it creates a function that listends on the updatefifo
+  /// and updates the current layout if the command is given
+  epaperUpdateInterrupt() async {
+    Future<String> fifocontent = File('../updatefifo').readAsString();
+    fifocontent.then((message) {
+      setState(() {
+        layoutJson = File('./configs/defaultconfig').readAsStringSync();
+        maincontainers = jsonDecode(layoutJson)['subcontainers'];
+        mainscreenkey = GlobalKey();
+        scafffromjson = true;
+        File('config').writeAsString(jsonEncode(configJson));
+      });
+      epaperUpdateInterrupt();
+    });
+  }
+
+  /// number of Widgets by the first scaffholding
   int maincontainers = 1;
   addContainer() {
-    debugPrint("increasing main containers");
     setState(() {
-      maincontainers < 6 ? maincontainers++ : null;
+      maincontainers < MAX_CONTAINERS ? maincontainers++ : null;
     });
   }
 
   removeContainer() {
-    debugPrint("decreasing main containers");
     setState(() {
       maincontainers > 1 ? maincontainers-- : null;
     });
   }
 
-  late Future<bool> configisload;
+  late Future<void> configisload;
   @override
   void initState() {
     super.initState();
-    //configmenu=configMenuMainParse;
     if (isepaper) {
       epaperUpdateInterrupt();
     }
-    Future<bool> loadconfig() async {
+    vp.startupdatehandler();
+    configisload = () async {
+      sharedPreferences = await SharedPreferences.getInstance();
       supportdir =
           isepaper ? "./" : (await getApplicationSupportDirectory()).path;
-      await Directory(p.join(supportdir, "configs")).create();
-      //var directory = await Directory('./data/configs').create(recursive: true);
-      if (await File(p.join(supportdir, 'config')).exists()) {
-        debugPrint("Config found at ${p.join(supportdir, 'config')}");
-      } else {
-        debugPrint(
-            "No Config found, writing new on to ${p.join(supportdir, 'config')}");
-        await File(p.join(supportdir, 'config'))
-            .writeAsString(jsonEncode(JsonConfig()));
-      }
-      String tmpjsonstr =
-          await File(p.join(supportdir, 'config')).readAsString();
+      debugPrint("support directory:$supportdir");
+      // load jsonconfig
       try {
-        jsonconfig = JsonConfig.fromJson(jsonDecode(tmpjsonstr));
-      } on FormatException {
-        debugPrint("ERROR: jsonconfig is corrupted, generating new one");
-        jsonconfig = JsonConfig();
-        File(p.join(supportdir, 'config'))
-            .writeAsString(jsonEncode(jsonconfig));
+        configJson = JsonConfig.fromJson(jsonDecode(
+            await File(p.join(supportdir, 'config')).readAsString()));
+      } catch (error) {
+        configJson = JsonConfig();
+        await File(p.join(supportdir, 'config'))
+            .writeAsString(jsonEncode(configJson));
       }
-      if (jsonconfig.defaultconfig == "") {
+      // load jsonsave
+      try {
+        await Directory(p.join(supportdir, "configs")).create();
+        layoutJson =
+            await File(p.join(supportdir, 'configs', configJson.defaultconfig))
+                .readAsString();
+        maincontainers = jsonDecode(layoutJson)['subcontainers'];
+        scafffromjson = true;
+      } catch (error) {
         debugPrint(
             "no Widget tree config found, will use the default init as config");
         SchedulerBinding.instance.scheduleFrameCallback((Duration duration) {
-          //jsonsave=jsonEncode(mainscaffolding);
-          jsonsave = jsonEncode(mainscaffolding);
-          jsonconfig.addconfig("defaultconfig", jsonsave);
-          jsonconfig.defaultconfig = "defaultconfig";
+          layoutJson = jsonEncode(mainscaffolding);
+          configJson.addconfig("defaultconfig", layoutJson);
+          configJson.defaultconfig = "defaultconfig";
           File(p.join(supportdir, 'config'))
-              .writeAsString(jsonEncode(jsonconfig));
-          debugPrint("new jsonsave:$jsonsave");
-        });
-      } else {
-        if (await File(p.join(supportdir, 'configs', jsonconfig.defaultconfig))
-            .exists()) {
-          debugPrint(
-              "applyingconfig: ${p.join(supportdir, 'configs', jsonconfig.defaultconfig)}");
-          jsonsave = await File(
-                  p.join(supportdir, 'configs', jsonconfig.defaultconfig))
-              .readAsString();
-          debugPrint("jsonsave:$jsonsave");
-        } else {
-          jsonconfig.configs.remove(jsonconfig.defaultconfig);
-          jsonconfig.defaultconfig = "";
-        }
-        if (jsonDecode(jsonsave) == null) {
-          debugPrint(
-              "Error: the json file is corrupted or the versions are not compatible");
-          await File(p.join(supportdir, 'configs', jsonconfig.defaultconfig))
-              .delete();
-          await File(p.join(supportdir, 'config')).delete();
-        }
-        maincontainers = jsonDecode(jsonsave)['subcontainers'];
-        scafffromjson = true;
-      }
-      vp.startupdatehandler();
-      //needs to be initialized at the point where settings is opened
-      return true;
-    }
-
-    configisload = loadconfig();
-    if (isepaper) {
-      updatescreen() async {
-        Future.delayed(const Duration(minutes: 5)).then((value) async {
-          setState(() {
-            jsonsave = File('./configs/defaultconfig').readAsStringSync();
-            maincontainers = jsonDecode(jsonsave)['subcontainers'];
-            scafffromjson = true;
-            File('config').writeAsString(jsonEncode(jsonconfig));
-            updatescreen();
-          });
+              .writeAsString(jsonEncode(configJson));
+          debugPrint("new jsonsave:$layoutJson");
         });
       }
-
-      SchedulerBinding.instance.scheduleFrameCallback((Duration duration) {
-        updatescreen();
-      });
-    }
+    }();
   }
 
-  @override
-  String jsonsave = "";
-  //Key is used for callbacks(scaffholding/callbacks.dart)
-  //it mustn't change, as they are saved at various places in the Widget tree
-  //exception to this is if the whole widget tree is droped
+  String layoutJson = "";
+
+  ///Key is used for callbacks(scaffholding/callbacks.dart)
+  ///it mustn't change, as they are saved at various places in the Widget tree
+  ///exception to this is if the whole widget tree is droped
   GlobalKey<ScaffoldingState> scaffoldingkey = GlobalKey();
   GlobalKey<ScaffoldState> scaffoldkey = GlobalKey();
   GlobalKey mainscreenkey = GlobalKey();
@@ -169,13 +131,10 @@ class AppState extends State<App> with message {
   Scaffolding? mainscaffolding;
 
   ///controlls wether the next setState of MainScreen will be built from the Json config or a new Screen is used
-  @override
   bool scafffromjson = false;
   bool firstbuild = true;
   @override
   Widget build(BuildContext context) {
-    debugPrint("firstbuild:$firstbuild");
-
     return MaterialApp(
         home: MainScreen(key: mainscreenkey, appState: this),
         routes: <String, WidgetBuilder>{

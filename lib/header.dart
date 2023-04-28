@@ -12,20 +12,24 @@ export 'package:flutter/material.dart';
 export 'package:flutter/scheduler.dart' hide Flow;
 export 'package:http/http.dart';
 export 'package:flutter_colorpicker/flutter_colorpicker.dart';
+export 'package:path_provider/path_provider.dart';
+export 'package:shared_preferences/shared_preferences.dart';
 export 'fontweight.dart';
 export 'translation.dart';
 
 // main
 export 'main.dart';
 export 'config.dart';
+export 'global_variables.dart';
+
 // popups
 export 'component/menu.dart';
 export 'component/popup.dart';
+
 // component
 export 'component/component.dart';
 export 'component/typedec.dart';
 export 'component/generalconfig.dart';
-
 // component::clock
 export 'components/clock/component.dart';
 export 'components/clock/config.dart';
@@ -65,8 +69,3 @@ export 'components/substitutionPlan/popup.dart';
 export 'components/userInformation/component.dart';
 export 'components/userInformation/config.dart';
 export 'components/userInformation/popup.dart';
-
-// =true if it runs on epaper
-const bool isepaper = bool.fromEnvironment("isepaper");
-
-// default config that is applied on first start, on reset or on corrupted json

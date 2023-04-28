@@ -3,7 +3,7 @@
  * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
 
-var currentLanguage = 'de_DE';
+var currentLanguage = 'de';
 
 /// the delay of Tooltip messages
 const Duration msgdur = Duration(milliseconds: 300);
@@ -13,18 +13,27 @@ const Duration msgdur = Duration(milliseconds: 300);
 /// it will return the translation considering currentLanguage
 Map<String, Map<String, String>> get tr {
   switch (currentLanguage) {
-    case ('de_DE'):
-      return deDE;
+    case ('de'):
+      return de;
     default:
-      return deDE;
+      return de;
   }
 }
 
 /// The german translation
 ///
 ///
-Map<String, Map<String, String>> get deDE => {
+Map<String, Map<String, String>> get de => {
+      'layout': {
+        'add_container': 'Feld hinzufügen',
+        'remove_container': 'Feld entfernen',
+        'settings': 'Einstellungen',
+      },
       'generic': {
+        'save': 'Speichern',
+        'load': 'Laden',
+        'sync': 'Synchronisieren',
+        'reset': 'Zurücksetzen',
         'active': 'Aktiv',
         'color': 'Farbe',
         'fontwidth': 'Schriftdicke',

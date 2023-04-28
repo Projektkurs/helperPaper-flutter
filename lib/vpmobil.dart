@@ -8,12 +8,11 @@ const maxHoursPerDay = 7;
 List<XmlDay>? _xmldays;
 List<void Function(List<XmlDay>)> _callbacks = [];
 bool _updatehandlerruning = false;
-bool startupdatehandler() {
+void startupdatehandler() {
   if (!_updatehandlerruning) {
     _vplanAutoUpdater();
     _updatehandlerruning = true;
   }
-  return _updatehandlerruning;
 }
 
 /// the given Function is called directly if vplan is already available or
@@ -200,7 +199,7 @@ class XmlDay {
               "/schulen/52002736/mobil/mobdaten/$xmlname"),
           headers: {
             'authorization':
-                "Basic ${base64Encode(utf8.encode('${jsonconfig.vpuser}:${jsonconfig.vppasswd}'))}"
+                "Basic ${base64Encode(utf8.encode('${configJson.vpuser}:${configJson.vppasswd}'))}"
           });
     } catch (_) {
       debugPrint("connecting to stundenplan24.de failed");

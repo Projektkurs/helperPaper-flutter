@@ -1,12 +1,10 @@
-/* main_screen.dart - base screen for AppState
+/* layout.dart - base screen for AppState
  *
  * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
 
 import 'package:helperpaper/header.dart';
 import 'package:path/path.dart' as p;
-import 'package:permission_handler/permission_handler.dart' as perm;
-import 'dart:io' show Platform;
 
 class MainScreen extends StatefulWidget {
   //Key is used for callbacks(scaffholding/callbacks.dart)
@@ -31,16 +29,14 @@ class _MainScreenState extends State<MainScreen> {
   Scaffolding? mainscaffolding;
   @override
   Widget build(BuildContext context) {
-    if (Platform.isAndroid) {
-      //perm.Permission.phone.request();
-    }
-    //cannot be in initstate as setState should cannot be called there
+    //cannot be in initstate as setState cannot be called there
     if (firstbuild) {
       () async {
         await widget.appState.configisload;
+        // reread because the config might have changed
         if (isepaper) {
-          widget.appState.jsonsave =
-              File(p.join(supportdir, 'configs', jsonconfig.defaultconfig))
+          widget.appState.layoutJson =
+              File(p.join(supportdir, 'configs', configJson.defaultconfig))
                   .readAsStringSync();
           widget.appState.scafffromjson = true;
         }
@@ -51,7 +47,7 @@ class _MainScreenState extends State<MainScreen> {
       if (widget.appState.scafffromjson) {
         widget.appState.scaffoldingkey = GlobalKey();
         mainscaffolding = Scaffolding.fromJson(
-            jsonDecode(widget.appState.jsonsave),
+            jsonDecode(widget.appState.layoutJson),
             key: widget.appState.scaffoldingkey);
         widget.appState.scafffromjson = false;
       } else {
@@ -112,15 +108,15 @@ class _MainScreenState extends State<MainScreen> {
                     leading: const Icon(Icons.file_upload),
                     title: const Text('Speichern'),
                     onTap: () {
-                      widget.appState.jsonsave = jsonEncode(mainscaffolding);
-                      debugPrint('New Jsonsave: ${widget.appState.jsonsave}');
-                      jsonconfig.updateconfig(
-                          jsonconfig.defaultconfig, widget.appState.jsonsave);
+                      widget.appState.layoutJson = jsonEncode(mainscaffolding);
+                      debugPrint('New Jsonsave: ${widget.appState.layoutJson}');
+                      configJson.updateconfig(
+                          configJson.defaultconfig, widget.appState.layoutJson);
                       () async {
                         try {
                           var _ = await post(
-                              Uri.parse("${jsonconfig.epaper}/config"),
-                              body: widget.appState.jsonsave);
+                              Uri.parse("${configJson.epaper}/config"),
+                              body: widget.appState.layoutJson);
                         } catch (_) {
                           debugPrint('WARNING: no epaper connected');
                         }
@@ -133,22 +129,22 @@ class _MainScreenState extends State<MainScreen> {
                       setState(() {
                         debugPrint('apply Config');
                         widget.appState.maincontainers = jsonDecode(
-                            widget.appState.jsonsave)['subcontainers'];
+                            widget.appState.layoutJson)['subcontainers'];
                         widget.appState.scafffromjson = true;
                       });
                     }),
                 ListTile(
                     leading: const Icon(Icons.reset_tv),
-                    title: const Text('Zurücksetzen'),
+                    title: Text(tr['generic']!['reset']!),
                     onTap: () {
                       setState(() {
                         widget.appState.mainscaffolding = null;
                         widget.appState.scaffoldingkey = GlobalKey();
-                        jsonconfig.updateconfig(
-                            jsonconfig.defaultconfig, widget.appState.jsonsave);
+                        configJson.updateconfig(configJson.defaultconfig,
+                            widget.appState.layoutJson);
                       });
-                      widget.appState.maincontainers =
-                          jsonDecode(widget.appState.jsonsave)['subcontainers'];
+                      widget.appState.maincontainers = jsonDecode(
+                          widget.appState.layoutJson)['subcontainers'];
                       widget.appState.scafffromjson = false;
                     }),
               ],

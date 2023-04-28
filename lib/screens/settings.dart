@@ -1,4 +1,4 @@
-/* settings_screen.dart - settings Menu for general use
+/* settings.dart - settings Screen for general use
  *
  * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
@@ -40,9 +40,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void initState() {
     super.initState();
-    _vpusertextcontroller = TextEditingController(text: jsonconfig.vpuser);
-    _vppasswdtextcontroller = TextEditingController(text: jsonconfig.vppasswd);
-    _servertextcontroller = TextEditingController(text: jsonconfig.server);
+    _vpusertextcontroller = TextEditingController(text: configJson.vpuser);
+    _vppasswdtextcontroller = TextEditingController(text: configJson.vppasswd);
+    _servertextcontroller = TextEditingController(text: configJson.server);
     _epapertextcontroller = TextEditingController();
   }
 
@@ -94,9 +94,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   var editcredentials = false;
 
   Future<void> createuserwidget() async {
-    if (jsonconfig.user == "") {
+    if (configJson.user == "") {
       try {
-        http.get(Uri.parse("${jsonconfig.server}/status/")).then((value) {
+        http.get(Uri.parse("${configJson.server}/status/")).then((value) {
           userwidget = ExpansionTile(
               title: Text("Nutzer"),
               initiallyExpanded: true,
@@ -116,10 +116,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
       //userwidget = const SizedBox();
       var epaperfuture = req.req_resource("/epaper/get");
       if (jsonresponse == null) {
-        var url = Uri.parse('${jsonconfig.server}/user/get');
+        var url = Uri.parse('${configJson.server}/user/get');
         var headers = {'Content-Type': 'application/x-www-form-urlencoded'};
         var body =
-            'username=${jsonconfig.user}&password=${jsonconfig.password}';
+            'username=${configJson.user}&password=${configJson.password}';
         var response = await http.post(url, headers: headers, body: body);
         jsonresponse = jsonDecode(response.body);
       }
@@ -138,9 +138,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
       //_epapertextcontroller.text;
       userwidget = ExpansionTile(
           title: Text("Nutzer"),
-          trailing: Text("angemeldet als: ${jsonconfig.user}",
+          trailing: Text("angemeldet als: ${configJson.user}",
               style: TextStyle(
-                  color: jsonconfig.user == "admin"
+                  color: configJson.user == "admin"
                       ? Colors.blueGrey //? Colors.red
                       : Colors.blueGrey)),
           initiallyExpanded: true,
@@ -263,7 +263,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 }, value: (key) {
                   return key;
                 });
-                textcontroller.text = epapersbackward[jsonconfig.epaper] ?? "";
+                textcontroller.text = epapersbackward[configJson.epaper] ?? "";
                 //textcontroller.text = ;
                 return TextField(
                   controller: textcontroller,
@@ -282,24 +282,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       .contains(textEditingValue.text.toLowerCase());
                 });
               }, onSelected: (String value) {
-                jsonconfig.epaper = epapers![value];
+                configJson.epaper = epapers![value];
                 _epapertextcontroller.text = value;
                 setState(() {});
                 File(p.join(supportdir, 'config'))
-                    .writeAsString(jsonEncode(jsonconfig));
-                jsonconfig.upload();
+                    .writeAsString(jsonEncode(configJson));
+                configJson.upload();
               }),
             ),
             ListTile(
               title: const Text("Abmelden"),
               onTap: () {
-                jsonconfig.user = "";
-                jsonconfig.password = "";
+                configJson.user = "";
+                configJson.password = "";
 
-                debugPrint(jsonEncode(jsonconfig));
+                debugPrint(jsonEncode(configJson));
                 File(p.join(supportdir, 'config'))
-                    .writeAsString(jsonEncode(jsonconfig));
-                jsonconfig.upload();
+                    .writeAsString(jsonEncode(configJson));
+                configJson.upload();
                 jsonresponse == null;
                 fromuserwidget = false;
                 userwidget = null;
@@ -399,11 +399,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 child: TextField(
                   controller: _vpusertextcontroller,
                   onSubmitted: (String value) {
-                    jsonconfig.vpuser = value;
-                    debugPrint(jsonEncode(jsonconfig));
+                    configJson.vpuser = value;
+                    debugPrint(jsonEncode(configJson));
                     File(p.join(supportdir, 'config'))
-                        .writeAsString(jsonEncode(jsonconfig));
-                    jsonconfig.upload();
+                        .writeAsString(jsonEncode(configJson));
+                    configJson.upload();
                   },
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
@@ -416,11 +416,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   obscureText: true,
                   controller: _vppasswdtextcontroller,
                   onSubmitted: (String value) {
-                    jsonconfig.vppasswd = value;
-                    debugPrint(jsonEncode(jsonconfig));
+                    configJson.vppasswd = value;
+                    debugPrint(jsonEncode(configJson));
                     File(p.join(supportdir, 'config'))
-                        .writeAsString(jsonEncode(jsonconfig));
-                    jsonconfig.upload();
+                        .writeAsString(jsonEncode(configJson));
+                    configJson.upload();
                   },
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
@@ -435,11 +435,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   child: TextField(
                     controller: _servertextcontroller,
                     onSubmitted: (String value) {
-                      jsonconfig.server = value;
-                      debugPrint(jsonEncode(jsonconfig));
+                      configJson.server = value;
+                      debugPrint(jsonEncode(configJson));
                       File(p.join(supportdir, 'config'))
-                          .writeAsString(jsonEncode(jsonconfig));
-                      jsonconfig.upload();
+                          .writeAsString(jsonEncode(configJson));
+                      configJson.upload();
                       fromuserwidget = true;
                       createuserwidget().then((value) => setState(() {}));
                     },
@@ -469,7 +469,7 @@ class _UpdateCredentialsState extends State<Updatecredentials> {
   @override
   void initState() {
     super.initState();
-    _usertextcontroller = TextEditingController(text: jsonconfig.user);
+    _usertextcontroller = TextEditingController(text: configJson.user);
     _passwordtextcontroller = TextEditingController();
   }
 
@@ -477,7 +477,7 @@ class _UpdateCredentialsState extends State<Updatecredentials> {
   Widget build(BuildContext context) {
     void submitt() {
       () async {
-        var url = Uri.parse('${jsonconfig.server}/user/isvalid');
+        var url = Uri.parse('${configJson.server}/user/isvalid');
         var headers = {'Content-Type': 'application/x-www-form-urlencoded'};
         var body =
             'username=${_usertextcontroller.text}&password=${_passwordtextcontroller.text}';
@@ -487,10 +487,10 @@ class _UpdateCredentialsState extends State<Updatecredentials> {
           setState(() {
             success = true;
           });
-          jsonconfig.user = _usertextcontroller.text;
-          jsonconfig.password = _passwordtextcontroller.text;
+          configJson.user = _usertextcontroller.text;
+          configJson.password = _passwordtextcontroller.text;
           var file = File(p.join(supportdir, 'config'))
-              .writeAsString(jsonEncode(jsonconfig));
+              .writeAsString(jsonEncode(configJson));
           await Future.delayed(const Duration(milliseconds: 500));
           file.then((value) => Navigator.pop(context));
         } else {

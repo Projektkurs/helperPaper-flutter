@@ -6,18 +6,18 @@ Future<http.Response> req_resource(String path,
   if (!path.startsWith('/')) {
     path = '/$path';
   }
-  var url = Uri.parse('${jsonconfig.server}$path');
+  var url = Uri.parse('${configJson.server}$path');
   Map<String, dynamic> body = bodyWithUsername ?? {};
   if (bodyWithUsername != null) {
     body = bodyWithUsername;
-    body['userdata[username]'] = jsonconfig.user;
-    body['userdata[password]'] = jsonconfig.password;
+    body['userdata[username]'] = configJson.user;
+    body['userdata[password]'] = configJson.password;
     //body['userdata'] = {
     //  'username': jsonconfig.user,
     //  'password': jsonconfig.password
     //};
   } else {
-    body = {'username': jsonconfig.user, 'password': jsonconfig.password};
+    body = {'username': configJson.user, 'password': configJson.password};
   }
   var headers = {'Content-Type': 'application/x-www-form-urlencoded'};
   //var body = 'username=${jsonconfig.user}&password=${jsonconfig.password}';

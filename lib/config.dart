@@ -27,7 +27,7 @@ class JsonConfig {
   JsonConfig();
   void upload() async {
     try {
-      post(Uri.parse("${jsonconfig.epaper}/generalconfig"),
+      post(Uri.parse("${configJson.epaper}/generalconfig"),
           body: jsonEncode(this));
     } catch (_) {}
   }

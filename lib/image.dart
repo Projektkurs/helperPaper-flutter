@@ -4,9 +4,9 @@ import 'package:http_parser/http_parser.dart';
 
 Future<Widget> get(String path, {bool aspreview = false}) async {
   final url = Uri.parse(
-      '${jsonconfig.server}/image/${aspreview ? 'preview' : 'get'}/$path');
+      '${configJson.server}/image/${aspreview ? 'preview' : 'get'}/$path');
   final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
-  final body = 'username=${jsonconfig.user}&password=${jsonconfig.password}';
+  final body = 'username=${configJson.user}&password=${configJson.password}';
   late Response response;
   getresponse() async {
     try {
@@ -27,16 +27,16 @@ Future<Widget> get(String path, {bool aspreview = false}) async {
 }
 
 Future<List<String>> list() async {
-  final url = Uri.parse('${jsonconfig.server}/image/list');
+  final url = Uri.parse('${configJson.server}/image/list');
   final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
-  final body = 'username=${jsonconfig.user}&password=${jsonconfig.password}';
+  final body = 'username=${configJson.user}&password=${configJson.password}';
   var response = await http.post(url, headers: headers, body: body);
   return response.body.split('\n');
   //return Image.memory(response.bodyBytes);
 }
 
 upload(String path) async {
-  final url = Uri.parse('${jsonconfig.server}/image/upload');
+  final url = Uri.parse('${configJson.server}/image/upload');
 
   final request = http.MultipartRequest('POST', url);
 
@@ -45,8 +45,8 @@ upload(String path) async {
     path,
     contentType: MediaType('image', 'jpeg'),
   ));
-  request.fields['username'] = jsonconfig.user;
-  request.fields['password'] = jsonconfig.password;
+  request.fields['username'] = configJson.user;
+  request.fields['password'] = configJson.password;
 
   final response = await request.send();
 
