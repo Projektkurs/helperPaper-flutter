@@ -22,8 +22,7 @@ class _RoomResevationPopupState extends PopupState<RoomResevationPopup> {
   late TextEditingController roomtextcontroller;
   late TextEditingController roomnametextcontroller;
   late TextEditingController roomdescriptiontextcontroller;
-  final formatter = DateFormat("yyyy-MM-dd'T'HH:mm:ss'-00:00'");
-
+  final formatter = DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
   List<String> rooms = [];
   var _startTime = TimeOfDay.now();
   var _removeTime = TimeOfDay.now();
