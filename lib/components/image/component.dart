@@ -16,19 +16,6 @@ class ImageComponent extends Component {
       bool inpopup = false})
       : super(key: key, gconfig: gconfig, cconfig: cconfig, inpopup: inpopup);
 
-  final String? name = 'ImageComponent';
-  @override
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> tmpconf = super.toJson();
-    return tmpconf;
-  }
-
-  ImageComponent.fromJson(Map<String, dynamic> json)
-      : super(
-            key: GlobalKey(),
-            gconfig: GeneralConfig.fromJson(json['gconfig']),
-            cconfig: ImageConfig.fromJson(json['cconfig']));
-
   @override
   State<ImageComponent> createState() => ImageState();
 }

@@ -10,7 +10,7 @@ import 'package:analog_clock/analog_clock.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 /// This Component can either be a digital or analog clock
-class Clock extends Component {
+class Clock extends Component<ClockConfig> {
   Clock(
       {super.key,
       required super.gconfig,
@@ -19,17 +19,6 @@ class Clock extends Component {
       : super(cconfig: cconfig);
 
   final String? name = 'Clock';
-  @override
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> tmpconf = super.toJson();
-    return tmpconf;
-  }
-
-  Clock.fromJson(Map<String, dynamic> json)
-      : super(
-            key: GlobalKey(),
-            gconfig: GeneralConfig.fromJson(json['gconfig']),
-            cconfig: ClockConfig.fromJson(json['cconfig']));
 
   @override
   State<Clock> createState() => ClockState();

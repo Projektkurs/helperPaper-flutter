@@ -14,18 +14,6 @@ class Note extends Component {
       : super(key: key, gconfig: gconfig, cconfig: cconfig, inpopup: inpopup);
 
   @override
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> tmpconf = super.toJson();
-    return tmpconf;
-  }
-
-  Note.fromJson(Map<String, dynamic> json)
-      : super(
-            key: GlobalKey(),
-            gconfig: GeneralConfig.fromJson(json['gconfig']),
-            cconfig: NoteConfig.fromJson(json['cconfig']));
-
-  @override
   State<Note> createState() => NoteState();
 }
 

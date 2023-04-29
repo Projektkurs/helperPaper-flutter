@@ -14,19 +14,6 @@ class RoomResevation extends Component {
       bool inpopup = false})
       : super(key: key, gconfig: gconfig, cconfig: cconfig, inpopup: inpopup);
 
-  final String? name = 'RoomResevation';
-  @override
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> tmpconf = super.toJson();
-    return tmpconf;
-  }
-
-  RoomResevation.fromJson(Map<String, dynamic> json)
-      : super(
-            key: GlobalKey(),
-            gconfig: GeneralConfig.fromJson(json['gconfig']),
-            cconfig: RoomResevationConfig.fromJson(json['cconfig']));
-
   @override
   State<RoomResevation> createState() => RoomResevationState();
 }

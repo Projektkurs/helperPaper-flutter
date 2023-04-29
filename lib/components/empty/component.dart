@@ -16,13 +16,6 @@ class Empty extends Component {
   final Function resizeWidget;
   final void Function(Key?, Widget) replaceChildren;
 
-  Empty.fromJson(
-      Map<String, dynamic> json, this.resizeWidget, this.replaceChildren)
-      : super(
-            key: GlobalKey(),
-            gconfig: GeneralConfig.fromJson(json['gconfig']),
-            cconfig: EmptyConfig.fromJson(json['cconfig']));
-
   @override
   EmptyState createState() => EmptyState();
 }

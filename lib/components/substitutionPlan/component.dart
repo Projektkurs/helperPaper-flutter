@@ -15,17 +15,7 @@ class SubstitutionPlan extends Component {
       required VertretungsplanConfig cconfig,
       super.inpopup})
       : super(cconfig: cconfig);
-  @override
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> tmpconf = super.toJson();
-    return tmpconf;
-  }
 
-  SubstitutionPlan.fromJson(Map<String, dynamic> json)
-      : super(
-            key: GlobalKey(),
-            gconfig: GeneralConfig.fromJson(json['gconfig']),
-            cconfig: VertretungsplanConfig.fromJson(json["cconfig"]));
   @override
   State<SubstitutionPlan> createState() => VertretungsplanState();
 }

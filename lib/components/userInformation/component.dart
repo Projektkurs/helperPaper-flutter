@@ -14,19 +14,6 @@ class UserInformation extends Component {
       bool inpopup = false})
       : super(key: key, gconfig: gconfig, cconfig: cconfig, inpopup: inpopup);
 
-  final String? name = 'UserInformation';
-  @override
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> tmpconf = super.toJson();
-    return tmpconf;
-  }
-
-  UserInformation.fromJson(Map<String, dynamic> json)
-      : super(
-            key: GlobalKey(),
-            gconfig: GeneralConfig.fromJson(json['gconfig']),
-            cconfig: UserInformationConfig.fromJson(json['cconfig']));
-
   @override
   State<UserInformation> createState() => UserInformationState();
 }
