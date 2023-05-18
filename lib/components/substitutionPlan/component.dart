@@ -7,14 +7,19 @@
 import 'package:helperpaper/header.dart';
 import 'package:helperpaper/vpmobil.dart' as vp;
 
-// TODO: rename Vertretungsplan to SubstitutionPlan or SubPlan
-class SubstitutionPlan extends Component {
+class SubstitutionPlan extends Component<SubstitutionPlanConfig> {
   SubstitutionPlan(
       {super.key,
       required super.gconfig,
-      required VertretungsplanConfig cconfig,
+      required SubstitutionPlanConfig cconfig,
       super.inpopup})
       : super(cconfig: cconfig);
+
+  SubstitutionPlan.fromJson(Map<String, dynamic> json)
+      : super(
+            key: GlobalKey(),
+            gconfig: GeneralConfig.fromJson(json['gconfig']),
+            cconfig: SubstitutionPlanConfig.fromJson(json['cconfig']));
 
   @override
   State<SubstitutionPlan> createState() => VertretungsplanState();
@@ -26,8 +31,8 @@ class VertretungsplanState extends ComponentState<SubstitutionPlan> {
   List<vp.XmlDay>? xmlday;
   @override
   popup() async {
-    await popupdialog(
-        VertretungsplanPopup(gconfig: widget.gconfig, cconfig: widget.cconfig));
+    await popupdialog(SubstitutionPlanPopup(
+        gconfig: widget.gconfig, cconfig: widget.cconfig));
     vplan = widget.cconfig.islesson
         ? vp.Plan.classplan('0${widget.cconfig.lesson}', xmlday!)
         : vp.Plan.roomplan(widget.cconfig.room, xmlday!);

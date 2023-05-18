@@ -218,8 +218,8 @@ class _EmptyPopupState extends State<EmptyPopup> {
             byempty: true);
         break;
       case (Componentenum.substitutionPlan):
-        widget.popupref.cconfig = VertretungsplanConfig('007', '5a', false);
-        popup = VertretungsplanPopup(
+        widget.popupref.cconfig = SubstitutionPlanConfig('007', '5a', false);
+        popup = SubstitutionPlanPopup(
             gconfig: widget.gconfig,
             cconfig: widget.popupref.cconfig,
             byempty: true);

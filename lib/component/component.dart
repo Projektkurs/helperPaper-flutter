@@ -4,7 +4,6 @@
  * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
 import 'package:helperpaper/header.dart';
-import 'dart:mirrors';
 
 abstract class Component<Config> extends StatefulWidget {
   Component(
@@ -15,7 +14,7 @@ abstract class Component<Config> extends StatefulWidget {
       : super(key: key);
 
   /// saves the configuration that is specific for a specific implementation of Component
-  late final dynamic cconfig;
+  late final Config cconfig;
 
   /// if true, the Component cannot be double clicked to open the popup
   /// this is used by the empty popup to not open the popup recursively
@@ -31,13 +30,6 @@ abstract class Component<Config> extends StatefulWidget {
   Function? setState;
   Map<String, dynamic> toJson() =>
       {'gconfig': gconfig, 'cconfig': cconfig, 'type': runtimeType.toString()};
-
-  Component.fromJson(Map<String, dynamic> json) : super(key: GlobalKey()) {
-    gconfig = GeneralConfig.fromJson(json['gconfig']);
-    ClassMirror classMirror = reflectType(Config);
-    classMirror.invoke(#fromJson, [json]);
-    //cconfig = Config.fromJson(json['cconfig']);
-  }
 }
 
 class ComponentState<T extends Component> extends State<T> {

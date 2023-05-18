@@ -20,6 +20,12 @@ class Clock extends Component<ClockConfig> {
 
   final String? name = 'Clock';
 
+  Clock.fromJson(Map<String, dynamic> json)
+      : super(
+            key: GlobalKey(),
+            gconfig: GeneralConfig.fromJson(json['gconfig']),
+            cconfig: ClockConfig.fromJson(json['cconfig']));
+
   @override
   State<Clock> createState() => ClockState();
 }

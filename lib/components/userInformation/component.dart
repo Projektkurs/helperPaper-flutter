@@ -6,7 +6,7 @@
 import 'package:helperpaper/header.dart';
 import 'package:helperpaper/httpserver.dart' as req;
 
-class UserInformation extends Component {
+class UserInformation extends Component<UserInformationConfig> {
   UserInformation(
       {required Key key,
       required GeneralConfig gconfig,
@@ -14,6 +14,11 @@ class UserInformation extends Component {
       bool inpopup = false})
       : super(key: key, gconfig: gconfig, cconfig: cconfig, inpopup: inpopup);
 
+  UserInformation.fromJson(Map<String, dynamic> json)
+      : super(
+            key: GlobalKey(),
+            gconfig: GeneralConfig.fromJson(json['gconfig']),
+            cconfig: UserInformationConfig.fromJson(json['cconfig']));
   @override
   State<UserInformation> createState() => UserInformationState();
 }

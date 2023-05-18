@@ -5,13 +5,19 @@
 
 import 'package:helperpaper/header.dart';
 
-class Example extends Component {
+class Example extends Component<ExampleConfig> {
   Example(
       {required Key key,
       required GeneralConfig gconfig,
       required ExampleConfig cconfig,
       bool inpopup = false})
       : super(key: key, gconfig: gconfig, cconfig: cconfig, inpopup: inpopup);
+
+  Example.fromJson(Map<String, dynamic> json)
+      : super(
+            key: GlobalKey(),
+            gconfig: GeneralConfig.fromJson(json['gconfig']),
+            cconfig: ExampleConfig.fromJson(json['cconfig']));
 
   @override
   State<Example> createState() => ExampleState();

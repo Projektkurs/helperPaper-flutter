@@ -5,7 +5,7 @@
 
 import 'package:helperpaper/header.dart';
 
-class Note extends Component {
+class Note extends Component<NoteConfig> {
   Note(
       {required Key key,
       required GeneralConfig gconfig,
@@ -13,6 +13,11 @@ class Note extends Component {
       bool inpopup = false})
       : super(key: key, gconfig: gconfig, cconfig: cconfig, inpopup: inpopup);
 
+  Note.fromJson(Map<String, dynamic> json)
+      : super(
+            key: GlobalKey(),
+            gconfig: GeneralConfig.fromJson(json['gconfig']),
+            cconfig: NoteConfig.fromJson(json['cconfig']));
   @override
   State<Note> createState() => NoteState();
 }

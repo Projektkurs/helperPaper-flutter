@@ -4,7 +4,7 @@
  */
 import 'package:helperpaper/header.dart';
 
-class Empty extends Component {
+class Empty extends Component<EmptyConfig> {
   Empty({
     required Key key,
     required GeneralConfig gconfig,
@@ -15,6 +15,13 @@ class Empty extends Component {
 
   final Function resizeWidget;
   final void Function(Key?, Widget) replaceChildren;
+
+  Empty.fromJson(
+      Map<String, dynamic> json, this.resizeWidget, this.replaceChildren)
+      : super(
+            key: GlobalKey(),
+            gconfig: GeneralConfig.fromJson(json['gconfig']),
+            cconfig: EmptyConfig.fromJson(json['cconfig']));
 
   @override
   EmptyState createState() => EmptyState();
@@ -121,7 +128,7 @@ class EmptyState extends ComponentState<Empty> {
   _replace() {
     widget.replaceChildren(
       widget.key,
-      widget.cconfig.replacement,
+      widget.cconfig.replacement!,
     );
   }
 

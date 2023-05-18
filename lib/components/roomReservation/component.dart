@@ -6,7 +6,7 @@
 import 'package:helperpaper/header.dart';
 import 'package:helperpaper/httpserver.dart' as req;
 
-class RoomResevation extends Component {
+class RoomResevation extends Component<RoomResevationConfig> {
   RoomResevation(
       {required Key key,
       required GeneralConfig gconfig,
@@ -14,6 +14,11 @@ class RoomResevation extends Component {
       bool inpopup = false})
       : super(key: key, gconfig: gconfig, cconfig: cconfig, inpopup: inpopup);
 
+  RoomResevation.fromJson(Map<String, dynamic> json)
+      : super(
+            key: GlobalKey(),
+            gconfig: GeneralConfig.fromJson(json['gconfig']),
+            cconfig: RoomResevationConfig.fromJson(json['cconfig']));
   @override
   State<RoomResevation> createState() => RoomResevationState();
 }
@@ -51,7 +56,6 @@ class RoomResevationState extends ComponentState<RoomResevation> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.active:
-
           case ConnectionState.waiting:
           case ConnectionState.none:
             return componentbuild(Container(

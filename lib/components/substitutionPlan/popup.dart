@@ -1,4 +1,4 @@
-/* vertretungsplan/popup.dart - config menu for Vertretungsplan 
+/* substitutionPlan/popup.dart - config menu for Vertretungsplan 
  *
  * Copyright 2023 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
  */
@@ -6,20 +6,20 @@
 import 'package:helperpaper/header.dart';
 import 'package:helperpaper/vpmobil.dart' as vp;
 
-class VertretungsplanPopup extends Popup<VertretungsplanConfig> {
-  const VertretungsplanPopup(
+class SubstitutionPlanPopup extends Popup<SubstitutionPlanConfig> {
+  const SubstitutionPlanPopup(
       {super.key,
       required super.gconfig,
       required super.cconfig,
       super.byempty});
 
   @override
-  State<VertretungsplanPopup> createState() => _VertretungsplanPopupState();
+  State<SubstitutionPlanPopup> createState() => _SubstitutionPlanPopupState();
 }
 
 enum _Roomlesson { room, lesson }
 
-class _VertretungsplanPopupState extends PopupState<VertretungsplanPopup> {
+class _SubstitutionPlanPopupState extends PopupState<SubstitutionPlanPopup> {
   late TextEditingController roomtextcontroller;
   List<String> rooms = [];
   List<String> classes = [];
@@ -125,7 +125,7 @@ class _VertretungsplanPopupState extends PopupState<VertretungsplanPopup> {
         });
       }
     });
-    oldcconfig = VertretungsplanConfig('', '', false);
+    oldcconfig = SubstitutionPlanConfig('', '', false);
     tabs = [firstpage];
     super.initState();
   }

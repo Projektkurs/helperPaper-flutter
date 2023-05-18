@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:helperpaper/image.dart' as image;
 
-class ImageComponent extends Component {
+class ImageComponent extends Component<ImageConfig> {
   ImageComponent(
       {required Key key,
       required GeneralConfig gconfig,
@@ -16,6 +16,11 @@ class ImageComponent extends Component {
       bool inpopup = false})
       : super(key: key, gconfig: gconfig, cconfig: cconfig, inpopup: inpopup);
 
+  ImageComponent.fromJson(Map<String, dynamic> json)
+      : super(
+            key: GlobalKey(),
+            gconfig: GeneralConfig.fromJson(json['gconfig']),
+            cconfig: ImageConfig.fromJson(json['cconfig']));
   @override
   State<ImageComponent> createState() => ImageState();
 }

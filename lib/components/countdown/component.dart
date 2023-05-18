@@ -9,19 +9,13 @@ import 'package:helperpaper/vpmobil.dart' as vp;
 import 'package:google_fonts/google_fonts.dart';
 
 // TODO: disable countdown on weekends / free days
-class Countdown extends Component {
+class Countdown extends Component<CountdownConfig> {
   Countdown(
       {required Key key,
       required GeneralConfig gconfig,
       required CountdownConfig cconfig,
       bool inpopup = false})
       : super(key: key, gconfig: gconfig, cconfig: cconfig, inpopup: inpopup);
-
-  @override
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> tmpconf = super.toJson();
-    return tmpconf;
-  }
 
   Countdown.fromJson(Map<String, dynamic> json)
       : super(
